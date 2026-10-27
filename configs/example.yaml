@@ -1,0 +1,24 @@
+# One YAML = one experiment. Results go to results/<exp_id>/ with the config hash in the CSV header.
+exp_id: smoke_001
+seeds: [0, 1, 2]
+n_episodes: 50            # training episodes per seed
+data:
+  tasks: data/tasks.jsonl
+  hints: data/hints.jsonl
+  session_tasks: 8        # tasks per session before the unaided transfer block (frozen design)
+simulator:
+  family: A               # A | B | C   (P2)
+  profile: novice
+  train_families: [A, B]  # held-out test: train on these ...
+  test_family: C          # ... evaluate on this
+reward:
+  w_progress: 1.0
+  w_transfer: 2.0
+  w_full_assist_penalty: 0.5
+  w_takeover_penalty: 1.0
+  ablate: []              # e.g. [takeover_penalty] for leave-one-out
+policy:
+  name: tabular_q         # tabular_q | linear_q | linucb | always_full | always_none | fixed_ladder | ...
+  alpha: 0.1
+  gamma: 0.9
+  epsilon: 0.1

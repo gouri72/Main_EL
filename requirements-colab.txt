@@ -1,0 +1,5 @@
+# only needed for assist/generate_hints.py --backend qwen (Colab GPU). Pin the exact versions you ran in your report.
+transformers>=4.51
+torch
+accelerate
+pyyaml

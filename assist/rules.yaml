@@ -1,0 +1,12 @@
+# Per-level rules for the validator. Levels: 1 cue, 2 conceptual hint, 3 partial scaffold, 4 full assistance.
+# leak_ngram: n for solution n-grams. max_novel_ngrams: how many solution n-grams NOT already in the task prompt
+# a hint may contain at that level (0 = none allowed). Level 4 is full assistance, so leakage is not enforced.
+leak_ngram: 5
+levels:
+  1: {max_words: 30,  require_question: true,  no_code: true,  max_novel_ngrams: 0,  enforce_leak: true}
+  2: {max_words: 45,  require_question: false, no_code: true,  max_novel_ngrams: 0,  enforce_leak: true}
+  3: {max_words: 90,  require_question: false, no_code: false, max_novel_ngrams: 3,  enforce_leak: true}
+  4: {max_words: 200, require_question: false, no_code: false, max_novel_ngrams: 999, enforce_leak: false}
+# SciFact: evidence sentence copying (n-gram overlap) allowed only from this level up
+evidence_ngram: 6
+evidence_max_novel: {1: 0, 2: 0, 3: 4, 4: 999}

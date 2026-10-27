@@ -3,3 +3,8 @@ data/raw/*
 __pycache__/
 *.pyc
 .venv/
+results/**/*.npy
+*.pt
+.ipynb_checkpoints/
+.cache/
+paper/figs/*.pngresults/smoke_*/
