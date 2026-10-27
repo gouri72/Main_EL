@@ -10,7 +10,7 @@ def run_episode(env, policy, name="Policy"):
     
     while not done:
         # FixedLadder needs is_training=False to avoid epsilon exploration
-        action = policy.get_action(state, is_training=True if name == "Q-Learning" else False)
+        action = policy.get_action(state, is_training=(name not in ["Always None", "Fixed Ladder"]))
         next_state, reward, done, info = env.step(action)
         
         if hasattr(policy, 'update'):
@@ -22,6 +22,8 @@ def run_episode(env, policy, name="Policy"):
     print(f"{name} | Total Reward: {total_reward:.2f} | Transfer Success: {info.get('transfer_success')}")
 
 if __name__ == "__main__":
+    from rl.policy import LinearQPolicy, LinUCBPolicy
+    
     env = HumanFirstEnv(FAKE_TASKS)
     
     print("--- Testing Baselines ---")
@@ -31,4 +33,14 @@ if __name__ == "__main__":
     print("\n--- Testing Tabular Q-Learning ---")
     q_policy = TabularQPolicy()
     for i in range(1, 4):
-        run_episode(env, q_policy, "Q-Learning")
+        run_episode(env, q_policy, "Tabular Q")
+
+    print("\n--- Testing Linear Q-Learning ---")
+    lin_q_policy = LinearQPolicy()
+    for i in range(1, 4):
+        run_episode(env, lin_q_policy, "Linear Q")
+        
+    print("\n--- Testing LinUCB ---")
+    lin_ucb_policy = LinUCBPolicy()
+    for i in range(1, 4):
+        run_episode(env, lin_ucb_policy, "LinUCB")
