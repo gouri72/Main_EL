@@ -37,7 +37,7 @@ def run_py(code, timeout=10):
 
 
 def parse_asserts(tests):
-    """Return (list of Call nodes, function name) if every test is `assert f(...) == expected`."""
+    """Return (list of Call nodes, function name, expected-value sources) if every test is `assert f(...) == expected`."""
     calls, expected = [], []
     for s in tests:
         try:

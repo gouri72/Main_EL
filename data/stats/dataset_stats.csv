@@ -1,0 +1,20 @@
+metric,coding,science
+session tasks,150,150
+transfer variants,150,150
+difficulty 1 (session tasks),50,50
+difficulty 2 (session tasks),50,50
+difficulty 3 (session tasks),50,50
+"prompt length, mean chars",162.1,2032.8
+tasks containing op: understand_plan,150,150
+tasks containing op: execute,150,150
+tasks containing op: debug_verify,100,111
+tasks containing op: explain,50,150
+op labels from gold,0,150
+op labels heuristic,450,411
+coding: mean tests per task,3.0,-
+science: SUPPORT,-,75
+science: CONTRADICT,-,75
+science: mean evidence sentences,-,1.8
+science: mean abstract sentences,-,9.7
+error types (coding) top 5,"wrong_formula:125, loop_logic:56, off_by_one:50, wrong_condition:46, type_handling:4",-
+error types (science) top 5,-,"missed_negation:75, multi_sentence_evidence:74, numeric_misread:64, overgeneralization:19"

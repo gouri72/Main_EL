@@ -8,3 +8,293 @@
 {"task_id": "code_004_T", "solution": "def gcd(p,q):\n    while q != 0:\n        p, q = q,p%q\n    return p\ndef is_coprime_2(x,y):\n    return gcd(x,y) == 1"}
 {"task_id": "code_005", "solution": "def check_type(test_tuple):\n  res = True\n  for ele in test_tuple:\n    if not isinstance(ele, type(test_tuple[0])):\n      res = False\n      break\n  return (res)"}
 {"task_id": "code_005_T", "solution": "def check_type_2(test_tuple):\n  res = True\n  for ele in test_tuple:\n    if not isinstance(ele, type(test_tuple[0])):\n      res = False\n      break\n  return (res)"}
+{"task_id": "code_006", "solution": "import math\ndef sum_gp(a,n,r):\n total = (a * (1 - math.pow(r, n ))) / (1- r)\n return total"}
+{"task_id": "code_006_T", "solution": "import math\ndef sum_gp_2(a,n,r):\n total = (a * (1 - math.pow(r, n ))) / (1- r)\n return total"}
+{"task_id": "code_007", "solution": "def round_num(n,m):\n    a = (n //m) * m\n    b = a + m\n    return (b if n - a > b - n else a)"}
+{"task_id": "code_007_T", "solution": "def round_num_2(n,m):\n    a = (n //m) * m\n    b = a + m\n    return (b if n - a > b - n else a)"}
+{"task_id": "code_008", "solution": "def min_length_list(input_list):\n    min_length = min(len(x) for x in input_list )  \n    min_list = min(input_list, key = lambda i: len(i))\n    return(min_length, min_list)"}
+{"task_id": "code_008_T", "solution": "def min_length_list_2(input_list):\n    min_length = min(len(x) for x in input_list )  \n    min_list = min(input_list, key = lambda i: len(i))\n    return(min_length, min_list)"}
+{"task_id": "code_009", "solution": "def count_Digit(n):\n    count = 0\n    while n != 0:\n        n //= 10\n        count += 1\n    return count"}
+{"task_id": "code_009_T", "solution": "def count_Digit_2(n):\n    count = 0\n    while n != 0:\n        n //= 10\n        count += 1\n    return count"}
+{"task_id": "code_010", "solution": "def digit_distance_nums(n1, n2):\n         return sum(map(int,str(abs(n1-n2))))"}
+{"task_id": "code_010_T", "solution": "def digit_distance_nums_2(n1, n2):\n         return sum(map(int,str(abs(n1-n2))))"}
+{"task_id": "code_011", "solution": "def check_none(test_tup):\n  res = any(map(lambda ele: ele is None, test_tup))\n  return (res)"}
+{"task_id": "code_011_T", "solution": "def check_none_2(test_tup):\n  res = any(map(lambda ele: ele is None, test_tup))\n  return (res)"}
+{"task_id": "code_012", "solution": "def centered_hexagonal_number(n):\n  return 3 * n * (n - 1) + 1"}
+{"task_id": "code_012_T", "solution": "def centered_hexagonal_number_2(n):\n  return 3 * n * (n - 1) + 1"}
+{"task_id": "code_013", "solution": "def is_key_present(d,x):\n  if x in d:\n    return True\n  else:\n     return False"}
+{"task_id": "code_013_T", "solution": "def is_key_present_2(d,x):\n  if x in d:\n    return True\n  else:\n     return False"}
+{"task_id": "code_014", "solution": "import heapq\ndef larg_nnum(list1,n):\n largest=heapq.nlargest(n,list1)\n return largest"}
+{"task_id": "code_014_T", "solution": "import heapq\ndef larg_nnum_2(list1,n):\n largest=heapq.nlargest(n,list1)\n return largest"}
+{"task_id": "code_015", "solution": "def check_tuplex(tuplex,tuple1): \n  if tuple1 in tuplex:\n    return True\n  else:\n     return False"}
+{"task_id": "code_015_T", "solution": "def check_tuplex_2(tuplex,tuple1): \n  if tuple1 in tuplex:\n    return True\n  else:\n     return False"}
+{"task_id": "code_016", "solution": "def unique_sublists(list1):\n    result ={}\n    for l in list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result"}
+{"task_id": "code_016_T", "solution": "def unique_sublists_2(list1):\n    result ={}\n    for l in list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result"}
+{"task_id": "code_017", "solution": "def count_Intgral_Points(x1,y1,x2,y2): \n    return ((y2 - y1 - 1) * (x2 - x1 - 1))"}
+{"task_id": "code_017_T", "solution": "def count_Intgral_Points_2(x1,y1,x2,y2): \n    return ((y2 - y1 - 1) * (x2 - x1 - 1))"}
+{"task_id": "code_018", "solution": "def filter_oddnumbers(nums):\n odd_nums = list(filter(lambda x: x%2 != 0, nums))\n return odd_nums"}
+{"task_id": "code_018_T", "solution": "def filter_oddnumbers_2(nums):\n odd_nums = list(filter(lambda x: x%2 != 0, nums))\n return odd_nums"}
+{"task_id": "code_019", "solution": "def shell_sort(my_list):\n    gap = len(my_list) // 2\n    while gap > 0:\n        for i in range(gap, len(my_list)):\n            current_item = my_list[i]\n            j = i\n            while j >= gap and my_list[j - gap] > current_item:\n                my_list[j] = my_list[j - gap]\n                j -= gap\n            my_list[j] = current_item\n        gap //= 2\n\n    return my_list"}
+{"task_id": "code_019_T", "solution": "def shell_sort_2(my_list):\n    gap = len(my_list) // 2\n    while gap > 0:\n        for i in range(gap, len(my_list)):\n            current_item = my_list[i]\n            j = i\n            while j >= gap and my_list[j - gap] > current_item:\n                my_list[j] = my_list[j - gap]\n                j -= gap\n            my_list[j] = current_item\n        gap //= 2\n\n    return my_list"}
+{"task_id": "code_020", "solution": "def find_first_occurrence(A, x):\n    (left, right) = (0, len(A) - 1)\n    result = -1\n    while left <= right:\n        mid = (left + right) // 2\n        if x == A[mid]:\n            result = mid\n            right = mid - 1\n        elif x < A[mid]:\n            right = mid - 1\n        else:\n            left = mid + 1\n    return result"}
+{"task_id": "code_020_T", "solution": "def find_first_occurrence_2(A, x):\n    (left, right) = (0, len(A) - 1)\n    result = -1\n    while left <= right:\n        mid = (left + right) // 2\n        if x == A[mid]:\n            result = mid\n            right = mid - 1\n        elif x < A[mid]:\n            right = mid - 1\n        else:\n            left = mid + 1\n    return result"}
+{"task_id": "code_021", "solution": "def parabola_focus(a, b, c): \n  focus= (((-b / (2 * a)),(((4 * a * c) - (b * b) + 1) / (4 * a))))\n  return focus"}
+{"task_id": "code_021_T", "solution": "def parabola_focus_2(a, b, c): \n  focus= (((-b / (2 * a)),(((4 * a * c) - (b * b) + 1) / (4 * a))))\n  return focus"}
+{"task_id": "code_022", "solution": "def count_list(input_list): \n    return (len(input_list))**2"}
+{"task_id": "code_022_T", "solution": "def count_list_2(input_list): \n    return (len(input_list))**2"}
+{"task_id": "code_023", "solution": "def square_perimeter(a):\n  perimeter=4*a\n  return perimeter"}
+{"task_id": "code_023_T", "solution": "def square_perimeter_2(a):\n  perimeter=4*a\n  return perimeter"}
+{"task_id": "code_024", "solution": "def rombus_area(p,q):\n  area=(p*q)/2\n  return area"}
+{"task_id": "code_024_T", "solution": "def rombus_area_2(p,q):\n  area=(p*q)/2\n  return area"}
+{"task_id": "code_025", "solution": "def ap_sum(a,n,d):\n  total = (n * (2 * a + (n - 1) * d)) / 2\n  return total"}
+{"task_id": "code_025_T", "solution": "def ap_sum_2(a,n,d):\n  total = (n * (2 * a + (n - 1) * d)) / 2\n  return total"}
+{"task_id": "code_026", "solution": "def remove_list_range(list1, leftrange, rigthrange):\n   result = [i for i in list1 if (min(i)>=leftrange and max(i)<=rigthrange)]\n   return result"}
+{"task_id": "code_026_T", "solution": "def remove_list_range_2(list1, leftrange, rigthrange):\n   result = [i for i in list1 if (min(i)>=leftrange and max(i)<=rigthrange)]\n   return result"}
+{"task_id": "code_027", "solution": "def is_subset_sum(set, n, sum):\n\tif (sum == 0):\n\t\treturn True\n\tif (n == 0):\n\t\treturn False\n\tif (set[n - 1] > sum):\n\t\treturn is_subset_sum(set, n - 1, sum)\n\treturn is_subset_sum(set, n-1, sum) or is_subset_sum(set, n-1, sum-set[n-1])"}
+{"task_id": "code_027_T", "solution": "def is_subset_sum_2(set, n, sum):\n\tif (sum == 0):\n\t\treturn True\n\tif (n == 0):\n\t\treturn False\n\tif (set[n - 1] > sum):\n\t\treturn is_subset_sum_2(set, n - 1, sum)\n\treturn is_subset_sum_2(set, n-1, sum) or is_subset_sum_2(set, n-1, sum-set[n-1])"}
+{"task_id": "code_028", "solution": "def remove_odd(l):\n    for i in l:\n        if i % 2 != 0:\n            l.remove(i)\n    return l"}
+{"task_id": "code_028_T", "solution": "def remove_odd_2(l):\n    for i in l:\n        if i % 2 != 0:\n            l.remove(i)\n    return l"}
+{"task_id": "code_029", "solution": "def max_length_list(input_list):\n    max_length = max(len(x) for x in input_list )   \n    max_list = max(input_list, key = lambda i: len(i))    \n    return(max_length, max_list)"}
+{"task_id": "code_029_T", "solution": "def max_length_list_2(input_list):\n    max_length = max(len(x) for x in input_list )   \n    max_list = max(input_list, key = lambda i: len(i))    \n    return(max_length, max_list)"}
+{"task_id": "code_030", "solution": "def add_tuple(test_list, test_tup):\n  test_list += test_tup\n  return (test_list)"}
+{"task_id": "code_030_T", "solution": "def add_tuple_2(test_list, test_tup):\n  test_list += test_tup\n  return (test_list)"}
+{"task_id": "code_031", "solution": "def _sum(arr):  \n    sum=0\n    for i in arr: \n        sum = sum + i      \n    return(sum)"}
+{"task_id": "code_031_T", "solution": "def _sum_2(arr):  \n    sum=0\n    for i in arr: \n        sum = sum + i      \n    return(sum)"}
+{"task_id": "code_032", "solution": "def lateralsuface_cylinder(r,h):\n  lateralsurface= 2*3.1415*r*h\n  return lateralsurface"}
+{"task_id": "code_032_T", "solution": "def lateralsuface_cylinder_2(r,h):\n  lateralsurface= 2*3.1415*r*h\n  return lateralsurface"}
+{"task_id": "code_033", "solution": "def two_unique_nums(nums):\n  return [i for i in nums if nums.count(i)==1]"}
+{"task_id": "code_033_T", "solution": "def two_unique_nums_2(nums):\n  return [i for i in nums if nums.count(i)==1]"}
+{"task_id": "code_034", "solution": "def max_of_two( x, y ):\n    if x > y:\n        return x\n    return y"}
+{"task_id": "code_034_T", "solution": "def max_of_two_2( x, y ):\n    if x > y:\n        return x\n    return y"}
+{"task_id": "code_035", "solution": "def rectangle_perimeter(l,b):\n  perimeter=2*(l+b)\n  return perimeter"}
+{"task_id": "code_035_T", "solution": "def rectangle_perimeter_2(l,b):\n  perimeter=2*(l+b)\n  return perimeter"}
+{"task_id": "code_036", "solution": "def find_rect_num(n):\n  return n*(n + 1)"}
+{"task_id": "code_036_T", "solution": "def find_rect_num_2(n):\n  return n*(n + 1)"}
+{"task_id": "code_037", "solution": "def div_list(nums1,nums2):\n  result = map(lambda x, y: x / y, nums1, nums2)\n  return list(result)"}
+{"task_id": "code_037_T", "solution": "def div_list_2(nums1,nums2):\n  result = map(lambda x, y: x / y, nums1, nums2)\n  return list(result)"}
+{"task_id": "code_038", "solution": "def check_Odd_Parity(x): \n    parity = 0\n    while (x != 0): \n        x = x & (x - 1) \n        parity += 1\n    if (parity % 2 == 1): \n        return True\n    else: \n        return False"}
+{"task_id": "code_038_T", "solution": "def check_Odd_Parity_2(x): \n    parity = 0\n    while (x != 0): \n        x = x & (x - 1) \n        parity += 1\n    if (parity % 2 == 1): \n        return True\n    else: \n        return False"}
+{"task_id": "code_039", "solution": "def big_sum(nums):\n      sum= max(nums)+min(nums)\n      return sum"}
+{"task_id": "code_039_T", "solution": "def big_sum_2(nums):\n      sum= max(nums)+min(nums)\n      return sum"}
+{"task_id": "code_040", "solution": "def sum_of_digits(nums):\n    return sum(int(el) for n in nums for el in str(n) if el.isdigit())"}
+{"task_id": "code_040_T", "solution": "def sum_of_digits_2(nums):\n    return sum(int(el) for n in nums for el in str(n) if el.isdigit())"}
+{"task_id": "code_041", "solution": "def sum_Natural(n): \n    sum = (n * (n + 1)) \n    return int(sum) \ndef sum_Even(l,r): \n    return (sum_Natural(int(r / 2)) - sum_Natural(int((l - 1) / 2)))"}
+{"task_id": "code_041_T", "solution": "def sum_Natural(n): \n    sum = (n * (n + 1)) \n    return int(sum) \ndef sum_Even_2(l,r): \n    return (sum_Natural(int(r / 2)) - sum_Natural(int((l - 1) / 2)))"}
+{"task_id": "code_042", "solution": "def substract_elements(test_tup1, test_tup2):\n  res = tuple(map(lambda i, j: i - j, test_tup1, test_tup2))\n  return (res)"}
+{"task_id": "code_042_T", "solution": "def substract_elements_2(test_tup1, test_tup2):\n  res = tuple(map(lambda i, j: i - j, test_tup1, test_tup2))\n  return (res)"}
+{"task_id": "code_043", "solution": "def parallel_lines(line1, line2):\n  return line1[0]/line1[1] == line2[0]/line2[1]"}
+{"task_id": "code_043_T", "solution": "def parallel_lines_2(line1, line2):\n  return line1[0]/line1[1] == line2[0]/line2[1]"}
+{"task_id": "code_044", "solution": "def big_diff(nums):\n     diff= max(nums)-min(nums)\n     return diff"}
+{"task_id": "code_044_T", "solution": "def big_diff_2(nums):\n     diff= max(nums)-min(nums)\n     return diff"}
+{"task_id": "code_045", "solution": "def list_split(S, step):\n    return [S[i::step] for i in range(step)]"}
+{"task_id": "code_045_T", "solution": "def list_split_2(S, step):\n    return [S[i::step] for i in range(step)]"}
+{"task_id": "code_046", "solution": "def nCr(n, r): \n\tif (r > n / 2): \n\t\tr = n - r \n\tanswer = 1 \n\tfor i in range(1, r + 1): \n\t\tanswer *= (n - r + i) \n\t\tanswer /= i \n\treturn answer \ndef binomial_probability(n, k, p): \n\treturn (nCr(n, k) * pow(p, k) *\tpow(1 - p, n - k))"}
+{"task_id": "code_046_T", "solution": "def nCr(n, r): \n\tif (r > n / 2): \n\t\tr = n - r \n\tanswer = 1 \n\tfor i in range(1, r + 1): \n\t\tanswer *= (n - r + i) \n\t\tanswer /= i \n\treturn answer \ndef binomial_probability_2(n, k, p): \n\treturn (nCr(n, k) * pow(p, k) *\tpow(1 - p, n - k))"}
+{"task_id": "code_047", "solution": "def rotate_left(list1,m,n):\n  result =  list1[m:]+list1[:n]\n  return result"}
+{"task_id": "code_047_T", "solution": "def rotate_left_2(list1,m,n):\n  result =  list1[m:]+list1[:n]\n  return result"}
+{"task_id": "code_048", "solution": "def binary_search(item_list,item):\n\tfirst = 0\n\tlast = len(item_list)-1\n\tfound = False\n\twhile( first<=last and not found):\n\t\tmid = (first + last)//2\n\t\tif item_list[mid] == item :\n\t\t\tfound = True\n\t\telse:\n\t\t\tif item < item_list[mid]:\n\t\t\t\tlast = mid - 1\n\t\t\telse:\n\t\t\t\tfirst = mid + 1\t\n\treturn found"}
+{"task_id": "code_048_T", "solution": "def binary_search_2(item_list,item):\n\tfirst = 0\n\tlast = len(item_list)-1\n\tfound = False\n\twhile( first<=last and not found):\n\t\tmid = (first + last)//2\n\t\tif item_list[mid] == item :\n\t\t\tfound = True\n\t\telse:\n\t\t\tif item < item_list[mid]:\n\t\t\t\tlast = mid - 1\n\t\t\telse:\n\t\t\t\tfirst = mid + 1\t\n\treturn found"}
+{"task_id": "code_049", "solution": "from collections import Counter\ndef count_variable(a,b,c,d):\n  c = Counter(p=a, q=b, r=c, s=d)\n  return list(c.elements())"}
+{"task_id": "code_049_T", "solution": "from collections import Counter\ndef count_variable_2(a,b,c,d):\n  c = Counter(p=a, q=b, r=c, s=d)\n  return list(c.elements())"}
+{"task_id": "code_050", "solution": "def get_Odd_Occurrence(arr,arr_size):   \n    for i in range(0,arr_size): \n        count = 0\n        for j in range(0,arr_size): \n            if arr[i] == arr[j]: \n                count+=1     \n        if (count % 2 != 0): \n            return arr[i]     \n    return -1"}
+{"task_id": "code_050_T", "solution": "def get_Odd_Occurrence_2(arr,arr_size):   \n    for i in range(0,arr_size): \n        count = 0\n        for j in range(0,arr_size): \n            if arr[i] == arr[j]: \n                count+=1     \n        if (count % 2 != 0): \n            return arr[i]     \n    return -1"}
+{"task_id": "code_051", "solution": "def count_Rectangles(radius):  \n    rectangles = 0 \n    diameter = 2 * radius \n    diameterSquare = diameter * diameter \n    for a in range(1, 2 * radius):  \n        for b in range(1, 2 * radius): \n            diagnalLengthSquare = (a * a +  b * b)  \n            if (diagnalLengthSquare <= diameterSquare) : \n                rectangles += 1\n    return rectangles"}
+{"task_id": "code_051_T", "solution": "def count_Rectangles_2(radius):  \n    rectangles = 0 \n    diameter = 2 * radius \n    diameterSquare = diameter * diameter \n    for a in range(1, 2 * radius):  \n        for b in range(1, 2 * radius): \n            diagnalLengthSquare = (a * a +  b * b)  \n            if (diagnalLengthSquare <= diameterSquare) : \n                rectangles += 1\n    return rectangles"}
+{"task_id": "code_052", "solution": "def sum_Odd(n): \n    terms = (n + 1)//2\n    sum1 = terms * terms \n    return sum1  \ndef sum_in_Range(l,r): \n    return sum_Odd(r) - sum_Odd(l - 1)"}
+{"task_id": "code_052_T", "solution": "def sum_Odd(n): \n    terms = (n + 1)//2\n    sum1 = terms * terms \n    return sum1  \ndef sum_in_Range_2(l,r): \n    return sum_Odd(r) - sum_Odd(l - 1)"}
+{"task_id": "code_053", "solution": "def rectangle_area(l,b):\n  area=l*b\n  return area"}
+{"task_id": "code_053_T", "solution": "def rectangle_area_2(l,b):\n  area=l*b\n  return area"}
+{"task_id": "code_054", "solution": "def lucky_num(n):\n List=range(-1,n*n+9,2)\n i=2\n while List[i:]:List=sorted(set(List)-set(List[List[i]::List[i]]));i+=1\n return List[1:n+1]"}
+{"task_id": "code_054_T", "solution": "def lucky_num_2(n):\n List=range(-1,n*n+9,2)\n i=2\n while List[i:]:List=sorted(set(List)-set(List[List[i]::List[i]]));i+=1\n return List[1:n+1]"}
+{"task_id": "code_055", "solution": "def find_angle(a,b):\n c = 180 - (a + b)\n return c"}
+{"task_id": "code_055_T", "solution": "def find_angle_2(a,b):\n c = 180 - (a + b)\n return c"}
+{"task_id": "code_056", "solution": "import math\ndef area_pentagon(a):\n  area=(math.sqrt(5*(5+2*math.sqrt(5)))*pow(a,2))/4.0\n  return area"}
+{"task_id": "code_056_T", "solution": "import math\ndef area_pentagon_2(a):\n  area=(math.sqrt(5*(5+2*math.sqrt(5)))*pow(a,2))/4.0\n  return area"}
+{"task_id": "code_057", "solution": "import cmath\ndef polar_rect(x,y):\n cn = complex(x,y)\n cn=cmath.polar(cn)\n cn1 = cmath.rect(2, cmath.pi)\n return (cn,cn1)"}
+{"task_id": "code_057_T", "solution": "import cmath\ndef polar_rect_2(x,y):\n cn = complex(x,y)\n cn=cmath.polar(cn)\n cn1 = cmath.rect(2, cmath.pi)\n return (cn,cn1)"}
+{"task_id": "code_058", "solution": "def perfect_squares(a, b):\n    lists=[]\n    for i in range (a,b+1):\n        j = 1;\n        while j*j <= i:\n            if j*j == i:\n                 lists.append(i)  \n            j = j+1\n        i = i+1\n    return lists"}
+{"task_id": "code_058_T", "solution": "def perfect_squares_2(a, b):\n    lists=[]\n    for i in range (a,b+1):\n        j = 1;\n        while j*j <= i:\n            if j*j == i:\n                 lists.append(i)  \n            j = j+1\n        i = i+1\n    return lists"}
+{"task_id": "code_059", "solution": "def average_tuple(nums):\n    result = [sum(x) / len(x) for x in zip(*nums)]\n    return result"}
+{"task_id": "code_059_T", "solution": "def average_tuple_2(nums):\n    result = [sum(x) / len(x) for x in zip(*nums)]\n    return result"}
+{"task_id": "code_060", "solution": "def similar_elements(test_tup1, test_tup2):\n  res = tuple(set(test_tup1) & set(test_tup2))\n  return (res)"}
+{"task_id": "code_060_T", "solution": "def similar_elements_2(test_tup1, test_tup2):\n  res = tuple(set(test_tup1) & set(test_tup2))\n  return (res)"}
+{"task_id": "code_061", "solution": "def divisible_by_digits(startnum, endnum):\n    return [n for n in range(startnum, endnum+1) \\\n                if not any(map(lambda x: int(x) == 0 or n%int(x) != 0, str(n)))]"}
+{"task_id": "code_061_T", "solution": "def divisible_by_digits_2(startnum, endnum):\n    return [n for n in range(startnum, endnum+1) \\\n                if not any(map(lambda x: int(x) == 0 or n%int(x) != 0, str(n)))]"}
+{"task_id": "code_062", "solution": "def get_perrin(n):\n  if (n == 0):\n    return 3\n  if (n == 1):\n    return 0\n  if (n == 2):\n    return 2 \n  return get_perrin(n - 2) + get_perrin(n - 3)"}
+{"task_id": "code_062_T", "solution": "def get_perrin_2(n):\n  if (n == 0):\n    return 3\n  if (n == 1):\n    return 0\n  if (n == 2):\n    return 2 \n  return get_perrin_2(n - 2) + get_perrin_2(n - 3)"}
+{"task_id": "code_063", "solution": "def even_position(nums):\n\treturn all(nums[i]%2==i%2 for i in range(len(nums)))"}
+{"task_id": "code_063_T", "solution": "def even_position_2(nums):\n\treturn all(nums[i]%2==i%2 for i in range(len(nums)))"}
+{"task_id": "code_064", "solution": "from operator import itemgetter\ndef index_on_inner_list(list_data, index_no):\n    result = sorted(list_data, key=itemgetter(index_no))\n    return result"}
+{"task_id": "code_064_T", "solution": "from operator import itemgetter\ndef index_on_inner_list_2(list_data, index_no):\n    result = sorted(list_data, key=itemgetter(index_no))\n    return result"}
+{"task_id": "code_065", "solution": "import math \ndef get_Pos_Of_Right_most_Set_Bit(n): \n    return int(math.log2(n&-n)+1)   \ndef set_Right_most_Unset_Bit(n): \n    if (n == 0): \n        return 1\n    if ((n & (n + 1)) == 0):     \n        return n \n    pos = get_Pos_Of_Right_most_Set_Bit(~n)      \n    return ((1 << (pos - 1)) | n)"}
+{"task_id": "code_065_T", "solution": "import math \ndef get_Pos_Of_Right_most_Set_Bit(n): \n    return int(math.log2(n&-n)+1)   \ndef set_Right_most_Unset_Bit_2(n): \n    if (n == 0): \n        return 1\n    if ((n & (n + 1)) == 0):     \n        return n \n    pos = get_Pos_Of_Right_most_Set_Bit(~n)      \n    return ((1 << (pos - 1)) | n)"}
+{"task_id": "code_066", "solution": "def loss_amount(actual_cost,sale_amount): \n  if(sale_amount > actual_cost):\n    amount = sale_amount - actual_cost\n    return amount\n  else:\n    return None"}
+{"task_id": "code_066_T", "solution": "def loss_amount_2(actual_cost,sale_amount): \n  if(sale_amount > actual_cost):\n    amount = sale_amount - actual_cost\n    return amount\n  else:\n    return None"}
+{"task_id": "code_067", "solution": "def jacobsthal_num(n): \n\tdp = [0] * (n + 1) \n\tdp[0] = 0\n\tdp[1] = 1\n\tfor i in range(2, n+1): \n\t\tdp[i] = dp[i - 1] + 2 * dp[i - 2] \n\treturn dp[n]"}
+{"task_id": "code_067_T", "solution": "def jacobsthal_num_2(n): \n\tdp = [0] * (n + 1) \n\tdp[0] = 0\n\tdp[1] = 1\n\tfor i in range(2, n+1): \n\t\tdp[i] = dp[i - 1] + 2 * dp[i - 2] \n\treturn dp[n]"}
+{"task_id": "code_068", "solution": "def odd_Num_Sum(n) : \n    j = 0\n    sm = 0\n    for i in range(1,n + 1) : \n        j = (2*i-1) \n        sm = sm + (j*j*j*j)   \n    return sm"}
+{"task_id": "code_068_T", "solution": "def odd_Num_Sum_2(n) : \n    j = 0\n    sm = 0\n    for i in range(1,n + 1) : \n        j = (2*i-1) \n        sm = sm + (j*j*j*j)   \n    return sm"}
+{"task_id": "code_069", "solution": "def Find_Min(lst): \n    minList = min((x) for x in lst) \n    return minList"}
+{"task_id": "code_069_T", "solution": "def Find_Min_2(lst): \n    minList = min((x) for x in lst) \n    return minList"}
+{"task_id": "code_070", "solution": "def volume_cuboid(l,w,h):\n  volume=l*w*h\n  return volume"}
+{"task_id": "code_070_T", "solution": "def volume_cuboid_2(l,w,h):\n  volume=l*w*h\n  return volume"}
+{"task_id": "code_071", "solution": "def basesnum_coresspondingnum(bases_num,index):\n  result = list(map(pow, bases_num, index))\n  return result"}
+{"task_id": "code_071_T", "solution": "def basesnum_coresspondingnum_2(bases_num,index):\n  result = list(map(pow, bases_num, index))\n  return result"}
+{"task_id": "code_072", "solution": "def and_tuples(test_tup1, test_tup2):\n  res = tuple(ele1 & ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res)"}
+{"task_id": "code_072_T", "solution": "def and_tuples_2(test_tup1, test_tup2):\n  res = tuple(ele1 & ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res)"}
+{"task_id": "code_073", "solution": "def radix_sort(nums):\n    RADIX = 10\n    placement = 1\n    max_digit = max(nums)\n\n    while placement < max_digit:\n      buckets = [list() for _ in range( RADIX )]\n      for i in nums:\n        tmp = int((i / placement) % RADIX)\n        buckets[tmp].append(i)\n      a = 0\n      for b in range( RADIX ):\n        buck = buckets[b]\n        for i in buck:\n          nums[a] = i\n          a += 1\n      placement *= RADIX\n    return nums"}
+{"task_id": "code_073_T", "solution": "def radix_sort_2(nums):\n    RADIX = 10\n    placement = 1\n    max_digit = max(nums)\n\n    while placement < max_digit:\n      buckets = [list() for _ in range( RADIX )]\n      for i in nums:\n        tmp = int((i / placement) % RADIX)\n        buckets[tmp].append(i)\n      a = 0\n      for b in range( RADIX ):\n        buck = buckets[b]\n        for i in buck:\n          nums[a] = i\n          a += 1\n      placement *= RADIX\n    return nums"}
+{"task_id": "code_074", "solution": "def tuple_modulo(test_tup1, test_tup2):\n  res = tuple(ele1 % ele2 for ele1, ele2 in zip(test_tup1, test_tup2)) \n  return (res)"}
+{"task_id": "code_074_T", "solution": "def tuple_modulo_2(test_tup1, test_tup2):\n  res = tuple(ele1 % ele2 for ele1, ele2 in zip(test_tup1, test_tup2)) \n  return (res)"}
+{"task_id": "code_075", "solution": "def max_product(arr, n ): \n\tmpis =[0] * (n) \n\tfor i in range(n): \n\t\tmpis[i] = arr[i] \n\tfor i in range(1, n): \n\t\tfor j in range(i): \n\t\t\tif (arr[i] > arr[j] and\n\t\t\t\t\tmpis[i] < (mpis[j] * arr[i])): \n\t\t\t\t\t\tmpis[i] = mpis[j] * arr[i] \n\treturn max(mpis)"}
+{"task_id": "code_075_T", "solution": "def max_product_2(arr, n ): \n\tmpis =[0] * (n) \n\tfor i in range(n): \n\t\tmpis[i] = arr[i] \n\tfor i in range(1, n): \n\t\tfor j in range(i): \n\t\t\tif (arr[i] > arr[j] and\n\t\t\t\t\tmpis[i] < (mpis[j] * arr[i])): \n\t\t\t\t\t\tmpis[i] = mpis[j] * arr[i] \n\treturn max(mpis)"}
+{"task_id": "code_076", "solution": "def median_numbers(a,b,c):\n if a > b:\n    if a < c:\n        median = a\n    elif b > c:\n        median = b\n    else:\n        median = c\n else:\n    if a > c:\n        median = a\n    elif b < c:\n        median = b\n    else:\n        median = c\n return median"}
+{"task_id": "code_076_T", "solution": "def median_numbers_2(a,b,c):\n if a > b:\n    if a < c:\n        median = a\n    elif b > c:\n        median = b\n    else:\n        median = c\n else:\n    if a > c:\n        median = a\n    elif b < c:\n        median = b\n    else:\n        median = c\n return median"}
+{"task_id": "code_077", "solution": "def max_occurrences(list1):\n    max_val = 0\n    result = list1[0] \n    for i in list1:\n        occu = list1.count(i)\n        if occu > max_val:\n            max_val = occu\n            result = i \n    return result"}
+{"task_id": "code_077_T", "solution": "def max_occurrences_2(list1):\n    max_val = 0\n    result = list1[0] \n    for i in list1:\n        occu = list1.count(i)\n        if occu > max_val:\n            max_val = occu\n            result = i \n    return result"}
+{"task_id": "code_078", "solution": "def swap_numbers(a,b):\n temp = a\n a = b\n b = temp\n return (a,b)"}
+{"task_id": "code_078_T", "solution": "def swap_numbers_2(a,b):\n temp = a\n a = b\n b = temp\n return (a,b)"}
+{"task_id": "code_079", "solution": "def sector_area(r,a):\n    pi=22/7\n    if a >= 360:\n        return None\n    sectorarea = (pi*r**2) * (a/360)\n    return sectorarea"}
+{"task_id": "code_079_T", "solution": "def sector_area_2(r,a):\n    pi=22/7\n    if a >= 360:\n        return None\n    sectorarea = (pi*r**2) * (a/360)\n    return sectorarea"}
+{"task_id": "code_080", "solution": "def set_middle_bits(n):  \n    n |= n >> 1; \n    n |= n >> 2; \n    n |= n >> 4; \n    n |= n >> 8; \n    n |= n >> 16;  \n    return (n >> 1) ^ 1\ndef toggle_middle_bits(n): \n    if (n == 1): \n        return 1\n    return n ^ set_middle_bits(n)"}
+{"task_id": "code_080_T", "solution": "def set_middle_bits(n):  \n    n |= n >> 1; \n    n |= n >> 2; \n    n |= n >> 4; \n    n |= n >> 8; \n    n |= n >> 16;  \n    return (n >> 1) ^ 1\ndef toggle_middle_bits_2(n): \n    if (n == 1): \n        return 1\n    return n ^ set_middle_bits(n)"}
+{"task_id": "code_081", "solution": "def power(a,b):\n\tif b==0:\n\t\treturn 1\n\telif a==0:\n\t\treturn 0\n\telif b==1:\n\t\treturn a\n\telse:\n\t\treturn a*power(a,b-1)"}
+{"task_id": "code_081_T", "solution": "def power_2(a,b):\n\tif b==0:\n\t\treturn 1\n\telif a==0:\n\t\treturn 0\n\telif b==1:\n\t\treturn a\n\telse:\n\t\treturn a*power_2(a,b-1)"}
+{"task_id": "code_082", "solution": "import math\ndef surfacearea_cone(r,h):\n  l = math.sqrt(r * r + h * h)\n  SA = math.pi * r * (r + l)\n  return SA"}
+{"task_id": "code_082_T", "solution": "import math\ndef surfacearea_cone_2(r,h):\n  l = math.sqrt(r * r + h * h)\n  SA = math.pi * r * (r + l)\n  return SA"}
+{"task_id": "code_083", "solution": "def extract_unique(test_dict):\n  res = list(sorted({ele for val in test_dict.values() for ele in val}))\n  return res"}
+{"task_id": "code_083_T", "solution": "def extract_unique_2(test_dict):\n  res = list(sorted({ele for val in test_dict.values() for ele in val}))\n  return res"}
+{"task_id": "code_084", "solution": "def sequential_search(dlist, item):\n    pos = 0\n    found = False\n    while pos < len(dlist) and not found:\n        if dlist[pos] == item:\n            found = True\n        else:\n            pos = pos + 1\n    return found, pos"}
+{"task_id": "code_084_T", "solution": "def sequential_search_2(dlist, item):\n    pos = 0\n    found = False\n    while pos < len(dlist) and not found:\n        if dlist[pos] == item:\n            found = True\n        else:\n            pos = pos + 1\n    return found, pos"}
+{"task_id": "code_085", "solution": "from collections import defaultdict\ndef max_occurrences(nums):\n    dict = defaultdict(int)\n    for i in nums:\n        dict[i] += 1\n    result = max(dict.items(), key=lambda x: x[1]) \n    return result"}
+{"task_id": "code_085_T", "solution": "from collections import defaultdict\ndef max_occurrences_2(nums):\n    dict = defaultdict(int)\n    for i in nums:\n        dict[i] += 1\n    result = max(dict.items(), key=lambda x: x[1]) \n    return result"}
+{"task_id": "code_086", "solution": "def all_Bits_Set_In_The_Given_Range(n,l,r):  \n    num = (((1 << r) - 1) ^ ((1 << (l - 1)) - 1)) \n    new_num = n & num\n    if (new_num == 0): \n        return True\n    return False"}
+{"task_id": "code_086_T", "solution": "def all_Bits_Set_In_The_Given_Range_2(n,l,r):  \n    num = (((1 << r) - 1) ^ ((1 << (l - 1)) - 1)) \n    new_num = n & num\n    if (new_num == 0): \n        return True\n    return False"}
+{"task_id": "code_087", "solution": "def find_Min_Sum(num): \n    sum = 0\n    i = 2\n    while(i * i <= num): \n        while(num % i == 0): \n            sum += i \n            num /= i \n        i += 1\n    sum += num \n    return sum"}
+{"task_id": "code_087_T", "solution": "def find_Min_Sum_2(num): \n    sum = 0\n    i = 2\n    while(i * i <= num): \n        while(num % i == 0): \n            sum += i \n            num /= i \n        i += 1\n    sum += num \n    return sum"}
+{"task_id": "code_088", "solution": "def find(n,m):\n  r = n%m\n  return (r)"}
+{"task_id": "code_088_T", "solution": "def find_2(n,m):\n  r = n%m\n  return (r)"}
+{"task_id": "code_089", "solution": "def closest_num(N):\n  return (N - 1)"}
+{"task_id": "code_089_T", "solution": "def closest_num_2(N):\n  return (N - 1)"}
+{"task_id": "code_090", "solution": "def count_duplic(lists):\n    element = []\n    frequency = []\n    if not lists:\n        return element\n    running_count = 1\n    for i in range(len(lists)-1):\n        if lists[i] == lists[i+1]:\n            running_count += 1\n        else:\n            frequency.append(running_count)\n            element.append(lists[i])\n            running_count = 1\n    frequency.append(running_count)\n    element.append(lists[i+1])\n    return element,frequency"}
+{"task_id": "code_090_T", "solution": "def count_duplic_2(lists):\n    element = []\n    frequency = []\n    if not lists:\n        return element\n    running_count = 1\n    for i in range(len(lists)-1):\n        if lists[i] == lists[i+1]:\n            running_count += 1\n        else:\n            frequency.append(running_count)\n            element.append(lists[i])\n            running_count = 1\n    frequency.append(running_count)\n    element.append(lists[i+1])\n    return element,frequency"}
+{"task_id": "code_091", "solution": "def average_Odd(n) : \n    if (n%2==0) : \n        return (\"Invalid Input\") \n        return -1 \n    sm =0\n    count =0\n    while (n>=1) : \n        count=count+1\n        sm = sm + n \n        n = n-2\n    return sm//count"}
+{"task_id": "code_091_T", "solution": "def average_Odd_2(n) : \n    if (n%2==0) : \n        return (\"Invalid Input\") \n        return -1 \n    sm =0\n    count =0\n    while (n>=1) : \n        count=count+1\n        sm = sm + n \n        n = n-2\n    return sm//count"}
+{"task_id": "code_092", "solution": "def sum_Of_Series(n): \n    sum = 0\n    for i in range(1,n + 1): \n        sum += i * i*i       \n    return sum"}
+{"task_id": "code_092_T", "solution": "def sum_Of_Series_2(n): \n    sum = 0\n    for i in range(1,n + 1): \n        sum += i * i*i       \n    return sum"}
+{"task_id": "code_093", "solution": "def multiply_list(items):\n    tot = 1\n    for x in items:\n        tot *= x\n    return tot"}
+{"task_id": "code_093_T", "solution": "def multiply_list_2(items):\n    tot = 1\n    for x in items:\n        tot *= x\n    return tot"}
+{"task_id": "code_094", "solution": "from collections import defaultdict\ndef max_aggregate(stdata):\n    temp = defaultdict(int)\n    for name, marks in stdata:\n        temp[name] += marks\n    return max(temp.items(), key=lambda x: x[1])"}
+{"task_id": "code_094_T", "solution": "from collections import defaultdict\ndef max_aggregate_2(stdata):\n    temp = defaultdict(int)\n    for name, marks in stdata:\n        temp[name] += marks\n    return max(temp.items(), key=lambda x: x[1])"}
+{"task_id": "code_095", "solution": "def parallelogram_perimeter(b,h):\n  perimeter=2*(b*h)\n  return perimeter"}
+{"task_id": "code_095_T", "solution": "def parallelogram_perimeter_2(b,h):\n  perimeter=2*(b*h)\n  return perimeter"}
+{"task_id": "code_096", "solution": "def cube_Sum(n): \n    sum = 0\n    for i in range(1,n + 1): \n        sum += (2*i)*(2*i)*(2*i) \n    return sum"}
+{"task_id": "code_096_T", "solution": "def cube_Sum_2(n): \n    sum = 0\n    for i in range(1,n + 1): \n        sum += (2*i)*(2*i)*(2*i) \n    return sum"}
+{"task_id": "code_097", "solution": "def max_occurrences(nums):\n    max_val = 0\n    result = nums[0] \n    for i in nums:\n        occu = nums.count(i)\n        if occu > max_val:\n            max_val = occu\n            result = i \n    return result"}
+{"task_id": "code_097_T", "solution": "def max_occurrences_2(nums):\n    max_val = 0\n    result = nums[0] \n    for i in nums:\n        occu = nums.count(i)\n        if occu > max_val:\n            max_val = occu\n            result = i \n    return result"}
+{"task_id": "code_098", "solution": "def find_Extra(arr1,arr2,n) : \n    for i in range(0, n) : \n        if (arr1[i] != arr2[i]) : \n            return i \n    return n"}
+{"task_id": "code_098_T", "solution": "def find_Extra_2(arr1,arr2,n) : \n    for i in range(0, n) : \n        if (arr1[i] != arr2[i]) : \n            return i \n    return n"}
+{"task_id": "code_099", "solution": "def group_keyvalue(l):\n    result = {}\n    for k, v in l:\n         result.setdefault(k, []).append(v)\n    return result"}
+{"task_id": "code_099_T", "solution": "def group_keyvalue_2(l):\n    result = {}\n    for k, v in l:\n         result.setdefault(k, []).append(v)\n    return result"}
+{"task_id": "code_100", "solution": "def sum_digits_single(x) : \n    ans = 0\n    while x : \n        ans += x % 10\n        x //= 10  \n    return ans \ndef closest(x) : \n    ans = 0\n    while (ans * 10 + 9 <= x) : \n        ans = ans * 10 + 9  \n    return ans   \ndef sum_digits_twoparts(N) : \n    A = closest(N)  \n    return sum_digits_single(A) + sum_digits_single(N - A)"}
+{"task_id": "code_100_T", "solution": "def sum_digits_single(x) : \n    ans = 0\n    while x : \n        ans += x % 10\n        x //= 10  \n    return ans \ndef closest(x) : \n    ans = 0\n    while (ans * 10 + 9 <= x) : \n        ans = ans * 10 + 9  \n    return ans   \ndef sum_digits_twoparts_2(N) : \n    A = closest(N)  \n    return sum_digits_single(A) + sum_digits_single(N - A)"}
+{"task_id": "code_101", "solution": "def chinese_zodiac(year):\n if (year - 2000) % 12 == 0:\n     sign = 'Dragon'\n elif (year - 2000) % 12 == 1:\n     sign = 'Snake'\n elif (year - 2000) % 12 == 2:\n     sign = 'Horse'\n elif (year - 2000) % 12 == 3:\n     sign = 'sheep'\n elif (year - 2000) % 12 == 4:\n     sign = 'Monkey'\n elif (year - 2000) % 12 == 5:\n     sign = 'Rooster'\n elif (year - 2000) % 12 == 6:\n     sign = 'Dog'\n elif (year - 2000) % 12 == 7:\n     sign = 'Pig'\n elif (year - 2000) % 12 == 8:\n     sign = 'Rat'\n elif (year - 2000) % 12 == 9:\n     sign = 'Ox'\n elif (year - 2000) % 12 == 10:\n     sign = 'Tiger'\n else:\n     sign = 'Hare'\n return sign"}
+{"task_id": "code_101_T", "solution": "def chinese_zodiac_2(year):\n if (year - 2000) % 12 == 0:\n     sign = 'Dragon'\n elif (year - 2000) % 12 == 1:\n     sign = 'Snake'\n elif (year - 2000) % 12 == 2:\n     sign = 'Horse'\n elif (year - 2000) % 12 == 3:\n     sign = 'sheep'\n elif (year - 2000) % 12 == 4:\n     sign = 'Monkey'\n elif (year - 2000) % 12 == 5:\n     sign = 'Rooster'\n elif (year - 2000) % 12 == 6:\n     sign = 'Dog'\n elif (year - 2000) % 12 == 7:\n     sign = 'Pig'\n elif (year - 2000) % 12 == 8:\n     sign = 'Rat'\n elif (year - 2000) % 12 == 9:\n     sign = 'Ox'\n elif (year - 2000) % 12 == 10:\n     sign = 'Tiger'\n else:\n     sign = 'Hare'\n return sign"}
+{"task_id": "code_102", "solution": "def tetrahedral_number(n): \n\treturn (n * (n + 1) * (n + 2)) / 6"}
+{"task_id": "code_102_T", "solution": "def tetrahedral_number_2(n): \n\treturn (n * (n + 1) * (n + 2)) / 6"}
+{"task_id": "code_103", "solution": "import math  \ndef fourth_Power_Sum(n): \n    sum = 0\n    for i in range(1,n+1) : \n        sum = sum + (i*i*i*i) \n    return sum"}
+{"task_id": "code_103_T", "solution": "import math  \ndef fourth_Power_Sum_2(n): \n    sum = 0\n    for i in range(1,n+1) : \n        sum = sum + (i*i*i*i) \n    return sum"}
+{"task_id": "code_104", "solution": "def maximum_segments(n, a, b, c) : \n\tdp = [-1] * (n + 10) \n\tdp[0] = 0\n\tfor i in range(0, n) : \n\t\tif (dp[i] != -1) : \n\t\t\tif(i + a <= n ): \n\t\t\t\tdp[i + a] = max(dp[i] + 1, \n\t\t\t\t\t\t\tdp[i + a]) \n\t\t\tif(i + b <= n ): \n\t\t\t\tdp[i + b] = max(dp[i] + 1, \n\t\t\t\t\t\t\tdp[i + b]) \n\t\t\tif(i + c <= n ): \n\t\t\t\tdp[i + c] = max(dp[i] + 1, \n\t\t\t\t\t\t\tdp[i + c]) \n\treturn dp[n]"}
+{"task_id": "code_104_T", "solution": "def maximum_segments_2(n, a, b, c) : \n\tdp = [-1] * (n + 10) \n\tdp[0] = 0\n\tfor i in range(0, n) : \n\t\tif (dp[i] != -1) : \n\t\t\tif(i + a <= n ): \n\t\t\t\tdp[i + a] = max(dp[i] + 1, \n\t\t\t\t\t\t\tdp[i + a]) \n\t\t\tif(i + b <= n ): \n\t\t\t\tdp[i + b] = max(dp[i] + 1, \n\t\t\t\t\t\t\tdp[i + b]) \n\t\t\tif(i + c <= n ): \n\t\t\t\tdp[i + c] = max(dp[i] + 1, \n\t\t\t\t\t\t\tdp[i + c]) \n\treturn dp[n]"}
+{"task_id": "code_105", "solution": "def hamming_Distance(n1,n2) : \n    x = n1 ^ n2  \n    setBits = 0\n    while (x > 0) : \n        setBits += x & 1\n        x >>= 1\n    return setBits"}
+{"task_id": "code_105_T", "solution": "def hamming_Distance_2(n1,n2) : \n    x = n1 ^ n2  \n    setBits = 0\n    while (x > 0) : \n        setBits += x & 1\n        x >>= 1\n    return setBits"}
+{"task_id": "code_106", "solution": "def binomial_coeffi(n, k): \n\tif (k == 0 or k == n): \n\t\treturn 1\n\treturn (binomial_coeffi(n - 1, k - 1) \n\t\t+ binomial_coeffi(n - 1, k)) \ndef rencontres_number(n, m): \n\tif (n == 0 and m == 0): \n\t\treturn 1\n\tif (n == 1 and m == 0): \n\t\treturn 0\n\tif (m == 0): \n\t\treturn ((n - 1) * (rencontres_number(n - 1, 0)+ rencontres_number(n - 2, 0))) \n\treturn (binomial_coeffi(n, m) * rencontres_number(n - m, 0))"}
+{"task_id": "code_106_T", "solution": "def binomial_coeffi(n, k): \n\tif (k == 0 or k == n): \n\t\treturn 1\n\treturn (binomial_coeffi(n - 1, k - 1) \n\t\t+ binomial_coeffi(n - 1, k)) \ndef rencontres_number_2(n, m): \n\tif (n == 0 and m == 0): \n\t\treturn 1\n\tif (n == 1 and m == 0): \n\t\treturn 0\n\tif (m == 0): \n\t\treturn ((n - 1) * (rencontres_number_2(n - 1, 0)+ rencontres_number_2(n - 2, 0))) \n\treturn (binomial_coeffi(n, m) * rencontres_number_2(n - m, 0))"}
+{"task_id": "code_107", "solution": "def odd_Num_Sum(n) : \n    j = 0\n    sm = 0\n    for i in range(1,n+1) : \n        j = (2*i-1) \n        sm = sm + (j*j*j*j*j)     \n    return sm"}
+{"task_id": "code_107_T", "solution": "def odd_Num_Sum_2(n) : \n    j = 0\n    sm = 0\n    for i in range(1,n+1) : \n        j = (2*i-1) \n        sm = sm + (j*j*j*j*j)     \n    return sm"}
+{"task_id": "code_108", "solution": "def previous_palindrome(num):\n    for x in range(num-1,0,-1):\n        if str(x) == str(x)[::-1]:\n            return x"}
+{"task_id": "code_108_T", "solution": "def previous_palindrome_2(num):\n    for x in range(num-1,0,-1):\n        if str(x) == str(x)[::-1]:\n            return x"}
+{"task_id": "code_109", "solution": "def merge_dict(d1,d2):\n d = d1.copy()\n d.update(d2)\n return d"}
+{"task_id": "code_109_T", "solution": "def merge_dict_2(d1,d2):\n d = d1.copy()\n d.update(d2)\n return d"}
+{"task_id": "code_110", "solution": "def split_Arr(a,n,k):  \n   b = a[:k] \n   return (a[k::]+b[::])"}
+{"task_id": "code_110_T", "solution": "def split_Arr_2(a,n,k):  \n   b = a[:k] \n   return (a[k::]+b[::])"}
+{"task_id": "code_111", "solution": "def max_product_tuple(list1):\n    result_max = max([abs(x * y) for x, y in list1] )\n    return result_max"}
+{"task_id": "code_111_T", "solution": "def max_product_tuple_2(list1):\n    result_max = max([abs(x * y) for x, y in list1] )\n    return result_max"}
+{"task_id": "code_112", "solution": "def slope(x1,y1,x2,y2): \n    return (float)(y2-y1)/(x2-x1)"}
+{"task_id": "code_112_T", "solution": "def slope_2(x1,y1,x2,y2): \n    return (float)(y2-y1)/(x2-x1)"}
+{"task_id": "code_113", "solution": "def move_zero(num_list):\n    a = [0 for i in range(num_list.count(0))]\n    x = [ i for i in num_list if i != 0]\n    x.extend(a)\n    return (x)"}
+{"task_id": "code_113_T", "solution": "def move_zero_2(num_list):\n    a = [0 for i in range(num_list.count(0))]\n    x = [ i for i in num_list if i != 0]\n    x.extend(a)\n    return (x)"}
+{"task_id": "code_114", "solution": "MAX = 3000 \ndef smartNumber(n): \n\tprimes = [0] * MAX \n\tresult = [] \n\tfor i in range(2, MAX): \n\t\tif (primes[i] == 0): \n\t\t\tprimes[i] = 1 \n\t\t\tj = i * 2 \n\t\t\twhile (j < MAX): \n\t\t\t\tprimes[j] -= 1 \n\t\t\t\tif ( (primes[j] + 3) == 0): \n\t\t\t\t\tresult.append(j) \n\t\t\t\tj = j + i \n\tresult.sort() \n\treturn result[n - 1]"}
+{"task_id": "code_114_T", "solution": "MAX = 3000 \ndef smartNumber_2(n): \n\tprimes = [0] * MAX \n\tresult = [] \n\tfor i in range(2, MAX): \n\t\tif (primes[i] == 0): \n\t\t\tprimes[i] = 1 \n\t\t\tj = i * 2 \n\t\t\twhile (j < MAX): \n\t\t\t\tprimes[j] -= 1 \n\t\t\t\tif ( (primes[j] + 3) == 0): \n\t\t\t\t\tresult.append(j) \n\t\t\t\tj = j + i \n\tresult.sort() \n\treturn result[n - 1]"}
+{"task_id": "code_115", "solution": "def max_val(listval):\n     max_val = max(i for i in listval if isinstance(i, int)) \n     return(max_val)"}
+{"task_id": "code_115_T", "solution": "def max_val_2(listval):\n     max_val_2 = max(i for i in listval if isinstance(i, int)) \n     return(max_val_2)"}
+{"task_id": "code_116", "solution": "def smallest_num(xs):\n  return min(xs)"}
+{"task_id": "code_116_T", "solution": "def smallest_num_2(xs):\n  return min(xs)"}
+{"task_id": "code_117", "solution": "def union_elements(test_tup1, test_tup2):\n  res = tuple(set(test_tup1 + test_tup2))\n  return (res)"}
+{"task_id": "code_117_T", "solution": "def union_elements_2(test_tup1, test_tup2):\n  res = tuple(set(test_tup1 + test_tup2))\n  return (res)"}
+{"task_id": "code_118", "solution": "def is_Power_Of_Two (x): \n    return x and (not(x & (x - 1))) \ndef differ_At_One_Bit_Pos(a,b): \n    return is_Power_Of_Two(a ^ b)"}
+{"task_id": "code_118_T", "solution": "def is_Power_Of_Two (x): \n    return x and (not(x & (x - 1))) \ndef differ_At_One_Bit_Pos_2(a,b): \n    return is_Power_Of_Two(a ^ b)"}
+{"task_id": "code_119", "solution": "def move_last(num_list):\n    a = [num_list[0] for i in range(num_list.count(num_list[0]))]\n    x = [ i for i in num_list if i != num_list[0]]\n    x.extend(a)\n    return (x)"}
+{"task_id": "code_119_T", "solution": "def move_last_2(num_list):\n    a = [num_list[0] for i in range(num_list.count(num_list[0]))]\n    x = [ i for i in num_list if i != num_list[0]]\n    x.extend(a)\n    return (x)"}
+{"task_id": "code_120", "solution": "def remove_nested(test_tup):\n  res = tuple()\n  for count, ele in enumerate(test_tup):\n    if not isinstance(ele, tuple):\n      res = res + (ele, )\n  return (res)"}
+{"task_id": "code_120_T", "solution": "def remove_nested_2(test_tup):\n  res = tuple()\n  for count, ele in enumerate(test_tup):\n    if not isinstance(ele, tuple):\n      res = res + (ele, )\n  return (res)"}
+{"task_id": "code_121", "solution": "def Find_Max(lst): \n    maxList = max((x) for x in lst) \n    return maxList"}
+{"task_id": "code_121_T", "solution": "def Find_Max_2(lst): \n    maxList = max((x) for x in lst) \n    return maxList"}
+{"task_id": "code_122", "solution": "def octal_To_Decimal(n):  \n    num = n; \n    dec_value = 0; \n    base = 1; \n    temp = num; \n    while (temp): \n        last_digit = temp % 10; \n        temp = int(temp / 10); \n        dec_value += last_digit*base; \n        base = base * 8; \n    return dec_value;"}
+{"task_id": "code_122_T", "solution": "def octal_To_Decimal_2(n):  \n    num = n; \n    dec_value = 0; \n    base = 1; \n    temp = num; \n    while (temp): \n        last_digit = temp % 10; \n        temp = int(temp / 10); \n        dec_value += last_digit*base; \n        base = base * 8; \n    return dec_value;"}
+{"task_id": "code_123", "solution": "def mul_consecutive_nums(nums):\n    result = [b*a for a, b in zip(nums[:-1], nums[1:])]\n    return result"}
+{"task_id": "code_123_T", "solution": "def mul_consecutive_nums_2(nums):\n    result = [b*a for a, b in zip(nums[:-1], nums[1:])]\n    return result"}
+{"task_id": "code_124", "solution": "def largest_pos(list1): \n    max = list1[0] \n    for x in list1: \n        if x > max : \n             max = x  \n    return max"}
+{"task_id": "code_124_T", "solution": "def largest_pos_2(list1): \n    max = list1[0] \n    for x in list1: \n        if x > max : \n             max = x  \n    return max"}
+{"task_id": "code_125", "solution": "def remove_negs(num_list): \n    for item in num_list: \n        if item < 0: \n           num_list.remove(item) \n    return num_list"}
+{"task_id": "code_125_T", "solution": "def remove_negs_2(num_list): \n    for item in num_list: \n        if item < 0: \n           num_list.remove(item) \n    return num_list"}
+{"task_id": "code_126", "solution": "def bitwise_xor(test_tup1, test_tup2):\n  res = tuple(ele1 ^ ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res)"}
+{"task_id": "code_126_T", "solution": "def bitwise_xor_2(test_tup1, test_tup2):\n  res = tuple(ele1 ^ ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res)"}
+{"task_id": "code_127", "solution": "def max_Product(arr): \n    arr_len = len(arr) \n    if (arr_len < 2): \n        return (\"No pairs exists\")           \n    x = arr[0]; y = arr[1]      \n    for i in range(0,arr_len): \n        for j in range(i + 1,arr_len): \n            if (arr[i] * arr[j] > x * y): \n                x = arr[i]; y = arr[j] \n    return x,y"}
+{"task_id": "code_127_T", "solution": "def max_Product_2(arr): \n    arr_len = len(arr) \n    if (arr_len < 2): \n        return (\"No pairs exists\")           \n    x = arr[0]; y = arr[1]      \n    for i in range(0,arr_len): \n        for j in range(i + 1,arr_len): \n            if (arr[i] * arr[j] > x * y): \n                x = arr[i]; y = arr[j] \n    return x,y"}
+{"task_id": "code_128", "solution": "def circle_circumference(r):\n  perimeter=2*3.1415*r\n  return perimeter"}
+{"task_id": "code_128_T", "solution": "def circle_circumference_2(r):\n  perimeter=2*3.1415*r\n  return perimeter"}
+{"task_id": "code_129", "solution": "def find_Diff(arr,n): \n    arr.sort()  \n    count = 0; max_count = 0; min_count = n \n    for i in range(0,(n-1)): \n        if arr[i] == arr[i + 1]: \n            count += 1\n            continue\n        else: \n            max_count = max(max_count,count) \n            min_count = min(min_count,count) \n            count = 0\n    return max_count - min_count"}
+{"task_id": "code_129_T", "solution": "def find_Diff_2(arr,n): \n    arr.sort()  \n    count = 0; max_count = 0; min_count = n \n    for i in range(0,(n-1)): \n        if arr[i] == arr[i + 1]: \n            count += 1\n            continue\n        else: \n            max_count = max(max_count,count) \n            min_count = min(min_count,count) \n            count = 0\n    return max_count - min_count"}
+{"task_id": "code_130", "solution": "def multiples_of_num(m,n): \n    multiples_of_num= list(range(n,(m+1)*n, n)) \n    return list(multiples_of_num)"}
+{"task_id": "code_130_T", "solution": "def multiples_of_num_2(m,n): \n    multiples_of_num_2= list(range(n,(m+1)*n, n)) \n    return list(multiples_of_num_2)"}
+{"task_id": "code_131", "solution": "import math\ndef degree_radian(radian):\n degree = radian*(180/math.pi)\n return degree"}
+{"task_id": "code_131_T", "solution": "import math\ndef degree_radian_2(radian):\n degree = radian*(180/math.pi)\n return degree"}
+{"task_id": "code_132", "solution": "def recursive_list_sum(data_list):\n\ttotal = 0\n\tfor element in data_list:\n\t\tif type(element) == type([]):\n\t\t\ttotal = total + recursive_list_sum(element)\n\t\telse:\n\t\t\ttotal = total + element\n\treturn total"}
+{"task_id": "code_132_T", "solution": "def recursive_list_sum_2(data_list):\n\ttotal = 0\n\tfor element in data_list:\n\t\tif type(element) == type([]):\n\t\t\ttotal = total + recursive_list_sum_2(element)\n\t\telse:\n\t\t\ttotal = total + element\n\treturn total"}
+{"task_id": "code_133", "solution": "def sum_num(numbers):\n    total = 0\n    for x in numbers:\n        total += x\n    return total/len(numbers)"}
+{"task_id": "code_133_T", "solution": "def sum_num_2(numbers):\n    total = 0\n    for x in numbers:\n        total += x\n    return total/len(numbers)"}
+{"task_id": "code_134", "solution": "def modular_inverse(arr, N, P):\n\tcurrent_element = 0\n\tfor i in range(0, N):\n\t\tif ((arr[i] * arr[i]) % P == 1):\n\t\t\tcurrent_element = current_element + 1\n\treturn current_element"}
+{"task_id": "code_134_T", "solution": "def modular_inverse_2(arr, N, P):\n\tcurrent_element = 0\n\tfor i in range(0, N):\n\t\tif ((arr[i] * arr[i]) % P == 1):\n\t\t\tcurrent_element = current_element + 1\n\treturn current_element"}
+{"task_id": "code_135", "solution": "def remove_tuple(test_tup):\n  res = tuple(set(test_tup))\n  return (res)"}
+{"task_id": "code_135_T", "solution": "def remove_tuple_2(test_tup):\n  res = tuple(set(test_tup))\n  return (res)"}
+{"task_id": "code_136", "solution": "import cmath  \ndef convert(numbers):    \n  num = cmath.polar(numbers)  \n  return (num)"}
+{"task_id": "code_136_T", "solution": "import cmath  \ndef convert_2(numbers):    \n  num = cmath.polar(numbers)  \n  return (num)"}
+{"task_id": "code_137", "solution": "def maximum(a,b):   \n    if a >= b: \n        return a \n    else: \n        return b"}
+{"task_id": "code_137_T", "solution": "def maximum_2(a,b):   \n    if a >= b: \n        return a \n    else: \n        return b"}
+{"task_id": "code_138", "solution": "def min_of_two( x, y ):\n    if x < y:\n        return x\n    return y"}
+{"task_id": "code_138_T", "solution": "def min_of_two_2( x, y ):\n    if x < y:\n        return x\n    return y"}
+{"task_id": "code_139", "solution": "def remove_replica(test_tup):\n  temp = set()\n  res = tuple(ele if ele not in temp and not temp.add(ele) \n\t\t\t\telse 'MSP' for ele in test_tup)\n  return (res)"}
+{"task_id": "code_139_T", "solution": "def remove_replica_2(test_tup):\n  temp = set()\n  res = tuple(ele if ele not in temp and not temp.add(ele) \n\t\t\t\telse 'MSP' for ele in test_tup)\n  return (res)"}
+{"task_id": "code_140", "solution": "def longest_increasing_subsequence(arr): \n\tn = len(arr) \n\tlongest_increasing_subsequence = [1]*n \n\tfor i in range (1 , n): \n\t\tfor j in range(0 , i): \n\t\t\tif arr[i] > arr[j] and longest_increasing_subsequence[i]< longest_increasing_subsequence[j] + 1 : \n\t\t\t\tlongest_increasing_subsequence[i] = longest_increasing_subsequence[j]+1\n\tmaximum = 0\n\tfor i in range(n): \n\t\tmaximum = max(maximum , longest_increasing_subsequence[i]) \n\treturn maximum"}
+{"task_id": "code_140_T", "solution": "def longest_increasing_subsequence_2(arr): \n\tn = len(arr) \n\tlongest_increasing_subsequence_2 = [1]*n \n\tfor i in range (1 , n): \n\t\tfor j in range(0 , i): \n\t\t\tif arr[i] > arr[j] and longest_increasing_subsequence_2[i]< longest_increasing_subsequence_2[j] + 1 : \n\t\t\t\tlongest_increasing_subsequence_2[i] = longest_increasing_subsequence_2[j]+1\n\tmaximum = 0\n\tfor i in range(n): \n\t\tmaximum = max(maximum , longest_increasing_subsequence_2[i]) \n\treturn maximum"}
+{"task_id": "code_141", "solution": "def heap_sort(arr):\n    heapify(arr)  \n    end = len(arr) - 1\n    while end > 0:\n        arr[end], arr[0] = arr[0], arr[end]\n        shift_down(arr, 0, end - 1)\n        end -= 1\n    return arr\n\ndef heapify(arr):\n    start = len(arr) // 2\n    while start >= 0:\n        shift_down(arr, start, len(arr) - 1)\n        start -= 1\ndef shift_down(arr, start, end):\n    root = start\n    while root * 2 + 1 <= end:\n        child = root * 2 + 1\n        if child + 1 <= end and arr[child] < arr[child + 1]:\n            child += 1\n        if child <= end and arr[root] < arr[child]:\n            arr[root], arr[child] = arr[child], arr[root]\n            root = child\n        else:\n            return"}
+{"task_id": "code_141_T", "solution": "def heap_sort_2(arr):\n    heapify(arr)  \n    end = len(arr) - 1\n    while end > 0:\n        arr[end], arr[0] = arr[0], arr[end]\n        shift_down(arr, 0, end - 1)\n        end -= 1\n    return arr\n\ndef heapify(arr):\n    start = len(arr) // 2\n    while start >= 0:\n        shift_down(arr, start, len(arr) - 1)\n        start -= 1\ndef shift_down(arr, start, end):\n    root = start\n    while root * 2 + 1 <= end:\n        child = root * 2 + 1\n        if child + 1 <= end and arr[child] < arr[child + 1]:\n            child += 1\n        if child <= end and arr[root] < arr[child]:\n            arr[root], arr[child] = arr[child], arr[root]\n            root = child\n        else:\n            return"}
+{"task_id": "code_142", "solution": "def bell_number(n):   \n    bell = [[0 for i in range(n+1)] for j in range(n+1)] \n    bell[0][0] = 1\n    for i in range(1, n+1): \n        bell[i][0] = bell[i-1][i-1]  \n        for j in range(1, i+1): \n            bell[i][j] = bell[i-1][j-1] + bell[i][j-1]   \n    return bell[n][0]"}
+{"task_id": "code_142_T", "solution": "def bell_number_2(n):   \n    bell = [[0 for i in range(n+1)] for j in range(n+1)] \n    bell[0][0] = 1\n    for i in range(1, n+1): \n        bell[i][0] = bell[i-1][i-1]  \n        for j in range(1, i+1): \n            bell[i][j] = bell[i-1][j-1] + bell[i][j-1]   \n    return bell[n][0]"}
+{"task_id": "code_143", "solution": "import heapq as hq\ndef heap_sort(iterable):\n    h = []\n    for value in iterable:\n        hq.heappush(h, value)\n    return [hq.heappop(h) for i in range(len(h))]"}
+{"task_id": "code_143_T", "solution": "import heapq as hq\ndef heap_sort_2(iterable):\n    h = []\n    for value in iterable:\n        hq.heappush(h, value)\n    return [hq.heappop(h) for i in range(len(h))]"}
+{"task_id": "code_144", "solution": "def last(n):\n   return n[-1]\ndef sort_list_last(tuples):\n  return sorted(tuples, key=last)"}
+{"task_id": "code_144_T", "solution": "def last(n):\n   return n[-1]\ndef sort_list_last_2(tuples):\n  return sorted(tuples, key=last)"}
+{"task_id": "code_145", "solution": "from collections import Counter \ndef check_occurences(test_list):\n  res = dict(Counter(tuple(ele) for ele in map(sorted, test_list)))\n  return  (res)"}
+{"task_id": "code_145_T", "solution": "from collections import Counter \ndef check_occurences_2(test_list):\n  res = dict(Counter(tuple(ele) for ele in map(sorted, test_list)))\n  return  (res)"}
+{"task_id": "code_146", "solution": "def return_sum(dict):\n  sum = 0\n  for i in dict.values():\n    sum = sum + i\n  return sum"}
+{"task_id": "code_146_T", "solution": "def return_sum_2(dict):\n  sum = 0\n  for i in dict.values():\n    sum = sum + i\n  return sum"}
+{"task_id": "code_147", "solution": "def jacobsthal_lucas(n): \n\tdp=[0] * (n + 1) \n\tdp[0] = 2\n\tdp[1] = 1\n\tfor i in range(2, n+1): \n\t\tdp[i] = dp[i - 1] + 2 * dp[i - 2]; \n\treturn dp[n]"}
+{"task_id": "code_147_T", "solution": "def jacobsthal_lucas_2(n): \n\tdp=[0] * (n + 1) \n\tdp[0] = 2\n\tdp[1] = 1\n\tfor i in range(2, n+1): \n\t\tdp[i] = dp[i - 1] + 2 * dp[i - 2]; \n\treturn dp[n]"}
+{"task_id": "code_148", "solution": "def remove_datatype(test_tuple, data_type):\n  res = []\n  for ele in test_tuple:\n    if not isinstance(ele, data_type):\n      res.append(ele)\n  return (res)"}
+{"task_id": "code_148_T", "solution": "def remove_datatype_2(test_tuple, data_type):\n  res = []\n  for ele in test_tuple:\n    if not isinstance(ele, data_type):\n      res.append(ele)\n  return (res)"}
+{"task_id": "code_149", "solution": "def find_Volume(l,b,h) : \n    return ((l * b * h) / 2)"}
+{"task_id": "code_149_T", "solution": "def find_Volume_2(l,b,h) : \n    return ((l * b * h) / 2)"}
+{"task_id": "code_150", "solution": "import math\ndef radian_degree(degree):\n radian = degree*(math.pi/180)\n return radian"}
+{"task_id": "code_150_T", "solution": "import math\ndef radian_degree_2(degree):\n radian = degree*(math.pi/180)\n return radian"}

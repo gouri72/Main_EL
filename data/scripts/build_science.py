@@ -14,7 +14,7 @@ Difficulty (tertiles of evidence size + abstract length) and error types are HEU
 Operation labels: 'execute' (find evidence) is gold-grounded; the rest are heuristic.
 """
 import argparse, json, random, re, sys
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
