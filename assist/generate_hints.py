@@ -32,7 +32,7 @@ def clean(t):
 
 class MockBackend:
     """Deterministic fake model that sometimes leaks, so the validator/fallback path gets exercised."""
-    def generate(self, system, user, seed, max_new_tokens=160):
+    def generate(self, system, user, seed, max_new_tokens=160, temperature=0.3):
         return "Think about what the task is asking and what a correct answer must satisfy?" if seed % 2 == 0 else \
                "The answer is that the abstract supports the claim. ```python\nreturn x\n```"
 
@@ -44,14 +44,18 @@ class QwenBackend:
         self.tok = AutoTokenizer.from_pretrained(model_id)
         self.model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype="auto", device_map="auto")
 
-    def generate(self, system, user, seed, max_new_tokens=160):
+    def generate(self, system, user, seed, max_new_tokens=160, temperature=0.3):
         self.torch.manual_seed(seed)
         msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         text = self.tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True,
                                             enable_thinking=False)   # no <think> traces
         ids = self.tok([text], return_tensors="pt").to(self.model.device)
-        out = self.model.generate(**ids, max_new_tokens=max_new_tokens, do_sample=True, temperature=0.3, top_p=0.9)
+        out = self.model.generate(**ids, max_new_tokens=max_new_tokens, do_sample=True, temperature=max(temperature, 0.01), top_p=0.9)
         return self.tok.decode(out[0][ids.input_ids.shape[1]:], skip_special_tokens=True).strip()
+
+def tok_limit(lv, domain):
+    """Max new tokens per level: short hints must not ramble, level 4 may carry code or quoted evidence."""
+    return {1: 60, 2: 100, 3: 180, 4: 400 if domain == "coding" else 250}[lv]
 
 def key(model, tid, op, lv, attempt):
     return hashlib.sha256(f"{model}|{PROMPT_VERSION}|{tid}|{op}|{lv}|{attempt}".encode()).hexdigest()[:16]
@@ -104,7 +108,7 @@ def main():
                         for attempt in range(a.retries):
                             kk = key(model, *k0, attempt)
                             if kk not in cache:
-                                cache[kk] = backend.generate(SYSTEM, build_user_prompt(t, op, lv, sol), a.seed + attempt, 400 if lv == 4 else 160)
+                                cache[kk] = backend.generate(SYSTEM, build_user_prompt(t, op, lv, sol), a.seed + attempt, tok_limit(lv, t["domain"]), 0.3 + 0.3 * attempt)
                                 cf.write(json.dumps({"key": kk, "text": cache[kk]}, ensure_ascii=False) + "\n"); cf.flush()
                             cand = clean(cache[kk])
                             if attempt == 0:

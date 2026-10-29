@@ -1,5 +1,5 @@
 """Prompt templates for hint generation. Bump PROMPT_VERSION whenever you edit anything here (it is part of the cache key)."""
-PROMPT_VERSION = "v3"
+PROMPT_VERSION = "v4"
 
 SYSTEM = ("You are a careful tutor writing assistance for a student. Follow the level instructions exactly. "
           "Output only the assistance text: no preface, no labels such as 'Hint:' or 'Level 2', and do not repeat the task.")

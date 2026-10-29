@@ -44,6 +44,14 @@ def label_leak(text, label):
             return True
     return False
 
+def l4_label_ok(text, label):
+    """Level 4 (full assistance) must state the gold label. Unlike label_leak this ignores hedge words, because the
+    evidence quoted in a full answer often contains 'or' / 'if'. 'Correct label: X' is parsed strictly."""
+    m = re.search(r"label\s*(?:is|:)\s*\**\s*(support|contradict)", text, re.I)
+    if m: return label.lower().startswith(m.group(1).lower())
+    fam = r"(support|confirm|consistent with)" if label == "SUPPORT" else r"(contradict|refute|inconsistent|disprove)"
+    return bool(re.search(fam, text, re.I))
+
 ECHO = r"(write the (hint|answer) now|^\s*(hint|answer)\s*:|^\s*task\s*:|\blevel\s*[1-4]\s*\()"
 
 def validate(task, op, level, text, solution=None, rules=RULES):
@@ -57,7 +65,7 @@ def validate(task, op, level, text, solution=None, rules=RULES):
     if r.get("require_answer"):   # level 4 must really contain the answer
         if task["domain"] == "coding":
             if not ("```" in text or re.search(r"\bdef \w+\(", text)): reasons.append("no_answer")
-        elif not label_leak(text, task["gold"]["label"]):
+        elif not l4_label_ok(text, task["gold"]["label"]):
             reasons.append("no_answer")
     if r["require_question"]:   # level 1 = one or two questions, nothing else
         sents = re.split(r"(?<=[.!?])\s+", text.strip())

@@ -42,4 +42,6 @@ ok &= check("code syntax error rejected", validate(c, "execute", 4, "```python\n
 from assist.generate_hints import clean
 ok &= check("clean collapses '? ?'", clean("What is the correct approach to ensure it works? ?"), "What is the correct approach to ensure it works?")
 ok &= check("clean drops junk after fence", clean("```python\ndef f(x):\n    return x\n``` for i in range(len(my_list)):\n    buckets[i] += 1"), "```python\ndef f(x):\n    return x\n```")
+ok &= check("L4 science label, evidence containing 'or', ok", validate(s, "execute", 4, "Correct label: SUPPORT | Evidence: results were similar in group A or group B.", None)["compliance_flag"], True)
+ok &= check("L4 science wrong label rejected", validate(s, "execute", 4, "Correct label: CONTRADICT | Evidence: the results clearly differed between groups.", None)["compliance_flag"], False)
 print("ALL PASS" if ok else "SOME FAILED"); sys.exit(0 if ok else 1)
