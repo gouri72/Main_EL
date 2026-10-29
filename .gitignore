@@ -7,4 +7,5 @@ results/**/*.npy
 *.pt
 .ipynb_checkpoints/
 .cache/
-paper/figs/*.pngresults/smoke_*/
+paper/figs/*.png
+results/smoke_*/

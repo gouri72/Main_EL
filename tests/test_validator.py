@@ -26,5 +26,8 @@ ok &= check("code fence at L2 non-compliant", validate(c, "execute", 2, "```pyth
 ok &= check("L1 needs question", validate(c, "explain", 1, "Explain your answer.", S["code_001"])["compliance_flag"], False)
 ok &= check("sci asserts label at L2 leaks", validate(s, "execute", 2, "The abstract supports the claim.", None)["leakage_flag"], True)
 ok &= check("sci hedged ok", validate(s, "execute", 2, "Decide whether the results support or contradict the claim.", None)["leakage_flag"], False)
+ok &= check("sci sentence number leaks", validate(s, "execute", 2, "Look closely at sentence 3 of the abstract.", None)["leakage_flag"], True)
+ok &= check("sci ordinal sentence leaks", validate(s, "execute", 3, "The 2nd sentence matters most here.", None)["leakage_flag"], True)
+ok &= check("sci step numbers ok", validate(s, "understand_plan", 3, "Plan: (1) list the claim parts, (2) find matching abstract sentences, (3) compare them.", None)["leakage_flag"], False)
 ok &= check("L4 never leak-flagged", validate(c, "execute", 4, S["code_001"], S["code_001"])["leakage_flag"], False)
 print("ALL PASS" if ok else "SOME FAILED"); sys.exit(0 if ok else 1)

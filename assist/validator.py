@@ -32,6 +32,8 @@ def load_solutions(path=None):
 SUP = r"(support(s|ed|ing)?|confirm(s|ed)?|consistent with|is true|are true|correct)"
 CON = r"(contradict(s|ed|ing|ion)?|refute(s|d)?|disprove(s|d)?|inconsistent|is false|are false|incorrect)"
 HEDGE = r"(\bwhether\b|\bif\b|\bor\b|\?)"
+# explicit pointers to a sentence in the abstract ("sentence 3", "3rd sentence", "[2]", "S4") give away the evidence location
+SENT_REF = r"(\b(sentence|sentences|line|lines|statement|statements)\s*#?\s*\d+|\b\d+(st|nd|rd|th)\s+(sentence|line|statement)|\[\d+\]|\bS\d+\b)"
 
 def label_leak(text, label):
     """True if some non-hedged sentence asserts the gold polarity."""
@@ -60,7 +62,7 @@ def validate(task, op, level, text, solution=None, rules=RULES):
             novel = ngrams(toks(solution), n) - ngrams(prompt_toks, n)
             leak = len(ngrams(toks(text), n) & novel) > r["max_novel_ngrams"]
         elif task["domain"] == "science":
-            leak = label_leak(text, task["gold"]["label"])
+            leak = label_leak(text, task["gold"]["label"]) or bool(re.search(SENT_REF, text, re.I))
             n = rules["evidence_ngram"]
             ev = set()
             for e in task["gold"]["evidence"]:
