@@ -7,7 +7,7 @@ Qwen NEVER runs inside the RL loop; outputs are cached in assist/cache/hints_cac
   python assist/generate_hints.py --backend qwen                 # full run (Week 2)
 
 Handwritten hints in data/hints_handwritten.jsonl always win. Writes data/hints.jsonl and assist/cache/stats.json."""
-import argparse, hashlib, json, sys
+import argparse, hashlib, json, re, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from assist.validator import validate, load_tasks, load_solutions
@@ -17,6 +17,13 @@ from assist.prompts import PROMPT_VERSION, SYSTEM, build_user_prompt
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "assist" / "cache" / "hints_cache.jsonl"
 MODEL_ID = "Qwen/Qwen3-0.6B"   # verify on the Hugging Face page before the full run
+
+PREFIX = re.compile(r"^\s*(?:\*\*)?(?:hint|answer|level\s*[1-4][^:\n]*)\s*:\s*(?:\*\*)?\s*", re.I)
+
+def clean(t):
+    """Strip <think> traces and a leading 'Hint:' / 'Level 2:' label before validating."""
+    t = re.sub(r"<think>.*?</think>", "", t, flags=re.S | re.I).strip()
+    return PREFIX.sub("", t, count=1).strip()
 
 class MockBackend:
     """Deterministic fake model that sometimes leaks, so the validator/fallback path gets exercised."""
@@ -72,8 +79,10 @@ def main():
     raw_first = []   # attempt-0 raw model outputs: THIS is what validator accuracy must be measured on
     rows, st = [], {"total": 0, "first_pass_violations": 0, "regenerated_ok": 0, "fallback": 0, "handwritten": 0,
                     "violations_by_level": {1: 0, 2: 0, 3: 0, 4: 0}, "model": model, "prompt_version": PROMPT_VERSION}
+    t0 = time.time()
     with open(CACHE, "a", encoding="utf-8") as cf:
-        for t in base:
+        for ti, t in enumerate(base):
+            print(f"[{ti+1}/{len(base)}] {t['task_id']}  elapsed {time.time()-t0:.0f}s  first_pass_violations {st['first_pass_violations']}", flush=True)
             sol = S.get(t["task_id"])
             for o in t["operations"]:
                 op = o["op"]
@@ -89,8 +98,8 @@ def main():
                             kk = key(model, *k0, attempt)
                             if kk not in cache:
                                 cache[kk] = backend.generate(SYSTEM, build_user_prompt(t, op, lv, sol), a.seed + attempt)
-                                cf.write(json.dumps({"key": kk, "text": cache[kk]}, ensure_ascii=False) + "\n")
-                            cand = cache[kk]
+                                cf.write(json.dumps({"key": kk, "text": cache[kk]}, ensure_ascii=False) + "\n"); cf.flush()
+                            cand = clean(cache[kk])
                             if attempt == 0:
                                 raw_first.append({"task_id": t["task_id"], "op": op, "level": lv, "text": cand})
                             vc = validate(t, op, lv, cand, sol)
