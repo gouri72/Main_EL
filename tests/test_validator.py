@@ -35,4 +35,11 @@ ok &= check("L4 coding without code rejected", validate(c, "execute", 4, "Hint: 
 ok &= check("L4 coding with code ok", validate(c, "execute", 4, "```python\n" + S["code_001"] + "\n```", S["code_001"])["compliance_flag"], True)
 ok &= check("L4 science without label rejected", validate(s, "execute", 4, "Think carefully about the abstract and its results overall.", None)["compliance_flag"], False)
 ok &= check("L1 too short rejected", validate(c, "explain", 1, "Why?", S["code_001"])["compliance_flag"], False)
+ok &= check("L1 stray ' ?' rejected", validate(c, "explain", 1, "Why is the counting sort correct? It works by counting occurrences of each number and then placing them back. ?", S["code_001"])["compliance_flag"], False)
+ok &= check("L1 two questions ok", validate(c, "explain", 1, "How could you check your answer? Which case might break it?", S["code_001"])["compliance_flag"], True)
+ok &= check("unclosed code fence rejected", validate(c, "execute", 4, "```python\ndef counting_sort(my_list):\n    return sorted(my_list)", S["code_001"])["compliance_flag"], False)
+ok &= check("code syntax error rejected", validate(c, "execute", 4, "```python\ndef counting_sort(my_list:\n    return 1\n```", S["code_001"])["compliance_flag"], False)
+from assist.generate_hints import clean
+ok &= check("clean collapses '? ?'", clean("What is the correct approach to ensure it works? ?"), "What is the correct approach to ensure it works?")
+ok &= check("clean drops junk after fence", clean("```python\ndef f(x):\n    return x\n``` for i in range(len(my_list)):\n    buckets[i] += 1"), "```python\ndef f(x):\n    return x\n```")
 print("ALL PASS" if ok else "SOME FAILED"); sys.exit(0 if ok else 1)

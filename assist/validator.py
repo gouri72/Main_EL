@@ -5,7 +5,7 @@
                   and at level 4 it really contains the answer).
 Solution n-grams that already appear in the task prompt (function name, test asserts) are ignored,
 because the learner can already see them."""
-import json, re
+import ast, json, re
 from pathlib import Path
 import yaml
 
@@ -59,10 +59,18 @@ def validate(task, op, level, text, solution=None, rules=RULES):
             if not ("```" in text or re.search(r"\bdef \w+\(", text)): reasons.append("no_answer")
         elif not label_leak(text, task["gold"]["label"]):
             reasons.append("no_answer")
-    if r["require_question"] and "?" not in text: reasons.append("no_question")
+    if r["require_question"]:   # level 1 = one or two questions, nothing else
+        sents = re.split(r"(?<=[.!?])\s+", text.strip())
+        if not sents or not all(s.endswith("?") for s in sents) or len(sents) > 2:
+            reasons.append("not_a_question")
     if r["no_code"] and ("```" in text or re.search(r"\bdef \w+\(|\breturn\b.*[=\[(]", text)):
         reasons.append("code_present")
     if "<think>" in text.lower(): reasons.append("thinking_trace")
+    if text.count("```") % 2: reasons.append("unclosed_code_block")      # e.g. generation cut off mid-answer
+    elif task["domain"] == "coding":
+        for blk in re.findall(r"```(?:python)?\s*\n(.*?)```", text, re.S):
+            try: ast.parse(blk)                                           # syntax only, nothing is executed
+            except SyntaxError: reasons.append("code_syntax_error"); break
 
     leak = False
     if r["enforce_leak"]:
