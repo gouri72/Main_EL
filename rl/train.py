@@ -1,5 +1,5 @@
 # rl/train.py
-from rl.env import HumanFirstEnv, FAKE_TASKS
+from rl.env import HumanFirstEnv
 from rl.policy import TabularQPolicy
 from rl.baselines import AlwaysNonePolicy, FixedLadderPolicy
 
@@ -23,9 +23,8 @@ def run_episode(env, policy, name="Policy"):
 
 if __name__ == "__main__":
     from rl.policy import LinearQPolicy, LinUCBPolicy
-    
-    env = HumanFirstEnv(FAKE_TASKS)
-    
+
+    env = HumanFirstEnv()
     print("--- Testing Baselines ---")
     run_episode(env, AlwaysNonePolicy(), "Always None")
     run_episode(env, FixedLadderPolicy(), "Fixed Ladder")

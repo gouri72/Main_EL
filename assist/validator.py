@@ -1,10 +1,11 @@
 """Rule-based validator for hints. Two checks per (task, op, level, text):
   leakage_flag    True = the hint leaks solution/gold label at a level where that is NOT allowed (levels 1-3).
                   Level 4 is full assistance, so leakage_flag is always False there.
-  compliance_flag True = the hint satisfies the level rules (length, question form at L1, no code at L1-L2).
+  compliance_flag True = the hint satisfies the level rules (length, question form at L1, no code at L1-L2,
+                  and at level 4 it really contains the answer).
 Solution n-grams that already appear in the task prompt (function name, test asserts) are ignored,
 because the learner can already see them."""
-import json, re
+import ast, json, re
 from pathlib import Path
 import yaml
 
@@ -32,6 +33,8 @@ def load_solutions(path=None):
 SUP = r"(support(s|ed|ing)?|confirm(s|ed)?|consistent with|is true|are true|correct)"
 CON = r"(contradict(s|ed|ing|ion)?|refute(s|d)?|disprove(s|d)?|inconsistent|is false|are false|incorrect)"
 HEDGE = r"(\bwhether\b|\bif\b|\bor\b|\?)"
+# explicit pointers to a sentence in the abstract ("sentence 3", "3rd sentence", "[2]", "S4") give away the evidence location
+SENT_REF = r"(\b(sentence|sentences|line|lines|statement|statements)\s*#?\s*\d+|\b\d+(st|nd|rd|th)\s+(sentence|line|statement)|\[\d+\]|\bS\d+\b)"
 
 def label_leak(text, label):
     """True if some non-hedged sentence asserts the gold polarity."""
@@ -41,16 +44,41 @@ def label_leak(text, label):
             return True
     return False
 
+def l4_label_ok(text, label):
+    """Level 4 (full assistance) must state the gold label. Unlike label_leak this ignores hedge words, because the
+    evidence quoted in a full answer often contains 'or' / 'if'. 'Correct label: X' is parsed strictly."""
+    m = re.search(r"label\s*(?:is|:)\s*\**\s*(support|contradict)", text, re.I)
+    if m: return label.lower().startswith(m.group(1).lower())
+    fam = r"(support|confirm|consistent with)" if label == "SUPPORT" else r"(contradict|refute|inconsistent|disprove)"
+    return bool(re.search(fam, text, re.I))
+
+ECHO = r"(write the (hint|answer) now|^\s*(hint|answer)\s*:|^\s*task\s*:|\blevel\s*[1-4]\s*\()"
+
 def validate(task, op, level, text, solution=None, rules=RULES):
     r = rules["levels"][level]
     reasons = []
     words = len(text.split())
     if words == 0: reasons.append("empty")
+    if words < r.get("min_words", 0): reasons.append("too_short")
     if words > r["max_words"]: reasons.append("too_long")
-    if r["require_question"] and "?" not in text: reasons.append("no_question")
+    if re.search(ECHO, text, re.I | re.M): reasons.append("prompt_echo")
+    if r.get("require_answer"):   # level 4 must really contain the answer
+        if task["domain"] == "coding":
+            if not ("```" in text or re.search(r"\bdef \w+\(", text)): reasons.append("no_answer")
+        elif not l4_label_ok(text, task["gold"]["label"]):
+            reasons.append("no_answer")
+    if r["require_question"]:   # level 1 = one or two questions, nothing else
+        sents = re.split(r"(?<=[.!?])\s+", text.strip())
+        if not sents or not all(s.endswith("?") for s in sents) or len(sents) > 2:
+            reasons.append("not_a_question")
     if r["no_code"] and ("```" in text or re.search(r"\bdef \w+\(|\breturn\b.*[=\[(]", text)):
         reasons.append("code_present")
     if "<think>" in text.lower(): reasons.append("thinking_trace")
+    if text.count("```") % 2: reasons.append("unclosed_code_block")      # e.g. generation cut off mid-answer
+    elif task["domain"] == "coding":
+        for blk in re.findall(r"```(?:python)?\s*\n(.*?)```", text, re.S):
+            try: ast.parse(blk)                                           # syntax only, nothing is executed
+            except SyntaxError: reasons.append("code_syntax_error"); break
 
     leak = False
     if r["enforce_leak"]:
@@ -60,7 +88,7 @@ def validate(task, op, level, text, solution=None, rules=RULES):
             novel = ngrams(toks(solution), n) - ngrams(prompt_toks, n)
             leak = len(ngrams(toks(text), n) & novel) > r["max_novel_ngrams"]
         elif task["domain"] == "science":
-            leak = label_leak(text, task["gold"]["label"])
+            leak = label_leak(text, task["gold"]["label"]) or bool(re.search(SENT_REF, text, re.I))
             n = rules["evidence_ngram"]
             ev = set()
             for e in task["gold"]["evidence"]:
