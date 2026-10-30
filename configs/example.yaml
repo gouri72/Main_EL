@@ -1,5 +1,5 @@
 # One YAML = one experiment. Results go to results/<exp_id>/ with the config hash in the CSV header.
-exp_id: smoke_001
+exp_id: smoke_005
 seeds: [0, 1, 2]
 n_episodes: 50            # training episodes per seed
 data:

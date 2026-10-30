@@ -1,0 +1,4 @@
+heldout_family,training_families,selected_level,task_success_rate,transfer_success_rate,mean_time,utility
+A,B+C,4,0.8525,0.4537,27.038,1.1711
+B,A+C,4,0.8525,0.5088,27.038,1.2261
+C,A+B,4,0.8525,0.5238,27.038,1.2411
