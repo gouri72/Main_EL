@@ -33,9 +33,15 @@ STEPS_COLS = [
     "task_idx",
     "action",
     "route",
+    "requested_level",
     "level",
     "reward",
     "success",
+    "initial_success",
+    "independent_attempt",
+    "independent_success",
+    "assistance_used",
+    "attempts_made",
     "domain",
     "op",
     "time",
@@ -57,9 +63,11 @@ EPS_COLS = [
     "post_transfer",
     "transfer_gain",
     "n_steps",
+    "n_learner_attempts",
     "full_assist_rate",
     "mean_level",
     "first_attempt_rate",
+    "independent_success_rate",
     "assist_spent",
     "takeover_rate",
 ]
@@ -258,9 +266,12 @@ def main():
             total_reward = 0.0
             step_count = 0
 
+            # Episode-level metrics.
             levels = []
             full_assist_count = 0
-            human_first_count = 0
+            first_attempt_count = 0
+            independent_success_count = 0
+            total_learner_attempts = 0
 
             # Use a separate learner for the pre-session measurement.
             baseline_learner = Learner(
@@ -300,10 +311,10 @@ def main():
                 route = action // 5
                 requested_level = action % 5
 
-                actual_level = info.get(
-                    "actual_level",
-                    requested_level,
-                )
+                # Read actual behavior from the environment.
+                actual_level = info["actual_level"]
+                assistance_used = info["assistance_used"]
+                attempts_made = info["attempts_made"]
 
                 task = session_tasks[
                     min(step_count, len(session_tasks) - 1)
@@ -317,6 +328,7 @@ def main():
                     if operations:
                         operation = operations[0].get("op")
 
+                # Save detailed task-level data.
                 steps.append({
                     **meta,
                     "seed": seed,
@@ -324,9 +336,19 @@ def main():
                     "task_idx": step_count,
                     "action": action,
                     "route": route,
+                    "requested_level": requested_level,
                     "level": actual_level,
                     "reward": round(float(reward), 4),
                     "success": info.get("immediate_success"),
+                    "initial_success": info.get("initial_success"),
+                    "independent_attempt": info.get(
+                        "independent_attempt"
+                    ),
+                    "independent_success": info.get(
+                        "independent_success"
+                    ),
+                    "assistance_used": assistance_used,
+                    "attempts_made": attempts_made,
                     "domain": task.get("domain"),
                     "op": operation,
                     "time": info.get("time"),
@@ -335,9 +357,26 @@ def main():
                     "copied": info.get("copied"),
                 })
 
+                # Count tasks where an independent attempt was made.
+                first_attempt_count += int(
+                    info["independent_attempt"]
+                )
+
+                # Count successful independent attempts.
+                independent_success_count += int(
+                    info["independent_success"]
+                )
+
+                # Count actual learner interactions.
+                total_learner_attempts += attempts_made
+
+                # Record assistance actually delivered.
+                # Zero means no assistance was delivered.
                 levels.append(actual_level)
-                full_assist_count += int(actual_level == 4)
-                human_first_count += int(route == 0)
+
+                # Count full assistance only when actually delivered.
+                if assistance_used and actual_level == 4:
+                    full_assist_count += 1
 
                 total_reward += float(reward)
                 step_count += 1
@@ -356,6 +395,35 @@ def main():
                 post_transfer,
             )
 
+            # Calculate actual episode-level metrics.
+            full_assist_rate = (
+                full_assist_count / step_count
+                if step_count > 0
+                else 0.0
+            )
+
+            mean_level = (
+                sum(levels) / len(levels)
+                if levels
+                else 0.0
+            )
+
+            # Percentage of all tasks that received a Human-First attempt.
+            first_attempt_rate = (
+                first_attempt_count / step_count
+                if step_count > 0
+                else 0.0
+            )
+
+            # Percentage of independent attempts that succeeded.
+            independent_success_rate = (
+                independent_success_count / first_attempt_count
+                if first_attempt_count > 0
+                else 0.0
+            )
+
+            assist_spent = sum(levels)
+
             episodes.append({
                 **meta,
                 "seed": seed,
@@ -365,19 +433,24 @@ def main():
                 "post_transfer": post_transfer,
                 "transfer_gain": transfer_gain,
                 "n_steps": step_count,
+                "n_learner_attempts": total_learner_attempts,
                 "full_assist_rate": round(
-                    full_assist_count / step_count,
+                    full_assist_rate,
                     4,
-                ) if step_count else 0.0,
+                ),
                 "mean_level": round(
-                    float(np.mean(levels)),
+                    mean_level,
                     4,
-                ) if levels else 0.0,
+                ),
                 "first_attempt_rate": round(
-                    human_first_count / step_count,
+                    first_attempt_rate,
                     4,
-                ) if step_count else 0.0,
-                "assist_spent": int(sum(levels)),
+                ),
+                "independent_success_rate": round(
+                    independent_success_rate,
+                    4,
+                ),
+                "assist_spent": int(assist_spent),
                 "takeover_rate": final_info.get("takeover_rate"),
             })
 
@@ -390,12 +463,14 @@ def main():
         STEPS_COLS,
         steps,
     )
+
     write_csv(
         out / "episodes.csv",
         cfg,
         EPS_COLS,
         episodes,
     )
+
     shutil.copy(args.config, out / "config.yaml")
 
     print(
