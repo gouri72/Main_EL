@@ -1,0 +1,683 @@
+RUBRIC (decide for each task, independently, WITHOUT looking at tasks.jsonl labels)
+Put 1 if a learner solving the task from scratch genuinely needs this reasoning operation, else 0.
+  understand_plan : must work out what is being asked / choose an approach before acting
+                    (coding: interpret the spec, pick an algorithm; science: identify what the claim asserts and what evidence is needed)
+  execute         : must carry out the work (coding: write the code; science: locate the relevant evidence sentences)
+  debug_verify    : must check the work (coding: edge cases / test the code; science: watch for negation, hedging,
+                    numbers, or evidence spread over several sentences)
+  explain         : must justify the answer in words (coding: why the approach works; science: why the evidence implies the label)
+difficulty: 1 = easy, 2 = medium, 3 = hard, relative to a typical undergraduate.
+
+
+==============================================================================
+code_021  [coding]
+==============================================================================
+Write a function to find the focus of a parabola.
+Your code should pass this test:
+assert parabola_focus(5,3,2)==(-0.3, 1.6)
+
+--- tests ---
+assert parabola_focus(5,3,2)==(-0.3, 1.6)
+assert parabola_focus(9,8,4)==(-0.4444444444444444, 2.25)
+assert parabola_focus(2,4,6)==(-1.0, 4.125)
+
+==============================================================================
+sci_141  [science]
+==============================================================================
+Claim: FoxO3a activation in neuronal death is inhibited by reactive oxygen species (ROS).
+
+Abstract (Stress-dependent regulation of FOXO transcription factors by the SIRT1 deacetylase.):
+[1] The Sir2 deacetylase modulates organismal life-span in various species.
+[2] However, the molecular mechanisms by which Sir2 increases longevity are largely unknown.
+[3] We show that in mammalian cells, the Sir2 homolog SIRT1 appears to control the cellular response to stress by regulating the FOXO family of Forkhead transcription factors, a family of proteins that function as sensors of the insulin signaling pathway and as regulators of organismal longevity.
+[4] SIRT1 and the FOXO transcription factor FOXO3 formed a complex in cells in response to oxidative stress, and SIRT1 deacetylated FOXO3 in vitro and within cells.
+[5] SIRT1 had a dual effect on FOXO3 function: SIRT1 increased FOXO3's ability to induce cell cycle arrest and resistance to oxidative stress but inhibited FOXO3's ability to induce cell death.
+[6] Thus, one way in which members of the Sir2 family of proteins may increase organismal longevity is by tipping FOXO-dependent responses away from apoptosis and toward stress resistance.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * Thus, one way in which members of the Sir2 family of proteins may increase organismal longevity is by tipping FOXO-dependent responses away from apoptosis and toward stress resistance.
+
+==============================================================================
+sci_046  [science]
+==============================================================================
+Claim: Nonsteroidal antinflammatory drugs show potential anticancer indications.
+
+Abstract (Association of aspirin and NSAID use with risk of colorectal cancer according to genetic variants.):
+[1] IMPORTANCE Use of aspirin and other nonsteroidal anti-inflammatory drugs (NSAIDs) is associated with lower risk of colorectal cancer.
+[2] OBJECTIVE To identify common genetic markers that may confer differential benefit from aspirin or NSAID chemoprevention, we tested gene × environment interactions between regular use of aspirin and/or NSAIDs and single-nucleotide polymorphisms (SNPs) in relation to risk of colorectal cancer.
+[3] DESIGN, SETTING, AND PARTICIPANTS Case-control study using data from 5 case-control and 5 cohort studies initiated between 1976 and 2003 across the United States, Canada, Australia, and Germany and including colorectal cancer cases (n=8634) and matched controls (n=8553) ascertained between 1976 and 2011.
+[4] Participants were all of European descent.
+[5] EXPOSURES Genome-wide SNP data and information on regular use of aspirin and/or NSAIDs and other risk factors.
+[6] MAIN OUTCOMES AND MEASURES Colorectal cancer.
+[7] RESULTS Regular use of aspirin and/or NSAIDs was associated with lower risk of colorectal cancer (prevalence, 28% vs 38%; odds ratio [OR], 0.69 [95% CI, 0.64-0.74]; P = 6.2 × 10(-28)) compared with nonregular use.
+[8] In the conventional logistic regression analysis, the SNP rs2965667 at chromosome 12p12.3 near the MGST1 gene showed a genome-wide significant interaction with aspirin and/or NSAID use (P = 4.6 × 10(-9) for interaction).
+[9] Aspirin and/or NSAID use was associated with a lower risk of colorectal cancer among individuals with rs2965667-TT genotype (prevalence, 28% vs 38%; OR, 0.66 [95% CI, 0.61-0.70]; P = 7.7 × 10(-33)) but with a higher risk among those with rare (4%) TA or AA genotypes (prevalence, 35% vs 29%; OR, 1.89 [95% CI, 1.27-2.81]; P = .002).
+[10] In case-only interaction analysis, the SNP rs16973225 at chromosome 15q25.2 near the IL16 gene showed a genome-wide significant interaction with use of aspirin and/or NSAIDs (P = 8.2 × 10(-9) for interaction).
+[11] Regular use was associated with a lower risk of colorectal cancer among individuals with rs16973225-AA genotype (prevalence, 28% vs 38%; OR, 0.66 [95% CI, 0.62-0.71]; P = 1.9 × 10(-30)) but was not associated with risk of colorectal cancer among those with less common (9%) AC or CC genotypes (prevalence, 36% vs 39%; OR, 0.97 [95% CI, 0.78-1.20]; P = .76).
+[12] CONCLUSIONS AND RELEVANCE In this genome-wide investigation of gene × environment interactions, use of aspirin and/or NSAIDs was associated with lower risk of colorectal cancer, and this association differed according to genetic variation at 2 SNPs at chromosomes 12 and 15.
+[13] Validation of these findings in additional populations may facilitate targeted colorectal cancer prevention strategies.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * RESULTS Regular use of aspirin and/or NSAIDs was associated with lower risk of colorectal cancer (prevalence, 28% vs 38%; odds ratio [OR], 0.69 [95% CI, 0.64-0.74]; P = 6.2 × 10(-28)) compared with nonregular use.
+  * Aspirin and/or NSAID use was associated with a lower risk of colorectal cancer among individuals with rs2965667-TT genotype (prevalence, 28% vs 38%; OR, 0.66 [95% CI, 0.61-0.70]; P = 7.7 × 10(-33)) but with a higher risk among those with rare (4%) TA or AA genotypes (prevalence, 35% vs 29%; OR, 1.89 [95% CI, 1.27-2.81]; P = .002).
+  * Regular use was associated with a lower risk of colorectal cancer among individuals with rs16973225-AA genotype (prevalence, 28% vs 38%; OR, 0.66 [95% CI, 0.62-0.71]; P = 1.9 × 10(-30)) but was not associated with risk of colorectal cancer among those with less common (9%) AC or CC genotypes (prevalence, 36% vs 39%; OR, 0.97 [95% CI, 0.78-1.20]; P = .76).
+
+==============================================================================
+code_007  [coding]
+==============================================================================
+Write a function to round the given number to the nearest multiple of a specific number.
+Your code should pass this test:
+assert round_num(4722,10)==4720
+
+--- tests ---
+assert round_num(4722,10)==4720
+assert round_num(1111,5)==1110
+assert round_num(219,2)==218
+
+==============================================================================
+code_110  [coding]
+==============================================================================
+Write a python function to split the array and add the first part to the end.
+Your code should pass this test:
+assert split_Arr([12,10,5,6,52,36],6,2) == [5,6,52,36,12,10]
+
+--- tests ---
+assert split_Arr([12,10,5,6,52,36],6,2) == [5,6,52,36,12,10]
+assert split_Arr([1,2,3,4],4,1) == [2,3,4,1]
+assert split_Arr([0,1,2,3,4,5,6,7],8,3) == [3,4,5,6,7,0,1,2]
+
+==============================================================================
+code_011  [coding]
+==============================================================================
+Write a function to check if the given tuple has any none value or not.
+Your code should pass this test:
+assert check_none((10, 4, 5, 6, None)) == True
+
+--- tests ---
+assert check_none((10, 4, 5, 6, None)) == True
+assert check_none((7, 8, 9, 11, 14)) == False
+assert check_none((1, 2, 3, 4, None)) == True
+
+==============================================================================
+sci_041  [science]
+==============================================================================
+Claim: ADAR1 binds to Dicer to cleave pre-miRNA.
+
+Abstract (ADAR1 Forms a Complex with Dicer to Promote MicroRNA Processing and RNA-Induced Gene Silencing):
+[1] Adenosine deaminases acting on RNA (ADARs) are involved in RNA editing that converts adenosine residues to inosine specifically in double-stranded RNAs.
+[2] In this study, we investigated the interaction of the RNA editing mechanism with the RNA interference (RNAi) machinery and found that ADAR1 forms a complex with Dicer through direct protein-protein interaction.
+[3] Most importantly, ADAR1 increases the maximum rate (Vmax) of pre-microRNA (miRNA) cleavage by Dicer and facilitates loading of miRNA onto RNA-induced silencing complexes, identifying a new role of ADAR1 in miRNA processing and RNAi mechanisms.
+[4] ADAR1 differentiates its functions in RNA editing and RNAi by the formation of either ADAR1/ADAR1 homodimer or Dicer/ADAR1 heterodimer complexes, respectively.
+[5] As expected, the expression of miRNAs is globally inhibited in ADAR1(-/-) mouse embryos, which, in turn, alters the expression of their target genes and might contribute to their embryonic lethal phenotype.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * In this study, we investigated the interaction of the RNA editing mechanism with the RNA interference (RNAi) machinery and found that ADAR1 forms a complex with Dicer through direct protein-protein interaction.
+  * Most importantly, ADAR1 increases the maximum rate (Vmax) of pre-microRNA (miRNA) cleavage by Dicer and facilitates loading of miRNA onto RNA-induced silencing complexes, identifying a new role of ADAR1 in miRNA processing and RNAi mechanisms.
+
+==============================================================================
+code_102  [coding]
+==============================================================================
+Write a function to find the nth tetrahedral number.
+Your code should pass this test:
+assert tetrahedral_number(5) == 35.0
+
+--- tests ---
+assert tetrahedral_number(5) == 35.0
+assert tetrahedral_number(6) == 56.0
+assert tetrahedral_number(7) == 84.0
+
+==============================================================================
+code_111  [coding]
+==============================================================================
+Write a function to find the maximum product from the pairs of tuples within a given list.
+Your code should pass this test:
+assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36
+
+--- tests ---
+assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36
+assert max_product_tuple([(10,20), (15,2), (5,10)] )==200
+assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484
+
+==============================================================================
+sci_005  [science]
+==============================================================================
+Claim: Anthrax spores are very difficult to dispose once they are dispersed.
+
+Abstract (Secondary aerosolization of viable Bacillus anthracis spores in a contaminated US Senate Office.):
+[1] CONTEXT Bioterrorist attacks involving letters and mail-handling systems in Washington, DC, resulted in Bacillus anthracis (anthrax) spore contamination in the Hart Senate Office Building and other facilities in the US Capitol's vicinity.
+[2] OBJECTIVE To provide information about the nature and extent of indoor secondary aerosolization of B anthracis spores.
+[3] DESIGN Stationary and personal air samples, surface dust, and swab samples were collected under semiquiescent (minimal activities) and then simulated active office conditions to estimate secondary aerosolization of B anthracis spores.
+[4] Nominal size characteristics, airborne concentrations, and surface contamination of B anthracis particles (colony-forming units) were evaluated.
+[5] RESULTS Viable B anthracis spores reaerosolized under semiquiescent conditions, with a marked increase in reaerosolization during simulated active office conditions.
+[6] Increases were observed for B anthracis collected on open sheep blood agar plates (P<.001) and personal air monitors (P =.01) during active office conditions.
+[7] More than 80% of the B anthracis particles collected on stationary monitors were within an alveolar respirable size range of 0.95 to 3.5 micro m.   CONCLUSIONS Bacillus anthracis spores used in a recent terrorist incident reaerosolized under common office activities.
+[8] These findings have important implications for appropriate respiratory protection, remediation, and reoccupancy of contaminated office environments.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * More than 80% of the B anthracis particles collected on stationary monitors were within an alveolar respirable size range of 0.95 to 3.5 micro m.   CONCLUSIONS Bacillus anthracis spores used in a recent terrorist incident reaerosolized under common office activities.
+
+==============================================================================
+sci_049  [science]
+==============================================================================
+Claim: Incidence of heart failure increased by 10% in women since 1979.
+
+Abstract (Trends in heart failure incidence and survival in a community-based population.):
+[1] CONTEXT The epidemic of heart failure has yet to be fully investigated, and data on incidence, survival, and sex-specific temporal trends in community-based populations are limited.
+[2] OBJECTIVE To test the hypothesis that the incidence of heart failure has declined and survival after heart failure diagnosis has improved over time but that secular trends have diverged by sex.
+[3] DESIGN, SETTING, AND PARTICIPANTS Population-based cohort study using the resources of the Rochester Epidemiology Project conducted in Olmsted County, Minnesota.
+[4] Patients were 4537 Olmsted County residents (57% women; mean [SD] age, 74 [14] years) with a diagnosis of heart failure between 1979 and 2000.
+[5] Framingham criteria and clinical criteria were used to validate the diagnosis   MAIN OUTCOME MEASURES Incidence of heart failure and survival after heart failure diagnosis.
+[6] RESULTS The incidence of heart failure was higher among men (378/100 000 persons; 95% confidence interval [CI], 361-395 for men; 289/100 000 persons; 95% CI, 277-300 for women) and did not change over time among men or women.
+[7] After a mean follow-up of 4.2 years (range, 0-23.8 years), 3347 deaths occurred, including 1930 among women and 1417 among men.
+[8] Survival after heart failure diagnosis was worse among men than women (relative risk, 1.33; 95% CI, 1.24-1.43) but overall improved over time (5-year age-adjusted survival, 43% in 1979-1984 vs 52% in 1996-2000, P<.001).
+[9] However, men and younger persons experienced larger survival gains, contrasting with less or no improvement for women and elderly persons.
+[10] CONCLUSION In this community-based cohort, the incidence of heart failure has not declined during 2 decades, but survival after onset of heart failure has increased overall, with less improvement among women and elderly persons.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * RESULTS The incidence of heart failure was higher among men (378/100 000 persons; 95% confidence interval [CI], 361-395 for men; 289/100 000 persons; 95% CI, 277-300 for women) and did not change over time among men or women.
+
+==============================================================================
+code_066  [coding]
+==============================================================================
+Write a function that gives loss amount if the given amount has loss else return none.
+Your code should pass this test:
+assert loss_amount(1500,1200)==None
+
+--- tests ---
+assert loss_amount(1500,1200)==None
+assert loss_amount(100,200)==100
+assert loss_amount(2000,5000)==3000
+
+==============================================================================
+code_113  [coding]
+==============================================================================
+Write a python function to move all zeroes to the end of the given list.
+Your code should pass this test:
+assert move_zero([1,0,2,0,3,4]) == [1,2,3,4,0,0]
+
+--- tests ---
+assert move_zero([1,0,2,0,3,4]) == [1,2,3,4,0,0]
+assert move_zero([2,3,2,0,0,4,0,5,0]) == [2,3,2,4,5,0,0,0,0]
+assert move_zero([0,1,0,1,1]) == [1,1,1,0,0]
+
+==============================================================================
+sci_121  [science]
+==============================================================================
+Claim: Obesity is determined solely by environmental factors.
+
+Abstract (Genetics of obesity in adult adoptees and their biological siblings.):
+[1] An adoption study of genetic effects on obesity in adulthood was carried out in which adoptees separated from their natural parents very early in life were compared with their biological full and half siblings reared by their natural parents.
+[2] The adoptees represented four groups who by sampling from a larger population were categorised as either thin, medium weight, overweight, or obese.
+[3] Weight and height were obtained for 115 full siblings of 57 adoptees and for 850 half siblings of 341 adoptees.
+[4] In full siblings body mass index (kg/m2) significantly increased with weight of the adoptees.
+[5] Body mass index of the half siblings showed a steady but weaker increase across the four weight groups of adoptees.
+[6] There were no significant interactions with sex of the adoptees, sex of the siblings, or (for the half siblings) sex of the common parent.
+[7] In contrast with the findings in half siblings and (previously) the natural parents there was a striking, significant increase in body mass index between full siblings of overweight and obese adoptees.
+[8] The degree of fatness in adults living in the same environment appears to be influenced by genetic factors independent of sex, which may include polygenic as well as major gene effects on obesity.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * In full siblings body mass index (kg/m2) significantly increased with weight of the adoptees.
+  * Body mass index of the half siblings showed a steady but weaker increase across the four weight groups of adoptees.
+  * In contrast with the findings in half siblings and (previously) the natural parents there was a striking, significant increase in body mass index between full siblings of overweight and obese adoptees.
+  * The degree of fatness in adults living in the same environment appears to be influenced by genetic factors independent of sex, which may include polygenic as well as major gene effects on obesity.
+
+==============================================================================
+sci_069  [science]
+==============================================================================
+Claim: Risk-adjusted mortality rates are similar in teaching and non-teaching hospitals.
+
+Abstract (Patient Outcomes with Teaching Versus Nonteaching Healthcare: A Systematic Review):
+[1] Background  Extensive debate exists in the healthcare community over whether outcomes of medical care at teaching hospitals and other healthcare units are better or worse than those at the respective nonteaching ones.
+[2] Thus, our goal was to systematically evaluate the evidence pertaining to this question.
+[3] Methods and Findings  We reviewed all studies that compared teaching versus nonteaching healthcare structures for mortality or any other patient outcome, regardless of health condition.
+[4] Studies were retrieved from PubMed, contact with experts, and literature cross-referencing.
+[5] Data were extracted on setting, patients, data sources, author affiliations, definition of compared groups, types of diagnoses considered, adjusting covariates, and estimates of effect for mortality and for each other outcome.
+[6] Overall, 132 eligible studies were identified, including 93 on mortality and 61 on other eligible outcomes (22 addressed both).
+[7] Synthesis of the available adjusted estimates on mortality yielded a summary relative risk of 0.96 (95% confidence interval [CI], 0.93–1.00) for teaching versus nonteaching healthcare structures and 1.04 (95% CI, 0.99–1.10) for minor teaching versus nonteaching ones.
+[8] There was considerable heterogeneity between studies (I2 = 72% for the main analysis).
+[9] Results were similar in studies using clinical and those using administrative databases.
+[10] No differences were seen in the 14 studies fully adjusting for volume/experience, severity, and comorbidity (relative risk 1.01).
+[11] Smaller studies did not differ in their results from larger studies.
+[12] Differences were seen for some diagnoses (e.g., significantly better survival for breast cancer and cerebrovascular accidents in teaching hospitals and significantly better survival from cholecystectomy in nonteaching hospitals), but these were small in magnitude.
+[13] Other outcomes were diverse, but typically teaching healthcare structures did not do better than nonteaching ones.
+[14] Conclusions  The available data are limited by their nonrandomized design, but overall they do not suggest that a healthcare facility's teaching status on its own markedly improves or worsens patient outcomes.
+[15] Differences for specific diseases cannot be excluded, but are likely to be small.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * Synthesis of the available adjusted estimates on mortality yielded a summary relative risk of 0.96 (95% confidence interval [CI], 0.93–1.00) for teaching versus nonteaching healthcare structures and 1.04 (95% CI, 0.99–1.10) for minor teaching versus nonteaching ones.
+  * Conclusions  The available data are limited by their nonrandomized design, but overall they do not suggest that a healthcare facility's teaching status on its own markedly improves or worsens patient outcomes.
+
+==============================================================================
+code_023  [coding]
+==============================================================================
+Write a function to find the perimeter of a square.
+Your code should pass this test:
+assert square_perimeter(10)==40
+
+--- tests ---
+assert square_perimeter(10)==40
+assert square_perimeter(5)==20
+assert square_perimeter(4)==16
+
+==============================================================================
+sci_088  [science]
+==============================================================================
+Claim: Cnn1 recruitment varies with cell cycle timing.
+
+Abstract (Cnn1 inhibits the interactions between the KMN complexes of the yeast kinetochore):
+[1] Kinetochores attach the replicated chromosomes to the mitotic spindle and orchestrate their transmission to the daughter cells.
+[2] Kinetochore–spindle binding and chromosome segregation are mediated by the multi-copy KNL1Spc105, MIS12Mtw1 and NDC80Ndc80 complexes that form the so-called KMN network.
+[3] KMN–spindle attachment is regulated by the Aurora BIpl1 and MPS1Mps1 kinases.
+[4] It is unclear whether other mechanisms exist that support KMN activity during the cell cycle.
+[5] Using budding yeast, we show that kinetochore protein Cnn1 localizes to the base of the Ndc80 complex and promotes a functionally competent configuration of the KMN network.
+[6] Cnn1 regulates KMN activity in a spatiotemporal manner by inhibiting the interaction between its complexes.
+[7] Cnn1 activity peaks in anaphase and is driven by the Cdc28, Mps1 and Ipl1 kinases.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * Cnn1 regulates KMN activity in a spatiotemporal manner by inhibiting the interaction between its complexes.
+  * Cnn1 activity peaks in anaphase and is driven by the Cdc28, Mps1 and Ipl1 kinases.
+
+==============================================================================
+code_045  [coding]
+==============================================================================
+Write a function to split a list for every nth element.
+Your code should pass this test:
+assert list_split(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'],3)==[['a', 'd', 'g', 'j', 'm'], ['b', 'e', 'h', 'k', 'n'], ['c', 'f', 'i', 'l']]
+
+--- tests ---
+assert list_split(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'],3)==[['a', 'd', 'g', 'j', 'm'], ['b', 'e', 'h', 'k', 'n'], ['c', 'f', 'i', 'l']]
+assert list_split([1,2,3,4,5,6,7,8,9,10,11,12,13,14],3)==[[1,4,7,10,13], [2,5,8,11,14], [3,6,9,12]]
+assert list_split(['python','java','C','C++','DBMS','SQL'],2)==[['python', 'C', 'DBMS'], ['java', 'C++', 'SQL']]
+
+==============================================================================
+sci_026  [science]
+==============================================================================
+Claim: APOE4 expression in iPSC-derived neurons increases AlphaBeta production and tau phosphorylation, delaying GABA neuron degeneration.
+
+Abstract (Gain of toxic Apolipoprotein E4 effects in Human iPSC-Derived Neurons Is Ameliorated by a Small-Molecule Structure Corrector):
+[1] Efforts to develop drugs for Alzheimer's disease (AD) have shown promise in animal studies, only to fail in human trials, suggesting a pressing need to study AD in human model systems.
+[2] Using human neurons derived from induced pluripotent stem cells that expressed apolipoprotein E4 (ApoE4), a variant of the APOE gene product and the major genetic risk factor for AD, we demonstrated that ApoE4-expressing neurons had higher levels of tau phosphorylation, unrelated to their increased production of amyloid-β (Aβ) peptides, and that they displayed GABAergic neuron degeneration.
+[3] ApoE4 increased Aβ production in human, but not in mouse, neurons.
+[4] Converting ApoE4 to ApoE3 by gene editing rescued these phenotypes, indicating the specific effects of ApoE4.
+[5] Neurons that lacked APOE behaved similarly to those expressing ApoE3, and the introduction of ApoE4 expression recapitulated the pathological phenotypes, suggesting a gain of toxic effects from ApoE4.
+[6] Treatment of ApoE4-expressing neurons with a small-molecule structure corrector ameliorated the detrimental effects, thus showing that correcting the pathogenic conformation of ApoE4 is a viable therapeutic approach for ApoE4-related AD.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * Using human neurons derived from induced pluripotent stem cells that expressed apolipoprotein E4 (ApoE4), a variant of the APOE gene product and the major genetic risk factor for AD, we demonstrated that ApoE4-expressing neurons had higher levels of tau phosphorylation, unrelated to their increased production of amyloid-β (Aβ) peptides, and that they displayed GABAergic neuron degeneration.
+
+==============================================================================
+sci_047  [science]
+==============================================================================
+Claim: Lack of FGF21 in mice slows the rate of atherosclerotic plaque formation.
+
+Abstract (Fibroblast Growth Factor 21 Prevents Atherosclerosis by Suppression of Hepatic Sterol Regulatory Element-Binding Protein-2 and Induction of Adiponectin in Mice):
+[1] BACKGROUND Fibroblast growth factor 21 (FGF21) is a metabolic hormone with pleiotropic effects on glucose and lipid metabolism and insulin sensitivity.
+[2] It acts as a key downstream target of both peroxisome proliferator-activated receptor α and γ, the agonists of which have been used for lipid lowering and insulin sensitization, respectively.
+[3] However, the role of FGF21 in the cardiovascular system remains elusive.
+[4] METHODS AND RESULTS The roles of FGF21 in atherosclerosis were investigated by evaluating the impact of FGF21 deficiency and replenishment with recombinant FGF21 in apolipoprotein E(-/-) mice.
+[5] FGF21 deficiency causes a marked exacerbation of atherosclerotic plaque formation and premature death in apolipoprotein E(-/-) mice, which is accompanied by hypoadiponectinemia and severe hypercholesterolemia.
+[6] Replenishment of FGF21 protects against atherosclerosis in apolipoprotein E(-/-)mice via 2 independent mechanisms, inducing the adipocyte production of adiponectin, which in turn acts on the blood vessels to inhibit neointima formation and macrophage inflammation, and suppressing the hepatic expression of the transcription factor sterol regulatory element-binding protein-2, thereby leading to reduced cholesterol synthesis and attenuation of hypercholesterolemia.
+[7] Chronic treatment with adiponectin partially reverses atherosclerosis without obvious effects on hypercholesterolemia in FGF21-deficient apolipoprotein E(-/-) mice.
+[8] By contrast, the cholesterol-lowering effects of FGF21 are abrogated by hepatic expression of sterol regulatory element-binding protein-2.
+[9] CONCLUSIONS FGF21 protects against atherosclerosis via fine tuning the multiorgan crosstalk among liver, adipose tissue, and blood vessels.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * FGF21 deficiency causes a marked exacerbation of atherosclerotic plaque formation and premature death in apolipoprotein E(-/-) mice, which is accompanied by hypoadiponectinemia and severe hypercholesterolemia.
+  * Replenishment of FGF21 protects against atherosclerosis in apolipoprotein E(-/-)mice via 2 independent mechanisms, inducing the adipocyte production of adiponectin, which in turn acts on the blood vessels to inhibit neointima formation and macrophage inflammation, and suppressing the hepatic expression of the transcription factor sterol regulatory element-binding protein-2, thereby leading to reduced cholesterol synthesis and attenuation of hypercholesterolemia.
+  * CONCLUSIONS FGF21 protects against atherosclerosis via fine tuning the multiorgan crosstalk among liver, adipose tissue, and blood vessels.
+
+==============================================================================
+code_027  [coding]
+==============================================================================
+Write a function to determine if there is a subset of the given set with sum equal to the given sum.
+Your code should pass this test:
+assert is_subset_sum([3, 34, 4, 12, 5, 2], 6, 9) == True
+
+--- tests ---
+assert is_subset_sum([3, 34, 4, 12, 5, 2], 6, 9) == True
+assert is_subset_sum([3, 34, 4, 12, 5, 2], 6, 30) == False
+assert is_subset_sum([3, 34, 4, 12, 5, 2], 6, 15) == True
+
+==============================================================================
+sci_032  [science]
+==============================================================================
+Claim: Birth-weight is negatively associated with breast cancer.
+
+Abstract (Birth Size and Breast Cancer Risk: Re-analysis of Individual Participant Data from 32 Studies):
+[1] BACKGROUND Birth size, perhaps a proxy for prenatal environment, might be a correlate of subsequent breast cancer risk, but findings from epidemiological studies have been inconsistent.
+[2] We re-analysed individual participant data from published and unpublished studies to obtain more precise estimates of the magnitude and shape of the birth size-breast cancer association.
+[3] METHODS AND FINDINGS Studies were identified through computer-assisted and manual searches, and personal communication with investigators.
+[4] Individual participant data from 32 studies, comprising 22,058 breast cancer cases, were obtained.
+[5] Random effect models were used, if appropriate, to combine study-specific estimates of effect.
+[6] Birth weight was positively associated with breast cancer risk in studies based on birth records (pooled relative risk [RR] per one standard deviation [SD] [= 0.5 kg] increment in birth weight: 1.06; 95% confidence interval [CI] 1.02-1.09) and parental recall when the participants were children (1.02; 95% CI 0.99-1.05), but not in those based on adult self-reports, or maternal recall during the woman's adulthood (0.98; 95% CI 0.95-1.01) (p for heterogeneity between data sources = 0.003).
+[7] Relative to women who weighed 3.000-3.499 kg, the risk was 0.96 (CI 0.80-1.16) in those who weighed < 2.500 kg, and 1.12 (95% CI 1.00-1.25) in those who weighed > or = 4.000 kg (p for linear trend = 0.001) in birth record data.
+[8] Birth length and head circumference from birth records were also positively associated with breast cancer risk (pooled RR per one SD increment: 1.06 [95% CI 1.03-1.10] and 1.09 [95% CI 1.03-1.15], respectively).
+[9] Simultaneous adjustment for these three birth size variables showed that length was the strongest independent predictor of risk.
+[10] The birth size effects did not appear to be confounded or mediated by established breast cancer risk factors and were not modified by age or menopausal status.
+[11] The cumulative incidence of breast cancer per 100 women by age 80 y in the study populations was estimated to be 10.0, 10.0, 10.4, and 11.5 in those who were, respectively, in the bottom, second, third, and top fourths of the birth length distribution.
+[12] CONCLUSIONS This pooled analysis of individual participant data is consistent with birth size, and in particular birth length, being an independent correlate of breast cancer risk in adulthood.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * Birth weight was positively associated with breast cancer risk in studies based on birth records (pooled relative risk [RR] per one standard deviation [SD] [= 0.5 kg] increment in birth weight: 1.06; 95% confidence interval [CI] 1.02-1.09) and parental recall when the participants were children (1.02; 95% CI 0.99-1.05), but not in those based on adult self-reports, or maternal recall during the woman's adulthood (0.98; 95% CI 0.95-1.01) (p for heterogeneity between data sources = 0.003).
+  * Relative to women who weighed 3.000-3.499 kg, the risk was 0.96 (CI 0.80-1.16) in those who weighed < 2.500 kg, and 1.12 (95% CI 1.00-1.25) in those who weighed > or = 4.000 kg (p for linear trend = 0.001) in birth record data.
+  * CONCLUSIONS This pooled analysis of individual participant data is consistent with birth size, and in particular birth length, being an independent correlate of breast cancer risk in adulthood.
+
+==============================================================================
+code_090  [coding]
+==============================================================================
+Write a function to count the frequency of consecutive duplicate elements in a given list of numbers.
+Your code should pass this test:
+assert count_duplic([1,2,2,2,4,4,4,5,5,5,5])==([1, 2, 4, 5], [1, 3, 3, 4])
+
+--- tests ---
+assert count_duplic([1,2,2,2,4,4,4,5,5,5,5])==([1, 2, 4, 5], [1, 3, 3, 4])
+assert count_duplic([2,2,3,1,2,6,7,9])==([2, 3, 1, 2, 6, 7, 9], [2, 1, 1, 1, 1, 1, 1])
+assert count_duplic([2,1,5,6,8,3,4,9,10,11,8,12])==([2, 1, 5, 6, 8, 3, 4, 9, 10, 11, 8, 12], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+==============================================================================
+sci_023  [science]
+==============================================================================
+Claim: Female carriers of the Apolipoprotein E4 (APOE4) allele have longer lifetime exposure to estrogen due to an increased reproductive period.
+
+Abstract (Reproductive period and risk of dementia in postmenopausal women.):
+[1] CONTEXT Exogenous estrogen use may lower risk of dementia in postmenopausal women.
+[2] A relationship between long-term exposure to endogenous estrogens and incident dementia has been hypothesized but not studied.
+[3] OBJECTIVE To determine whether a longer reproductive period, as an indicator of longer exposure to endogenous estrogens, is associated with lower risk of dementia and Alzheimer disease (AD) in women who have natural menopause.
+[4] DESIGN AND SETTING The Rotterdam Study, a population-based prospective cohort study conducted in the Netherlands.
+[5] PARTICIPANTS A total of 3601 women aged 55 years or older who did not have dementia at baseline (1990-1993) and had information on age at menarche, age at menopause, and type of menopause.
+[6] Participants were reexamined in 1993-1994 and 1997-1999 and were continuously monitored for development of dementia.
+[7] MAIN OUTCOME MEASURES Incidence of dementia, based on Diagnostic and Statistical Manual of Mental Disorders, Revised Third Edition criteria, and AD, based on National Institute of Neurological Disorders and Stroke/Alzheimer's Disease and Related Disorders Association criteria, compared by quartiles of reproductive period among women with natural menopause.
+[8] RESULTS During 21 046 person-years of follow-up (median follow-up, 6.3 years), 199 women developed dementia, including 159 who developed AD.
+[9] After adjusting for age, dementia was not clearly associated with length of reproductive period.
+[10] However, after adjusting for multiple covariates, women with natural menopause and more reproductive years had an increased risk of dementia (adjusted rate ratio [RR] for women with >39 reproductive years [highest quartile] compared with <34 reproductive years [lowest quartile], 1.78; 95% confidence interval [CI], 1.12-2.84).
+[11] The adjusted RR per year of increase was 1.04 (95% CI, 1.01-1.08).
+[12] For risk of AD, the adjusted RRs were 1.51 (95% CI, 0.91-2.50) and 1.03 (95% CI, 1.00-1.07), respectively.
+[13] Risk of dementia associated with a longer reproductive period was most pronounced in APOE epsilon4 carriers (adjusted RR for >39 reproductive years compared with <34 reproductive years, 4.20 [95% CI, 1.97-8.92] for dementia and 3.42 [95% CI, 1.51-7.75] for AD), whereas in noncarriers, no clear association with dementia or AD was observed.
+[14] CONCLUSION Our findings do not support the hypothesis that a longer reproductive period reduces risk of dementia in women who have natural menopause.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * Risk of dementia associated with a longer reproductive period was most pronounced in APOE epsilon4 carriers (adjusted RR for >39 reproductive years compared with <34 reproductive years, 4.20 [95% CI, 1.97-8.92] for dementia and 3.42 [95% CI, 1.51-7.75] for AD), whereas in noncarriers, no clear association with dementia or AD was observed.
+
+==============================================================================
+code_012  [coding]
+==============================================================================
+Write a function to find nth centered hexagonal number.
+Your code should pass this test:
+assert centered_hexagonal_number(10) == 271
+
+--- tests ---
+assert centered_hexagonal_number(10) == 271
+assert centered_hexagonal_number(2) == 7
+assert centered_hexagonal_number(9) == 217
+
+==============================================================================
+sci_119  [science]
+==============================================================================
+Claim: Diabetic patients with acute coronary syndrome experience decreased short-term and long-term risk for bleeding events.
+
+Abstract (Impact of diabetes on long-term prognosis in patients with unstable angina and non-Q-wave myocardial infarction: results of the OASIS (Organization to Assess Strategies for Ischemic Syndromes) Registry.):
+[1] BACKGROUND Although unstable coronary artery disease is the most common reason for admission to a coronary care unit, the long-term prognosis of patients with this diagnosis is unknown.
+[2] This is particularly true for patients with diabetes mellitus, who are known to have a high morbidity and mortality after an acute myocardial infarction.
+[3] METHODS AND RESULTS Prospectively collected data from 6 different countries in the Organization to Assess Strategies for Ischemic Syndromes (OASIS) registry were analyzed to determine the 2-year prognosis of diabetic and nondiabetic patients who were hospitalized with unstable angina or non-Q-wave myocardial infarction.
+[4] Overall, 1718 of 8013 registry patients (21%) had diabetes.
+[5] Diabetic patients had a higher rate of coronary bypass surgery than nondiabetic patients (23% versus 20%, P:<0.001) but had similar rates of catheterization and angioplasty.
+[6] Diabetes independently predicted mortality (relative risk [RR], 1.57; 95% CI, 1.38 to 1.81; P:<0.001), as well as cardiovascular death, new myocardial infarction, stroke, and new congestive heart failure.
+[7] Moreover, compared with their nondiabetic counterparts, women had a significantly higher risk than men (RR, 1.98; 95% CI, 1.60 to 2.44; and RR, 1.28; 95% CI, 1.06 to 1.56, respectively).
+[8] Interestingly, diabetic patients without prior cardiovascular disease had the same event rates for all outcomes as nondiabetic patients with previous vascular disease.
+[9] CONCLUSIONS Hospitalization for unstable angina or non-Q-wave myocardial infarction predicts a high 2-year morbidity and mortality; this is especially evident for patients with diabetes.
+[10] Diabetic patients with no previous cardiovascular disease have the same long-term morbidity and mortality as nondiabetic patients with established cardiovascular disease after hospitalization for unstable coronary artery disease.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * Diabetes independently predicted mortality (relative risk [RR], 1.57; 95% CI, 1.38 to 1.81; P:<0.001), as well as cardiovascular death, new myocardial infarction, stroke, and new congestive heart failure.
+
+==============================================================================
+sci_035  [science]
+==============================================================================
+Claim: ALDH1 expression is associated with poorer prognosis for breast cancer primary tumors.
+
+Abstract (ALDH1 is a marker of normal and malignant human mammary stem cells and a predictor of poor clinical outcome.):
+[1] Application of stem cell biology to breast cancer research has been limited by the lack of simple methods for identification and isolation of normal and malignant stem cells.
+[2] Utilizing in vitro and in vivo experimental systems, we show that normal and cancer human mammary epithelial cells with increased aldehyde dehydrogenase activity (ALDH) have stem/progenitor properties.
+[3] These cells contain the subpopulation of normal breast epithelium with the broadest lineage differentiation potential and greatest growth capacity in a xenotransplant model.
+[4] In breast carcinomas, high ALDH activity identifies the tumorigenic cell fraction, capable of self-renewal and of generating tumors that recapitulate the heterogeneity of the parental tumor.
+[5] In a series of 577 breast carcinomas, expression of ALDH1 detected by immunostaining correlated with poor prognosis.
+[6] These findings offer an important new tool for the study of normal and malignant breast stem cells and facilitate the clinical application of stem cell concepts.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * In a series of 577 breast carcinomas, expression of ALDH1 detected by immunostaining correlated with poor prognosis.
+
+==============================================================================
+code_006  [coding]
+==============================================================================
+Write a function to find the sum of geometric progression series.
+Your code should pass this test:
+assert sum_gp(1,5,2)==31
+
+--- tests ---
+assert sum_gp(1,5,2)==31
+assert sum_gp(1,5,4)==341
+assert sum_gp(2,6,3)==728
+
+==============================================================================
+code_017  [coding]
+==============================================================================
+Write a python function to count the number of integral co-ordinates that lie inside a square.
+Your code should pass this test:
+assert count_Intgral_Points(1,1,4,4) == 4
+
+--- tests ---
+assert count_Intgral_Points(1,1,4,4) == 4
+assert count_Intgral_Points(1,2,1,2) == 1
+assert count_Intgral_Points(4,2,6,4) == 1
+
+==============================================================================
+sci_029  [science]
+==============================================================================
+Claim: Rapid phosphotransfer rates are correlated with histidine kinase regulator specificity.
+
+Abstract (Using Structural Information to Change the Phosphotransfer Specificity of a Two-Component Chemotaxis Signalling Complex):
+[1] Two-component signal transduction pathways comprising histidine protein kinases (HPKs) and their response regulators (RRs) are widely used to control bacterial responses to environmental challenges.
+[2] Some bacteria have over 150 different two-component pathways, and the specificity of the phosphotransfer reactions within these systems is tightly controlled to prevent unwanted crosstalk.
+[3] One of the best understood two-component signalling pathways is the chemotaxis pathway.
+[4] Here, we present the 1.40 A crystal structure of the histidine-containing phosphotransfer domain of the chemotaxis HPK, CheA(3), in complex with its cognate RR, CheY(6).
+[5] A methionine finger on CheY(6) that nestles in a hydrophobic pocket in CheA(3) was shown to be important for the interaction and was found to only occur in the cognate RRs of CheA(3), CheY(6), and CheB(2).
+[6] Site-directed mutagenesis of this methionine in combination with two adjacent residues abolished binding, as shown by surface plasmon resonance studies, and phosphotransfer from CheA(3)-P to CheY(6).
+[7] Introduction of this methionine and an adjacent alanine residue into a range of noncognate CheYs, dramatically changed their specificity, allowing protein interaction and rapid phosphotransfer from CheA(3)-P. The structure presented here has allowed us to identify specificity determinants for the CheA-CheY interaction and subsequently to successfully reengineer phosphotransfer signalling.
+[8] In summary, our results provide valuable insight into how cells mediate specificity in one of the most abundant signalling pathways in biology, two-component signal transduction.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * Introduction of this methionine and an adjacent alanine residue into a range of noncognate CheYs, dramatically changed their specificity, allowing protein interaction and rapid phosphotransfer from CheA(3)-P. The structure presented here has allowed us to identify specificity determinants for the CheA-CheY interaction and subsequently to successfully reengineer phosphotransfer signalling.
+
+==============================================================================
+sci_095  [science]
+==============================================================================
+Claim: Pre-mRNAs associated with spliceosomal components are less stable than unassociated splicing substrates.
+
+Abstract (Linking Splicing to Pol II Transcription Stabilizes Pre-mRNAs and Influences Splicing Patterns):
+[1] RNA processing is carried out in close proximity to the site of transcription, suggesting a regulatory link between transcription and pre-mRNA splicing.
+[2] Using an in vitro transcription/splicing assay, we demonstrate that an association of RNA polymerase II (Pol II) transcription and pre-mRNA splicing is required for efficient gene expression.
+[3] Pol II-synthesized RNAs containing functional splice sites are protected from nuclear degradation, presumably because the local concentration of the splicing machinery is sufficiently high to ensure its association over interactions with nucleases.
+[4] Furthermore, the process of transcription influences alternative splicing of newly synthesized pre-mRNAs.
+[5] Because other RNA polymerases do not provide similar protection from nucleases, and their RNA products display altered splicing patterns, the link between transcription and RNA processing is RNA Pol II-specific.
+[6] We propose that the connection between transcription by Pol II and pre-mRNA splicing guarantees an extended half-life and proper processing of nascent pre-mRNAs.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * We propose that the connection between transcription by Pol II and pre-mRNA splicing guarantees an extended half-life and proper processing of nascent pre-mRNAs.
+
+==============================================================================
+sci_056  [science]
+==============================================================================
+Claim: RANK-RANKL pathway signalling is linked to development of Aire-expressing medullary thymic epithelial cells.
+
+Abstract (Rank Signaling Links the Development of Invariant γδ T Cell Progenitors and Aire+ Medullary Epithelium):
+[1] The thymic medulla provides a specialized microenvironment for the negative selection of T cells, with the presence of autoimmune regulator (Aire)-expressing medullary thymic epithelial cells (mTECs) during the embryonic-neonatal period being both necessary and sufficient to establish long-lasting tolerance.
+[2] Here we showed that emergence of the first cohorts of Aire(+) mTECs at this key developmental stage, prior to αβ T cell repertoire selection, was jointly directed by Rankl(+) lymphoid tissue inducer cells and invariant Vγ5(+) dendritic epidermal T cell (DETC) progenitors that are the first thymocytes to express the products of gene rearrangement.
+[3] In turn, generation of Aire(+) mTECs then fostered Skint-1-dependent, but Aire-independent, DETC progenitor maturation and the emergence of an invariant DETC repertoire.
+[4] Hence, our data attributed a functional importance to the temporal development of Vγ5(+) γδ T cells during thymus medulla formation for αβ T cell tolerance induction and demonstrated a Rank-mediated reciprocal link between DETC and Aire(+) mTEC maturation.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: SUPPORT ---
+  * Here we showed that emergence of the first cohorts of Aire(+) mTECs at this key developmental stage, prior to αβ T cell repertoire selection, was jointly directed by Rankl(+) lymphoid tissue inducer cells and invariant Vγ5(+) dendritic epidermal T cell (DETC) progenitors that are the first thymocytes to express the products of gene rearrangement.
+  * Hence, our data attributed a functional importance to the temporal development of Vγ5(+) γδ T cells during thymus medulla formation for αβ T cell tolerance induction and demonstrated a Rank-mediated reciprocal link between DETC and Aire(+) mTEC maturation.
+
+==============================================================================
+code_128  [coding]
+==============================================================================
+Write a function to find the circumference of a circle.
+Your code should pass this test:
+assert circle_circumference(10)==62.830000000000005
+
+--- tests ---
+assert circle_circumference(10)==62.830000000000005
+assert circle_circumference(5)==31.415000000000003
+assert circle_circumference(4)==25.132
+
+==============================================================================
+code_072  [coding]
+==============================================================================
+Write a function to extract the elementwise and tuples from the given two tuples.
+Your code should pass this test:
+assert and_tuples((10, 4, 6, 9), (5, 2, 3, 3)) == (0, 0, 2, 1)
+
+--- tests ---
+assert and_tuples((10, 4, 6, 9), (5, 2, 3, 3)) == (0, 0, 2, 1)
+assert and_tuples((1, 2, 3, 4), (5, 6, 7, 8)) == (1, 2, 3, 0)
+assert and_tuples((8, 9, 11, 12), (7, 13, 14, 17)) == (0, 9, 10, 0)
+
+==============================================================================
+code_107  [coding]
+==============================================================================
+Write a python function to find the sum of fifth power of first n odd natural numbers.
+Your code should pass this test:
+assert odd_Num_Sum(1) == 1
+
+--- tests ---
+assert odd_Num_Sum(1) == 1
+assert odd_Num_Sum(2) == 244
+assert odd_Num_Sum(3) == 3369
+
+==============================================================================
+sci_123  [science]
+==============================================================================
+Claim: The mean suicide rate in women is lower after miscarriage than live birth.
+
+Abstract (Suicides after pregnancy in Finland, 1987-94: register linkage study.):
+[1] OBJECTIVE To determine rates of suicide associated with pregnancy by the type of pregnancy.
+[2] DESIGN Register linkage study.
+[3] Information on suicides in women of reproductive age was linked with the Finnish birth, abortion, and hospital discharge registers to find out how many women who committed suicide had had a completed pregnancy during her last year of life.
+[4] SETTING Nationwide data from Finland.
+[5] SUBJECTS Women who committed suicide in 1987-94.
+[6] RESULTS There were 73 suicides associated with pregnancy, representing 5.4% of all suicides in women in this age group.
+[7] The mean annual suicide rate was 11.3 per 100,000.
+[8] The suicide rate associated with birth was significantly lower (5.9) and the rates associated with miscarriage (18.1) and induced abortion (34.7) were significantly higher than in the population.
+[9] The risk associated with birth was higher among teenagers and that associated with abortion was increased in all age groups.
+[10] Women who had committed a suicide tended to come from lower social classes and were more likely to be unmarried than other women who had had a completed pregnancy.
+[11] CONCLUSIONS The increased risk of suicide after an induced abortion indicates either common risk factors for both or harmful effects of induced abortion on mental health.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * The suicide rate associated with birth was significantly lower (5.9) and the rates associated with miscarriage (18.1) and induced abortion (34.7) were significantly higher than in the population.
+
+==============================================================================
+code_139  [coding]
+==============================================================================
+Write a function to remove tuple elements that occur more than once and replace the duplicates with some custom value.
+Your code should pass this test:
+assert remove_replica((1, 1, 4, 4, 4, 5, 5, 6, 7, 7)) == (1, 'MSP', 4, 'MSP', 'MSP', 5, 'MSP', 6, 7, 'MSP')
+
+--- tests ---
+assert remove_replica((1, 1, 4, 4, 4, 5, 5, 6, 7, 7)) == (1, 'MSP', 4, 'MSP', 'MSP', 5, 'MSP', 6, 7, 'MSP')
+assert remove_replica((2, 3, 4, 4, 5, 6, 6, 7, 8, 9, 9)) == (2, 3, 4, 'MSP', 5, 6, 'MSP', 7, 8, 9, 'MSP')
+assert remove_replica((2, 2, 5, 4, 5, 7, 5, 6, 7, 7)) == (2, 'MSP', 5, 4, 'MSP', 7, 'MSP', 6, 'MSP', 'MSP')
+
+==============================================================================
+code_094  [coding]
+==============================================================================
+Write a function to calculate the maximum aggregate from the list of tuples.
+Your code should pass this test:
+assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)
+
+--- tests ---
+assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)
+assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)
+assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)
+
+==============================================================================
+sci_142  [science]
+==============================================================================
+Claim: Antiretroviral therapy increases rates of tuberculosis across a broad range of CD4 strata.
+
+Abstract (Antiretroviral Therapy for Prevention of Tuberculosis in Adults with HIV: A Systematic Review and Meta-Analysis):
+[1] BACKGROUND Human immunodeficiency virus (HIV) infection is the strongest risk factor for developing tuberculosis and has fuelled its resurgence, especially in sub-Saharan Africa.
+[2] In 2010, there were an estimated 1.1 million incident cases of tuberculosis among the 34 million people living with HIV worldwide.
+[3] Antiretroviral therapy has substantial potential to prevent HIV-associated tuberculosis.
+[4] We conducted a systematic review of studies that analysed the impact of antiretroviral therapy on the incidence of tuberculosis in adults with HIV infection.
+[5] METHODS AND FINDINGS PubMed, Embase, African Index Medicus, LILACS, and clinical trial registries were systematically searched.
+[6] Randomised controlled trials, prospective cohort studies, and retrospective cohort studies were included if they compared tuberculosis incidence by antiretroviral therapy status in HIV-infected adults for a median of over 6 mo in developing countries.
+[7] For the meta-analyses there were four categories based on CD4 counts at antiretroviral therapy initiation: (1) less than 200 cells/µl, (2) 200 to 350 cells/µl, (3) greater than 350 cells/µl, and (4) any CD4 count.
+[8] Eleven studies met the inclusion criteria.
+[9] Antiretroviral therapy is strongly associated with a reduction in the incidence of tuberculosis in all baseline CD4 count categories: (1) less than 200 cells/µl (hazard ratio [HR] 0.16, 95% confidence interval [CI] 0.07 to 0.36), (2) 200 to 350 cells/µl (HR 0.34, 95% CI 0.19 to 0.60), (3) greater than 350 cells/µl (HR 0.43, 95% CI 0.30 to 0.63), and (4) any CD4 count (HR 0.35, 95% CI 0.28 to 0.44).
+[10] There was no evidence of hazard ratio modification with respect to baseline CD4 count category (p = 0.20).
+[11] CONCLUSIONS Antiretroviral therapy is strongly associated with a reduction in the incidence of tuberculosis across all CD4 count strata.
+[12] Earlier initiation of antiretroviral therapy may be a key component of global and national strategies to control the HIV-associated tuberculosis syndemic.
+[13] REVIEW REGISTRATION International Prospective Register of Systematic Reviews CRD42011001209 Please see later in the article for the Editors' Summary.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * Antiretroviral therapy is strongly associated with a reduction in the incidence of tuberculosis in all baseline CD4 count categories: (1) less than 200 cells/µl (hazard ratio [HR] 0.16, 95% confidence interval [CI] 0.07 to 0.36), (2) 200 to 350 cells/µl (HR 0.34, 95% CI 0.19 to 0.60), (3) greater than 350 cells/µl (HR 0.43, 95% CI 0.30 to 0.63), and (4) any CD4 count (HR 0.35, 95% CI 0.28 to 0.44).
+  * CONCLUSIONS Antiretroviral therapy is strongly associated with a reduction in the incidence of tuberculosis across all CD4 count strata.
+
+==============================================================================
+sci_126  [science]
+==============================================================================
+Claim: Microcin J25 encourages nucleoside triphosphate (NTP) binding.
+
+Abstract (Antibacterial peptide microcin J25 inhibits transcription by binding within and obstructing the RNA polymerase secondary channel.):
+[1] The antibacterial peptide microcin J25 (MccJ25) inhibits transcription by bacterial RNA polymerase (RNAP).
+[2] Biochemical results indicate that inhibition of transcription occurs at the level of NTP uptake or NTP binding by RNAP.
+[3] Genetic results indicate that inhibition of transcription requires an extensive determinant, comprising more than 50 amino acid residues, within the RNAP secondary channel (also known as the "NTP-uptake channel" or "pore").
+[4] Biophysical results indicate that inhibition of transcription involves binding of MccJ25 within the RNAP secondary channel.
+[5] Molecular modeling indicates that binding of MccJ25 within the RNAP secondary channel obstructs the RNAP secondary channel.
+[6] We conclude that MccJ25 inhibits transcription by binding within and obstructing the RNAP secondary channel--acting essentially as a "cork in a bottle.
+[7] "
+[8] Obstruction of the RNAP secondary channel represents an attractive target for drug discovery.
+
+Decide whether the abstract SUPPORTS or CONTRADICTS the claim, and name the sentence(s) that justify your decision.
+
+--- gold label: CONTRADICT ---
+  * Biochemical results indicate that inhibition of transcription occurs at the level of NTP uptake or NTP binding by RNAP.
