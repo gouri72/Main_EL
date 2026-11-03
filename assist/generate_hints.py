@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Generate the hint bank with Qwen3-0.6B (run on Colab GPU), validate, regenerate up to N times, fall back.
+"""Generate the hint bank with Qwen3-0.6B (Colab GPU), validate, regenerate failures, fall back to templates.
 Qwen NEVER runs inside the RL loop; outputs are cached in assist/cache/hints_cache.jsonl (commit it!).
 
-  python assist/generate_hints.py --backend mock                 # offline test of the whole pipeline
-  python assist/generate_hints.py --backend qwen --limit 3       # Day-4 de-risk run on 3 tasks
-  python assist/generate_hints.py --backend qwen                 # full run (Week 2)
+  python assist/generate_hints.py --backend mock                      # offline test of the whole pipeline
+  python assist/generate_hints.py --backend qwen --batch-size 16      # real run (GPU); resumes from the cache
+  python assist/generate_hints.py --backend cacheonly                 # NO model/GPU: rebuild hints.jsonl + stats from the cache
 
-Handwritten hints in data/hints_handwritten.jsonl always win. Writes data/hints.jsonl and assist/cache/stats.json."""
+Generation is batched: for each attempt, every item that still needs a valid hint is generated in GPU batches
+(grouped by token limit, sorted by prompt length). Attempt k+1 only runs for items rejected at attempt k.
+Handwritten hints in data/hints_handwritten.jsonl always win. Writes data/hints.jsonl, assist/cache/stats.json,
+assist/cache/raw_first_pass.jsonl (cleaned attempt-0 outputs: what validator accuracy must be measured on)."""
 import argparse, hashlib, json, re, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -35,6 +38,8 @@ class MockBackend:
     def generate(self, system, user, seed, max_new_tokens=160, temperature=0.3):
         return "Think about what the task is asking and what a correct answer must satisfy?" if seed % 2 == 0 else \
                "The answer is that the abstract supports the claim. ```python\nreturn x\n```"
+    def generate_batch(self, system, users, seed, max_new_tokens, temperature):
+        return [self.generate(system, u, seed, max_new_tokens, temperature) for u in users]
 
 class QwenBackend:
     def __init__(self, model_id=MODEL_ID):
@@ -42,16 +47,20 @@ class QwenBackend:
         from transformers import AutoTokenizer, AutoModelForCausalLM
         self.torch = torch
         self.tok = AutoTokenizer.from_pretrained(model_id)
+        self.tok.padding_side = "left"                       # required for batched generation
+        if self.tok.pad_token is None: self.tok.pad_token = self.tok.eos_token
         self.model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype="auto", device_map="auto")
 
-    def generate(self, system, user, seed, max_new_tokens=160, temperature=0.3):
+    def generate_batch(self, system, users, seed, max_new_tokens, temperature):
         self.torch.manual_seed(seed)
-        msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-        text = self.tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True,
-                                            enable_thinking=False)   # no <think> traces
-        ids = self.tok([text], return_tensors="pt").to(self.model.device)
-        out = self.model.generate(**ids, max_new_tokens=max_new_tokens, do_sample=True, temperature=max(temperature, 0.01), top_p=0.9)
-        return self.tok.decode(out[0][ids.input_ids.shape[1]:], skip_special_tokens=True).strip()
+        texts = [self.tok.apply_chat_template([{"role": "system", "content": system}, {"role": "user", "content": u}],
+                                              tokenize=False, add_generation_prompt=True, enable_thinking=False)
+                 for u in users]                            # enable_thinking=False: no <think> traces
+        ids = self.tok(texts, return_tensors="pt", padding=True).to(self.model.device)
+        out = self.model.generate(**ids, max_new_tokens=max_new_tokens, do_sample=True,
+                                  temperature=max(temperature, 0.01), top_p=0.9, pad_token_id=self.tok.pad_token_id)
+        n = ids.input_ids.shape[1]
+        return [self.tok.decode(o[n:], skip_special_tokens=True).strip() for o in out]
 
 def tok_limit(lv, domain):
     """Max new tokens per level: short hints must not ramble, level 4 may carry code or quoted evidence."""
@@ -62,21 +71,23 @@ def key(model, tid, op, lv, attempt):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--backend", choices=["mock", "qwen"], default="mock")
+    ap.add_argument("--backend", choices=["mock", "qwen", "cacheonly"], default="mock")
     ap.add_argument("--limit", type=int, default=0, help="only the first N base tasks")
+    ap.add_argument("--domain", choices=["coding", "science"], default=None, help="only tasks of this domain")
     ap.add_argument("--retries", type=int, default=3)
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--domain", choices=["coding", "science"], default=None, help="only tasks of this domain")
+    ap.add_argument("--batch-size", type=int, default=16, help="lower to 8 if the GPU runs out of memory")
     a = ap.parse_args()
     T, S = load_tasks(), load_solutions()
-    backend = MockBackend() if a.backend == "mock" else QwenBackend()
     model = "mock" if a.backend == "mock" else MODEL_ID
+    backend = {"mock": MockBackend, "qwen": QwenBackend, "cacheonly": lambda: None}[a.backend]()
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     cache = {}
     if CACHE.exists():
         for l in open(CACHE, encoding="utf-8"):
             if l.strip():
                 d = json.loads(l); cache[d["key"]] = d["text"]
+    print(f"cache entries loaded: {len(cache)}  ({CACHE})", flush=True)
     hand = {}
     hp = ROOT / "data" / "hints_handwritten.jsonl"
     if hp.exists():
@@ -87,49 +98,71 @@ def main():
     base = [t for tid, t in T.items() if not tid.endswith("_T")]
     if a.domain: base = [t for t in base if t["domain"] == a.domain]
     if a.limit: base = base[:a.limit]
-    raw_first = []   # attempt-0 raw model outputs: THIS is what validator accuracy must be measured on
-    rows, st = [], {"total": 0, "first_pass_violations": 0, "regenerated_ok": 0, "fallback": 0, "handwritten": 0,
-                    "violations_by_level": {1: 0, 2: 0, 3: 0, 4: 0}, "model": model, "prompt_version": PROMPT_VERSION}
+    items = [(t, o["op"], lv) for t in base for o in t["operations"] for lv in (1, 2, 3, 4)]   # fixed order
+    st = {"total": len(items), "first_pass_violations": 0, "regenerated_ok": 0, "fallback": 0, "handwritten": 0,
+          "missing_cache": 0, "violations_by_level": {1: 0, 2: 0, 3: 0, 4: 0}, "model": model,
+          "prompt_version": PROMPT_VERSION}
+    resolved, raw_first = {}, {}
+    for i, (t, op, lv) in enumerate(items):
+        if (t["task_id"], op, lv) in hand:
+            text = hand[(t["task_id"], op, lv)]
+            resolved[i] = (text, "handwritten", validate(t, op, lv, text, S.get(t["task_id"]))); st["handwritten"] += 1
+    pending = [i for i in range(len(items)) if i not in resolved]
     t0 = time.time()
-    with open(CACHE, "a", encoding="utf-8") as cf:
-        for ti, t in enumerate(base):
-            print(f"[{ti+1}/{len(base)}] {t['task_id']}  elapsed {time.time()-t0:.0f}s  first_pass_violations {st['first_pass_violations']}", flush=True)
-            sol = S.get(t["task_id"])
-            for o in t["operations"]:
-                op = o["op"]
-                for lv in (1, 2, 3, 4):
-                    st["total"] += 1
-                    k0 = (t["task_id"], op, lv)
-                    if k0 in hand:
-                        text, src = hand[k0], "handwritten"; st["handwritten"] += 1
-                        v = validate(t, op, lv, text, sol)
-                    else:
-                        text, src, v = None, "qwen", None
-                        for attempt in range(a.retries):
-                            kk = key(model, *k0, attempt)
-                            if kk not in cache:
-                                cache[kk] = backend.generate(SYSTEM, build_user_prompt(t, op, lv, sol), a.seed + attempt, tok_limit(lv, t["domain"]), 0.3 + 0.3 * attempt)
-                                cf.write(json.dumps({"key": kk, "text": cache[kk]}, ensure_ascii=False) + "\n"); cf.flush()
-                            cand = clean(cache[kk])
-                            if attempt == 0:
-                                raw_first.append({"task_id": t["task_id"], "op": op, "level": lv, "text": cand})
-                            vc = validate(t, op, lv, cand, sol)
-                            ok = not vc["leakage_flag"] and vc["compliance_flag"]
-                            if attempt == 0 and not ok:
-                                st["first_pass_violations"] += 1; st["violations_by_level"][lv] += 1
-                            if ok:
-                                text, v = cand, vc
-                                if attempt > 0: st["regenerated_ok"] += 1
-                                break
-                        if text is None:   # all retries violated -> safe fallback
-                            text, src = fallback_text(t, op, lv, sol), "fallback"; st["fallback"] += 1
-                            v = validate(t, op, lv, text, sol)
-                    rows.append({"task_id": t["task_id"], "op": op, "level": lv, "text": text,
-                                 "leakage_flag": v["leakage_flag"], "compliance_flag": v["compliance_flag"], "source": src})
+    for attempt in range(a.retries):
+        if not pending: break
+        kof = lambda i: key(model, items[i][0]["task_id"], items[i][1], items[i][2], attempt)
+        need = [i for i in pending if kof(i) not in cache]
+        if need and a.backend == "cacheonly":
+            st["missing_cache"] += len(need)
+        elif need:
+            groups = {}
+            for i in need:
+                t, op, lv = items[i]
+                groups.setdefault((tok_limit(lv, t["domain"]), round(0.3 + 0.3 * attempt, 2)), []).append(i)
+            done = 0
+            with open(CACHE, "a", encoding="utf-8") as cf:
+                for (tl, temp), idx in groups.items():
+                    prompts = {i: build_user_prompt(items[i][0], items[i][1], items[i][2], S.get(items[i][0]["task_id"])) for i in idx}
+                    idx.sort(key=lambda i: len(prompts[i]))                 # similar lengths together = less padding
+                    for b in range(0, len(idx), a.batch_size):
+                        chunk = idx[b:b + a.batch_size]
+                        outs = backend.generate_batch(SYSTEM, [prompts[i] for i in chunk], a.seed + attempt, tl, temp)
+                        for i, o in zip(chunk, outs):
+                            cache[kof(i)] = o
+                            cf.write(json.dumps({"key": kof(i), "text": o}, ensure_ascii=False) + "\n")
+                        cf.flush(); done += len(chunk)
+                        print(f"attempt {attempt}: generated {done}/{len(need)}  elapsed {time.time()-t0:.0f}s", flush=True)
+        still = []
+        for i in pending:
+            t, op, lv = items[i]; sol = S.get(t["task_id"])
+            cand = clean(cache.get(kof(i), ""))
+            if attempt == 0: raw_first[i] = cand
+            vc = validate(t, op, lv, cand, sol)
+            ok = bool(cand) and not vc["leakage_flag"] and vc["compliance_flag"]
+            if attempt == 0 and not ok:
+                st["first_pass_violations"] += 1; st["violations_by_level"][lv] += 1
+            if ok:
+                resolved[i] = (cand, "qwen", vc)
+                if attempt > 0: st["regenerated_ok"] += 1
+            else:
+                still.append(i)
+        pending = still
+    for i in pending:                       # all attempts rejected -> safe template fallback
+        t, op, lv = items[i]; sol = S.get(t["task_id"])
+        text = fallback_text(t, op, lv, sol)
+        resolved[i] = (text, "fallback", validate(t, op, lv, text, sol)); st["fallback"] += 1
+    rows = []
+    for i, (t, op, lv) in enumerate(items):
+        text, src, v = resolved[i]
+        rows.append({"task_id": t["task_id"], "op": op, "level": lv, "text": text,
+                     "leakage_flag": v["leakage_flag"], "compliance_flag": v["compliance_flag"], "source": src})
     with open(ROOT / "data" / "hints.jsonl", "w", encoding="utf-8", newline="\n") as f:
         for r in rows: f.write(json.dumps(r, ensure_ascii=False) + "\n")
     with open(CACHE.parent / "raw_first_pass.jsonl", "w", encoding="utf-8", newline="\n") as f:
-        for r in raw_first: f.write(json.dumps(r, ensure_ascii=False) + "\n")
+        for i in sorted(raw_first):
+            t, op, lv = items[i]
+            f.write(json.dumps({"task_id": t["task_id"], "op": op, "level": lv, "text": raw_first[i]}, ensure_ascii=False) + "\n")
     (CACHE.parent / "stats.json").write_text(json.dumps(st, indent=1))
     print(json.dumps(st, indent=1))
 
