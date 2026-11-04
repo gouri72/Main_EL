@@ -1,0 +1,7 @@
+# P3 data build settings. Rebuild everything with:  python data/scripts/build_all.py
+seed: 42            # shuffle / pairing seed for both builders
+coding_tasks: 150   # MBPP session tasks (each gets a _T transfer variant)
+science_tasks: 150  # SciFact session tasks (each gets a _T transfer variant)
+audit:
+  n: 40             # label-noise audit sample size (human step: not run by build_all.py)
+  seed: 7
