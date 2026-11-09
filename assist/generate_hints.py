@@ -77,10 +77,11 @@ def main():
     ap.add_argument("--retries", type=int, default=3)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--batch-size", type=int, default=16, help="lower to 8 if the GPU runs out of memory")
+    ap.add_argument("--shard", default=None, help="K/N: only base tasks with index %% N == K; writes only the cache")
+    ap.add_argument("--dry-run", action="store_true", help="print how many items this run covers, then exit (no model)")
     a = ap.parse_args()
     T, S = load_tasks(), load_solutions()
     model = "mock" if a.backend == "mock" else MODEL_ID
-    backend = {"mock": MockBackend, "qwen": QwenBackend, "cacheonly": lambda: None}[a.backend]()
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     cache = {}
     if CACHE.exists():
@@ -96,12 +97,21 @@ def main():
                 h = json.loads(l); hand[(h["task_id"], h["op"], h["level"])] = h["text"]
 
     base = [t for tid, t in T.items() if not tid.endswith("_T")]
+    if a.shard:                                   # shard on the FULL base list so every person gets identical shards
+        k, n = (int(x) for x in a.shard.split("/"))
+        assert 0 <= k < n, "--shard must look like K/N with 0 <= K < N"
+        base = [t for j, t in enumerate(base) if j % n == k]
     if a.domain: base = [t for t in base if t["domain"] == a.domain]
     if a.limit: base = base[:a.limit]
     items = [(t, o["op"], lv) for t in base for o in t["operations"] for lv in (1, 2, 3, 4)]   # fixed order
     st = {"total": len(items), "first_pass_violations": 0, "regenerated_ok": 0, "fallback": 0, "handwritten": 0,
           "missing_cache": 0, "violations_by_level": {1: 0, 2: 0, 3: 0, 4: 0}, "model": model,
           "prompt_version": PROMPT_VERSION}
+    if a.dry_run:
+        nh = sum((t["task_id"], op, lv) in hand for t, op, lv in items)
+        print(f"dry run: {len(base)} tasks, {len(items)} items ({nh} handwritten, {len(items) - nh} to generate)")
+        return
+    backend = {"mock": MockBackend, "qwen": QwenBackend, "cacheonly": lambda: None}[a.backend]()
     resolved, raw_first = {}, {}
     for i, (t, op, lv) in enumerate(items):
         if (t["task_id"], op, lv) in hand:
@@ -152,6 +162,10 @@ def main():
         t, op, lv = items[i]; sol = S.get(t["task_id"])
         text = fallback_text(t, op, lv, sol)
         resolved[i] = (text, "fallback", validate(t, op, lv, text, sol)); st["fallback"] += 1
+    if a.shard:                                   # shard run: only the cache matters, write nothing else
+        print(json.dumps(st, indent=1))
+        print(f"shard {a.shard} done: {len(items)} items cached")
+        return
     rows = []
     for i, (t, op, lv) in enumerate(items):
         text, src, v = resolved[i]

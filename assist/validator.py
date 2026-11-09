@@ -1,8 +1,7 @@
 """Rule-based validator for hints. Two checks per (task, op, level, text):
   leakage_flag    True = the hint leaks solution/gold label at a level where that is NOT allowed (levels 1-3).
                   Level 4 is full assistance, so leakage_flag is always False there.
-  compliance_flag True = the hint satisfies the level rules (length, question form at L1, no code at L1-L2,
-                  and at level 4 it really contains the answer).
+  compliance_flag True = the hint satisfies the level rules (length, question form at L1, no code at L1-L2).
 Solution n-grams that already appear in the task prompt (function name, test asserts) are ignored,
 because the learner can already see them."""
 import ast, json, re
