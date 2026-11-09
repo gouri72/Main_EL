@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from assist.validator import validate, load_tasks, load_solutions
 from assist.fallback import fallback_text
-from assist.prompts import PROMPT_VERSION, SYSTEM, build_user_prompt
+from assist.prompts import PROMPT_VERSION, SYSTEM, build_user_prompt, feedback_text
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "assist" / "cache" / "hints_cache.jsonl"
@@ -119,6 +119,7 @@ def main():
             resolved[i] = (text, "handwritten", validate(t, op, lv, text, S.get(t["task_id"]))); st["handwritten"] += 1
     pending = [i for i in range(len(items)) if i not in resolved]
     t0 = time.time()
+    last_why = {}                           # rejection reasons of the previous attempt, fed back into the retry prompt
     for attempt in range(a.retries):
         if not pending: break
         kof = lambda i: key(model, items[i][0]["task_id"], items[i][1], items[i][2], attempt)
@@ -133,7 +134,7 @@ def main():
             done = 0
             with open(CACHE, "a", encoding="utf-8") as cf:
                 for (tl, temp), idx in groups.items():
-                    prompts = {i: build_user_prompt(items[i][0], items[i][1], items[i][2], S.get(items[i][0]["task_id"])) for i in idx}
+                    prompts = {i: build_user_prompt(items[i][0], items[i][1], items[i][2], S.get(items[i][0]["task_id"]), feedback_text(last_why.get(i, []))) for i in idx}
                     idx.sort(key=lambda i: len(prompts[i]))                 # similar lengths together = less padding
                     for b in range(0, len(idx), a.batch_size):
                         chunk = idx[b:b + a.batch_size]
@@ -156,6 +157,7 @@ def main():
                 resolved[i] = (cand, "qwen", vc)
                 if attempt > 0: st["regenerated_ok"] += 1
             else:
+                last_why[i] = vc["reasons"] + ["LEAK:" + w for w in vc["leak_why"]]
                 still.append(i)
         pending = still
     for i in pending:                       # all attempts rejected -> safe template fallback

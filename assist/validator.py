@@ -30,8 +30,8 @@ def load_solutions(path=None):
     return out
 
 # Words that ASSERT the verdict about the claim. Neutral uses ("confirm the relationship", "the correct approach") must not match.
-SUP = r"(support(s|ed|ing)?\b|consistent with|confirm(s|ed)?\s+(the|this|that)\s+(claim|hypothesis|statement)|(claim|statement|hypothesis|answer)\s+(is|are)\s+(correct|true|accurate|valid))"
-CON = r"(contradict(s|ed|ing|ion)?|refute(s|d)?|disprove(s|d)?|inconsistent|not\s+supported|(claim|statement|hypothesis|answer)\s+(is|are)\s+(incorrect|false|wrong|invalid))"
+SUP = r"(support(s|ed|ing)\b|consistent with|confirm(s|ed)?\s+(the|this|that)\s+(claim|hypothesis|statement)|(claim|statement|hypothesis|answer)\s+(is|are)\s+(correct|true|accurate|valid))"
+CON = r"(contradict(s|ed|ing|ion)|refute(s|d)?|disprove(s|d)?|inconsistent|not\s+supported|(claim|statement|hypothesis|answer)\s+(is|are)\s+(incorrect|false|wrong|invalid))"
 HEDGE = r"(\bwhether\b|\bif\b|\bor\b|\?)"
 # explicit pointers to a sentence in the abstract ("sentence 3", "3rd sentence", "[2]", "S4") give away the evidence location
 SENT_REF = r"(\b(sentence|sentences|line|lines|statement|statements)\s*#?\s*\d+|\b\d+(st|nd|rd|th)\s+(sentence|line|statement)|\[\d+\]|\bS\d+\b)"

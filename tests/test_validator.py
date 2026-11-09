@@ -49,4 +49,13 @@ ok &= check("neutral 'correct approach' not a leak", validate(s, "understand_pla
 ok &= check("'the answer is correct' leaks (SUPPORT label)", validate(s, "explain", 2, "The answer is correct because the study shows a clear effect in the treated group.", None)["leakage_flag"], True)
 ok &= check("'the claim is true' leaks (SUPPORT label)", validate(s, "explain", 2, "The claim is true given the reported results of the trial.", None)["leakage_flag"], True)
 ok &= check("leak_why reports the cause", validate(s, "execute", 2, "The abstract supports the claim, see sentence 3.", None)["leak_why"], ["label", "sentence_ref"])
+ok &= check("'to support the claim' (instruction) not a leak", validate(s, "execute", 3, "1. Find the key results. 2. Focus on the findings and limitations to support the claim.", None)["leakage_flag"], False)
+ok &= check("'which supports the claim' leaks", validate(s, "execute", 2, "The relevant concept is the biomarker association, which supports the claim.", None)["leakage_flag"], True)
+from assist.prompts import build_user_prompt, feedback_text
+pc, ps = build_user_prompt(c, "execute", 4, S["code_001"]), build_user_prompt(s, "execute", 4)
+ok &= check("coding L4 prompt has no science format", "Correct label" in pc or "SUPPORT" in pc, False)
+ok &= check("science L4 prompt has the label format", "Correct label:" in ps, True)
+ok &= check("science prompt strips [n] sentence markers", "[3]" in build_user_prompt({**s, "prompt": "Claim: x [1] a. [3] b."}, "execute", 2).split("Do not mention sentence numbers")[0], False)
+ok &= check("retry feedback names the cause", "sentence numbers" in feedback_text(["LEAK:sentence_ref"]), True)
+ok &= check("no feedback when nothing to fix", feedback_text([]), "")
 print("ALL PASS" if ok else "SOME FAILED"); sys.exit(0 if ok else 1)
