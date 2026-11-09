@@ -14,7 +14,7 @@ tot, rej, why, ex = collections.Counter(), collections.Counter(), collections.Co
 for r in raw:
     t = T[r["task_id"]]; d = t["domain"]; lv = r["level"]
     v = validate(t, r["op"], lv, r["text"], S.get(r["task_id"]))
-    reasons = v["reasons"] + (["LEAK"] if v["leakage_flag"] else [])
+    reasons = v["reasons"] + ["LEAK:" + w for w in v["leak_why"]]
     tot[(d, lv)] += 1
     if reasons:
         rej[(d, lv)] += 1

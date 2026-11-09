@@ -29,8 +29,9 @@ def load_solutions(path=None):
             d = json.loads(l); out[d["task_id"]] = d["solution"]
     return out
 
-SUP = r"(support(s|ed|ing)?|confirm(s|ed)?|consistent with|is true|are true|correct)"
-CON = r"(contradict(s|ed|ing|ion)?|refute(s|d)?|disprove(s|d)?|inconsistent|is false|are false|incorrect)"
+# Words that ASSERT the verdict about the claim. Neutral uses ("confirm the relationship", "the correct approach") must not match.
+SUP = r"(support(s|ed|ing)?\b|consistent with|confirm(s|ed)?\s+(the|this|that)\s+(claim|hypothesis|statement)|(claim|statement|hypothesis|answer)\s+(is|are)\s+(correct|true|accurate|valid))"
+CON = r"(contradict(s|ed|ing|ion)?|refute(s|d)?|disprove(s|d)?|inconsistent|not\s+supported|(claim|statement|hypothesis|answer)\s+(is|are)\s+(incorrect|false|wrong|invalid))"
 HEDGE = r"(\bwhether\b|\bif\b|\bor\b|\?)"
 # explicit pointers to a sentence in the abstract ("sentence 3", "3rd sentence", "[2]", "S4") give away the evidence location
 SENT_REF = r"(\b(sentence|sentences|line|lines|statement|statements)\s*#?\s*\d+|\b\d+(st|nd|rd|th)\s+(sentence|line|statement)|\[\d+\]|\bS\d+\b)"
@@ -79,20 +80,20 @@ def validate(task, op, level, text, solution=None, rules=RULES):
             try: ast.parse(blk)                                           # syntax only, nothing is executed
             except SyntaxError: reasons.append("code_syntax_error"); break
 
-    leak = False
+    leak_why = []
     if r["enforce_leak"]:
         prompt_toks = toks(task["prompt"])
         if task["domain"] == "coding" and solution:
             n = rules["leak_ngram"]
             novel = ngrams(toks(solution), n) - ngrams(prompt_toks, n)
-            leak = len(ngrams(toks(text), n) & novel) > r["max_novel_ngrams"]
+            if len(ngrams(toks(text), n) & novel) > r["max_novel_ngrams"]: leak_why.append("solution_ngram")
         elif task["domain"] == "science":
-            leak = label_leak(text, task["gold"]["label"]) or bool(re.search(SENT_REF, text, re.I))
+            if label_leak(text, task["gold"]["label"]): leak_why.append("label")
+            if re.search(SENT_REF, text, re.I): leak_why.append("sentence_ref")
             n = rules["evidence_ngram"]
             ev = set()
             for e in task["gold"]["evidence"]:
                 ev |= ngrams(toks(e), n)
             # evidence sentences are in the abstract shown to the learner; copying them is only a leak at L1-L2
-            if len(ngrams(toks(text), n) & ev) > rules["evidence_max_novel"][level]:
-                leak = True
-    return {"leakage_flag": bool(leak), "compliance_flag": not reasons, "reasons": reasons}
+            if len(ngrams(toks(text), n) & ev) > rules["evidence_max_novel"][level]: leak_why.append("evidence_ngram")
+    return {"leakage_flag": bool(leak_why), "compliance_flag": not reasons, "reasons": reasons, "leak_why": leak_why}
