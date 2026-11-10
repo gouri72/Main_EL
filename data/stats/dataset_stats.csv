@@ -7,10 +7,10 @@ difficulty 3 (session tasks),50,50
 "prompt length, mean chars",162.1,2032.8
 tasks containing op: understand_plan,150,150
 tasks containing op: execute,150,150
-tasks containing op: debug_verify,100,111
-tasks containing op: explain,50,150
+tasks containing op: debug_verify,80,111
+tasks containing op: explain,74,150
 op labels from gold,0,150
-op labels heuristic,450,411
+op labels heuristic,454,411
 coding: mean tests per task,3.0,-
 science: SUPPORT,-,75
 science: CONTRADICT,-,75
