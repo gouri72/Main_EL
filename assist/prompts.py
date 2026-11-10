@@ -1,7 +1,7 @@
 """Prompt templates for hint generation. Bump PROMPT_VERSION whenever you edit anything here (it is part of the cache key)."""
 import re
 
-PROMPT_VERSION = "v6"
+PROMPT_VERSION = "v7"
 
 SYSTEM = ("You are a careful tutor writing assistance for a student. Follow the level instructions exactly. "
           "Output only the assistance text: no preface, no labels such as 'Hint:' or 'Level 2', and do not repeat the task.")
@@ -18,14 +18,14 @@ RULES = {
                 "Do not write the full solution. Max 80 words.",
  ("coding", 4): "Level 4 (full assistance): write the complete, correct Python solution in one code block, based on the "
                 "reference solution. No explanation outside the code block.",
- ("science", 2): "Level 2 (conceptual hint): in one or two sentences, say WHERE the student should look: which part of the claim or "
-                 "which comparison in the abstract, for example 'Look at how the two groups differ on the main outcome.' "
-                 "Describe where to look, never what the abstract shows or whether the claim holds. Max 40 words.",
+ ("science", 2): "Level 2 (conceptual hint): in one or two sentences, say what the student should look for: which part of the claim to "
+                 "examine, or what kind of comparison to look for in the abstract, for example 'Look at how the two groups differ on the main outcome.' "
+                 "You only see the claim, so describe where to look and never say whether the claim holds. Max 40 words.",
  ("science", 3): "Level 3 (partial scaffold): give a numbered plan of 3 steps. Every step is an ACTION for the student, for example "
                  "'1. Split the claim into its parts. 2. Find the abstract sentences about <topic of the claim>. 3. Compare what they say with the claim.' "
                  "Use the claim's own topic words. Never describe what the abstract shows and never say whether the claim holds. Max 60 words.",
  ("science", 4): "Level 4 (full assistance): reply in exactly this format: "
-                 "'Correct label: <SUPPORT or CONTRADICT>. Evidence: <one or two sentences from the abstract>.'",
+                 "'Correct label: <LABEL>. Evidence: <one or two sentences from the abstract>.'",
 }
 
 # Written from the STUDENT's point of view so the model does not answer on the student's behalf.
@@ -66,8 +66,13 @@ def build_user_prompt(task, op, level, solution=None, feedback=""):
     dom = task["domain"]
     body = task["prompt"]
     if dom == "science":
-        body = re.sub(r"\[\d+\]\s*", "", body)[:2500]     # remove sentence markers so the model has no numbers to cite
+        body = re.sub(r"\[\d+\]\s*", "", body)             # remove sentence markers so the model has no numbers to cite
+        if level == 2:
+            body = body.split("\n\n")[0]                     # a conceptual hint needs only the claim; without the abstract the model cannot state a verdict
+        body = body[:2500]
     rule = RULES.get(("any", level)) or RULES[(dom, level)]
+    if (dom, level) == ("science", 4):
+        rule = rule.replace("<LABEL>", task["gold"]["label"])   # the model only has to fill in the evidence, it cannot flip the label
     extra = ""
     if level == 4:   # full assistance may see the gold answer
         if dom == "coding" and solution:

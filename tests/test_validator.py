@@ -58,4 +58,7 @@ ok &= check("science L4 prompt has the label format", "Correct label:" in ps, Tr
 ok &= check("science prompt strips [n] sentence markers", "[3]" in build_user_prompt({**s, "prompt": "Claim: x [1] a. [3] b."}, "execute", 2).split("Do not mention sentence numbers")[0], False)
 ok &= check("retry feedback names the cause", "sentence numbers" in feedback_text(["LEAK:sentence_ref"]), True)
 ok &= check("no feedback when nothing to fix", feedback_text([]), "")
+l2, l3 = build_user_prompt(s, "execute", 2), build_user_prompt(s, "execute", 3)
+ok &= check("science L2 prompt hides the abstract (claim only)", len(l3) - len(l2) > 800, True)
+ok &= check("science L4 format carries the gold label", "Correct label: SUPPORT. Evidence:" in build_user_prompt(s, "execute", 4), True)
 print("ALL PASS" if ok else "SOME FAILED"); sys.exit(0 if ok else 1)
