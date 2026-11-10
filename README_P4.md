@@ -98,3 +98,8 @@ python assist/eval_validator.py --sheet assist/labels/label_sheet.csv --primary 
 The accuracy report is not complete until labels are filled. The `p3` columns are optional for accuracy, but required
 to report inter-annotator agreement. Save the completed generated files and annotation sheet in the repo so the run is
 reproducible; do not describe fallback rows as Qwen output.
+
+## Hint bank provenance
+- Qwen3-0.6B outputs (assist/cache/hints_cache.jsonl, 4,224 entries) were generated at git tag hints-v1 (prompt v7); environment in assist/cache/generation_env.json.
+- data/hints.jsonl is assembled from that cache with the validator rules in this commit (assist/rules.yaml): `python assist/generate_hints.py --backend cacheonly`. Level-2 min_words was loosened from 10 to 6 after generation (a loosening needs no new generation); nothing else changed.
+- `python assist/check_bank.py` verifies coverage; `python assist/report.py` prints the summary numbers.

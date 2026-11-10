@@ -1,0 +1,17 @@
+{
+    "model": "Qwen/Qwen3-0.6B",
+    "prompt_version": "v7",
+    "git_tag": "hints-v1",
+    "batch_size": 16,
+    "attempts": 3,
+    "temperature_by_attempt": [
+        0.3,
+        0.6,
+        0.9
+    ],
+    "top_p": 0.9,
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "transformers": "5.22.1",
+    "gpu": "Tesla T4"
+}

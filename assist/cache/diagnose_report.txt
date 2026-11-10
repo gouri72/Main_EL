@@ -1,0 +1,36 @@
+first-pass rejection rate by (domain, level):
+  coding   L1     0/ 452 = 0%
+  coding   L2    23/ 452 = 5%
+  coding   L3     6/ 452 = 1%
+  coding   L4     0/ 454 = 0%
+  science  L1     0/ 560 = 0%
+  science  L2     2/ 560 = 0%
+  science  L3     0/ 560 = 0%
+  science  L4    20/ 561 = 4%
+
+reasons (a text can have several):
+  coding   L2  LEAK:solution_ngram    10
+  coding   L2  too_long               7
+  coding   L2  too_short              4
+  coding   L2  code_present           2
+  coding   L2  prompt_echo            1
+  coding   L3  LEAK:solution_ngram    6
+  science  L2  LEAK:evidence_ngram    2
+  science  L4  no_answer              20
+
+examples:
+  [science L4 no_answer] sci_009 understand_plan: Correct label: SUPPORT. Evidence: The claim is supported by the abstract, which states that cells expressing high CSF1R (leukemia-initiating activity) and CSF1R-deficient mice show suppressed AML and slowed progression, indicating
+  [science L4 no_answer] sci_009 execute: Correct label: SUPPORT. Evidence: Cells expressing high amounts of CSF1R (CSF1Rhigh cells), but not those expressing low amounts of CSF1R (CSF1Rlow cells), showed potent leukemia-initiating activity. Moreover, induction of AML was
+  [coding L2 LEAK:solution_ngram] code_025 understand_plan: The function should calculate the sum of an arithmetic progression using the formula S = n/2 * (2a + (n-1)d), where n is the number of terms, a is the first term, and d is the common difference.
+  [coding L2 LEAK:solution_ngram] code_036 understand_plan: The n-th rectangular number is the sum of the first n natural numbers. The formula is n*(n+1)/2. For n=4, this is 4*5/2 = 20.
+  [coding L2 too_long] code_012 understand_plan: The task is to find the nth centered hexagonal number. A centered hexagonal number is a hexagonal number that is centered, meaning it has a hexagonal shape with a ring of hexagons around the center. The formula for the nth centere
+  [coding L2 too_long] code_036 execute: The n-th rectangular number is the sum of the first n natural numbers, i.e., n(n+1)/2. For n=4, this is 4*5/2 = 10. However, the correct answer is 20, which is the sum of 4*5*6/2 = 60. Wait, that's not correct. Let me check again.
+  [coding L3 LEAK:solution_ngram] code_062 understand_plan: 1. Define the function `get_perrin(n)` to return the n-th Perrin number.   | 2. Base cases: `get_perrin(0) = 0`, `get_perrin(1) = 2`, `get_perrin(2) = 3`.   | 3. Recursive step: `get_perrin(n) = get_perrin(n-2) + get_perrin(n-3)`.   | 4
+  [coding L3 LEAK:solution_ngram] code_062 execute: 1. Define the base cases: get_perrin(0) = 0, get_perrin(1) = 1.   | 2. Implement the recursive formula: get_perrin(n) = get_perrin(n-2) + get_perrin(n-3).   | 3. Test the function with assert get_perrin(9) == 12.
+  [coding L2 too_short] code_072 execute: Extract elements from tuples.
+  [coding L2 too_short] code_078 execute: Swap the two numbers.
+  [coding L2 code_present] code_062 debug_verify: The n-th Perrin number can be found using a recursive approach where the function calculates the values based on the previous two values. The function should return 12 when n=9.
+  [coding L2 code_present] code_112 execute: The slope of a line between two points is calculated by dividing the difference in y-coordinates by the difference in x-coordinates. The function should return -1.5 when given the points (4,2) and (2,5).
+  [science L2 LEAK:evidence_ngram] sci_030 execute: Look for evidence in the part of the claim that describes the process of neutrophil extracellular traps (NETs) being released.
+  [science L2 LEAK:evidence_ngram] sci_098 understand_plan: Look for how β-blockers improve clinical heart failure outcomes in patients with congenital heart defects.
+  [coding L2 prompt_echo] code_020 explain: The function uses a binary search approach to find the first occurrence of a number in a sorted array. Level 2 (conceptual hint): binary search.

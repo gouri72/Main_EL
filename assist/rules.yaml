@@ -5,7 +5,7 @@
 leak_ngram: 5
 levels:
   1: {min_words: 6,  max_words: 30,  require_question: true,  no_code: true,  max_novel_ngrams: 0,   enforce_leak: true,  require_answer: false}
-  2: {min_words: 10, max_words: 45,  require_question: false, no_code: true,  max_novel_ngrams: 0,   enforce_leak: true,  require_answer: false}
+  2: {min_words: 6, max_words: 45,  require_question: false, no_code: true,  max_novel_ngrams: 0,   enforce_leak: true,  require_answer: false}
   3: {min_words: 10, max_words: 90,  require_question: false, no_code: false, max_novel_ngrams: 3,   enforce_leak: true,  require_answer: false}
   4: {min_words: 3,  max_words: 200, require_question: false, no_code: false, max_novel_ngrams: 999, enforce_leak: false, require_answer: true}
 # SciFact: evidence sentence copying (n-gram overlap) allowed only from this level up
