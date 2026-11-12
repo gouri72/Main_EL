@@ -60,6 +60,42 @@ not be interpreted as directly psychometrically equivalent.
   uncertain tasks or change the frozen schema.
 - Do not revise the rubric in response to observed kappa or desired results.
 
+
+## Resumable command-line annotation (recommended)
+
+The helper displays only `data/audit/audit_items.txt` and never consults
+the frozen dataset's `operations` or `difficulty` labels.
+
+**First annotator** (the existing blank sheet):
+
+```powershell
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_P3.csv
+```
+
+**Second annotator:** First make a separate blank sheet (only once), then
+share the same rubric and question file without showing the first rating sheet:
+
+```powershell
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_second.csv --init
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_second.csv
+```
+
+For either annotator, enter `q` at a prompt to stop. The tool saves each
+**completed** question immediately and skips it at the next run. Partially
+entered questions are not saved. Run `--status` to display completion counts
+and remaining IDs without entering any ratings. Use `--revise` only to
+explicitly revisit an existing rating; preserve the original first-pass labels
+for reproducibility.
+
+```powershell
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_P3.csv --status
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_second.csv --status
+```
+
+The second annotator must work independently. Do not pass the first
+annotator's CSV to them. The tool cannot verify who entered the values:
+the authors must accurately report whether AI assistance was used.
+
 ## Agreement and reporting
 
 Run only after two independent sheets are complete:
