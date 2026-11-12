@@ -43,6 +43,33 @@ This intentionally includes `data/hints.jsonl` because changes in P4 hints
 would alter the data contract for downstream experiments. Human annotation
 sheets are intentionally excluded.
 
+## Interactive, independent annotation
+
+The Python CLI presents the 40 frozen audit questions without revealing the
+dataset's heuristic operation labels. Each rated task is saved immediately;
+both annotators can work separately and resume without data loss.
+
+```powershell
+# First annotator: existing blank CSV
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_P3.csv
+
+# Second annotator: create their own sheet once, then begin
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_second.csv --init
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_second.csv
+
+# Progress only, no rating input
+python data/scripts/annotate_tasks.py --status
+python data/scripts/annotate_tasks.py --sheet data/audit/annotations_second.csv --status
+
+# Focused regression tests
+python -m pytest -q tests/test_p3_annotation_cli.py
+```
+
+Keep the completed independent sheets separate until both are frozen.
+No code can legitimately fill human-authored judgments on the annotators' behalf.
+Do not claim that agreement analysis has been completed before both sheets
+are independently populated.
+
 ## Independent annotation (not yet completed)
 
 See `data/audit/annotation_protocol.md` and
