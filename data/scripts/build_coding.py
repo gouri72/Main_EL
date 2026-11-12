@@ -14,6 +14,7 @@ Operation labels, difficulty bins and error types are HEURISTIC (label_source = 
 import argparse, ast, copy, json, os, random, re, subprocess, sys, tempfile
 from collections import Counter
 from pathlib import Path
+from relabel_coding_ops import features, ops_for
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW = ROOT / "data" / "raw" / "mbpp.jsonl"
@@ -134,13 +135,23 @@ def error_types_for(solution):
     return sorted(types) or ["wrong_formula"]
 
 
-def operations_for(difficulty):
-    ops = ["understand_plan", "execute"]
-    if difficulty >= 2:
-        ops.append("debug_verify")
-    if difficulty >= 3:
-        ops.append("explain")
-    return [{"op": o, "label_source": "heuristic"} for o in ops]
+
+def operations_for(solution):
+    """
+    Derive reasoning-operation labels from the reference
+    solution's AST rather than the difficulty bin.
+
+    Uses the existing P3 labeling heuristic.
+    Preserves the frozen task JSON schema.
+    """
+    extracted_features = features(solution)
+    operation_names = ops_for(extracted_features)
+
+    return [
+        {"op": op, "label_source": "heuristic"}
+        for op in operation_names
+    ]
+
 
 
 def prompt_for(text, first_test):
@@ -196,7 +207,7 @@ def main():
     for k, x in enumerate(accepted, 1):
         tid = f"code_{k:03d}"
         d = x["difficulty"]
-        ops = operations_for(d)
+        ops = operations_for(x["code"])
         et = error_types_for(x["code"])
         t_tests = "\n".join(x["tests"])
         v_tests = "\n".join(x["var"]["tests"])
