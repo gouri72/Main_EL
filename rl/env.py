@@ -119,6 +119,24 @@ class HumanFirstEnv:
 
         return operation
 
+    def get_valid_actions(self):
+        """Return a list of valid action IDs for the current state based on operation caps."""
+        if self.current_task_idx >= len(self.tasks):
+            return []
+
+        task = self.tasks[self.current_task_idx]
+        operation = self._get_current_operation(task)
+        level_cap = OPERATION_LEVEL_CAPS[operation]
+
+        valid_actions = []
+        for action_id in range(10):
+            requested_level = action_id % 5
+            # Only allow actions where the requested level is within the cap
+            if requested_level <= level_cap:
+                valid_actions.append(action_id)
+
+        return valid_actions
+
     def step(self, action_id, ablate_operation_penalty=False):
         """Execute one action and return observation, reward, done, info."""
 

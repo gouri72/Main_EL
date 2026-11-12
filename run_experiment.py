@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 import argparse
@@ -7,7 +6,6 @@ import json
 import random
 import shutil
 import sys
-
 from pathlib import Path
 
 import numpy as np
@@ -18,39 +16,34 @@ sys.path.insert(0, str(ROOT))
 
 from data.loader import load_tasks, session_pool
 
+# Added "phase" to distinguish train vs eval
 STEPS_COLS = [
     "exp_id", "config_hash", "policy", "sim_family", "profile",
-    "seed", "episode", "task_idx", "action", "route", "level",
+    "seed", "phase", "episode", "task_idx", "action", "route", "level",
     "reward", "success", "domain", "op", "time", "frustrated",
     "abandoned", "copied"
 ]
 
 EPS_COLS = [
     "exp_id", "config_hash", "policy", "sim_family", "profile",
-    "seed", "episode", "total_reward", "pre_transfer",
+    "seed", "phase", "episode", "total_reward", "pre_transfer",
     "post_transfer", "transfer_gain", "n_steps",
     "full_assist_rate", "mean_level", "first_attempt_rate",
     "assist_spent", "takeover_rate"
 ]
 
-
 def load_cfg(path):
     with open(path, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
-
     body = json.dumps(cfg, sort_keys=True)
     cfg["_hash"] = hashlib.sha256(body.encode()).hexdigest()[:8]
     return cfg
-
 
 def set_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
 
-
 def build(cfg, seed, all_tasks):
-    """Build the configured environment and policy (rl/configured_env.py, rl/registry.py)."""
-
     from rl.configured_env import ConfiguredEnv
     from rl.registry import make_policy, reward_for
 
@@ -71,35 +64,23 @@ def build(cfg, seed, all_tasks):
         seed=seed,
         all_tasks=all_tasks,
     )
-
     return env, make_policy(cfg["policy"], seed), pool
-
 
 def write_csv(path, cfg, cols, rows):
     with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(
-            f"# config_hash={cfg['_hash']} exp_id={cfg['exp_id']}\n"
-        )
+        f.write(f"# config_hash={cfg['_hash']} exp_id={cfg['exp_id']}\n")
         f.write(",".join(cols) + "\n")
-
         for row in rows:
             f.write(
-                ",".join(
-                    "" if row.get(col) is None else str(row.get(col))
-                    for col in cols
-                ) + "\n"
+                ",".join("" if row.get(col) is None else str(row.get(col)) for col in cols) + "\n"
             )
 
-
 def main():
-
     ap = argparse.ArgumentParser()
     ap.add_argument("config")
     args = ap.parse_args()
 
     cfg = load_cfg(args.config)
-
-    # P3: Load all 600 tasks, including transfer variants.
     tasks = load_tasks(ROOT / cfg["data"]["tasks"])
 
     meta = {
@@ -114,125 +95,87 @@ def main():
     eps = []
 
     for seed in cfg["seeds"]:
-
         set_seed(seed)
-
-        # Build the policy once per seed.
         env, pol, pool = build(cfg, seed, tasks)
 
         n_tasks = cfg["data"].get("session_tasks", 8)
+        n_train_eps = cfg["n_episodes"]
+        n_eval_eps = cfg.get("n_eval_episodes", 50) # Fallback to 50 if not in config
 
-        for ep in range(cfg["n_episodes"]):
+        def run_phase(phase_name, num_episodes, is_training):
+            for ep in range(num_episodes):
+                episode_seed = int(np.random.SeedSequence([int(seed), int(ep), int(is_training)]).generate_state(1)[0])
+                rng = np.random.default_rng(episode_seed)
+                env_tasks = rng.choice(pool, size=n_tasks, replace=False).tolist()
 
-            # Reproducible but different task draw for every episode.
-            episode_seed = int(
-                np.random.SeedSequence(
-                    [int(seed), int(ep)]
-                ).generate_state(1)[0]
-            )
+                env.tasks = env_tasks
+                env.all_tasks = tasks
+                env.seed = episode_seed
+                state = env.reset()
 
-            rng = np.random.default_rng(episode_seed)
+                done = False
+                total_reward = 0.0
+                k = 0
+                level_history = []
+                full, first = 0, 0
+                info = {}
 
-            env_tasks = rng.choice(
-                pool,
-                size=n_tasks,
-                replace=False
-            ).tolist()
+                while not done:
+                    # Backward compatibility if you haven't updated env and policy yet
+                    valid_actions = getattr(env, "get_valid_actions", lambda: list(range(10)))()
+                    
+                    try:
+                        action = int(pol.get_action(state, valid_actions, is_training=is_training))
+                    except TypeError:
+                        action = int(pol.get_action(state, is_training=is_training))
 
-            # Update the existing P2 environment for this episode.
-            env.tasks = env_tasks
-            env.all_tasks = tasks
-            env.seed = episode_seed
+                    next_state, reward, done, info = env.step(action)
+                    next_valid_actions = getattr(env, "get_valid_actions", lambda: list(range(10)))() if not done else []
 
-            state = env.reset()
+                    if is_training:
+                        try:
+                            pol.update(state, action, reward, next_state, done, next_valid_actions)
+                        except TypeError:
+                            pol.update(state, action, reward, next_state, done)
 
-            done = False
-            total_reward = 0.0
-            k = 0
+                    task = env_tasks[k]
+                    route = info.get("route", action // 5)
+                    actual_level = info.get("actual_level", action % 5)
 
-            level_history = []
-            full = 0
-            first = 0
-            info = {}
+                    steps.append({
+                        **meta, "seed": seed, "phase": phase_name, "episode": ep,
+                        "task_idx": k, "action": action, "route": route, 
+                        "level": actual_level, "reward": round(reward, 4),
+                        "success": info.get("immediate_success"),
+                        "domain": task.get("domain"), "op": info.get("operation"),
+                        "time": info.get("time"), "frustrated": info.get("frustrated"),
+                        "abandoned": info.get("abandoned"), "copied": info.get("copied")
+                    })
 
-            while not done:
+                    level_history.append(actual_level)
+                    full += actual_level == 4
+                    first += route == 0
+                    total_reward += reward
+                    k += 1
+                    state = next_state
 
-                action = int(
-                    pol.get_action(state, is_training=True)
-                )
+                pre, post = info.get("pre_transfer"), info.get("transfer_success")
+                gain = round((float(post) - float(pre)) / (1 - float(pre)), 4) if (pre is not None and post is not None and pre < 1) else None
 
-                next_state, reward, done, info = env.step(action)
-
-                pol.update(
-                    state, action, reward, next_state, done
-                )
-
-                task = env_tasks[k]
-
-                route = info.get("route", action // 5)
-                actual_level = info.get(
-                    "actual_level", action % 5
-                )
-
-                steps.append({
-                    **meta,
-                    "seed": seed,
-                    "episode": ep,
-                    "task_idx": k,
-                    "action": action,
-                    "route": route,
-                    "level": actual_level,
-                    "reward": round(reward, 4),
-                    "success": info.get("immediate_success"),
-                    "domain": task.get("domain"),
-
-                    # Actual operation selected by P2 environment.
-                    "op": info.get("operation"),
-
-                    "time": info.get("time"),
-                    "frustrated": info.get("frustrated"),
-                    "abandoned": info.get("abandoned"),
-                    "copied": info.get("copied")
+                eps.append({
+                    **meta, "seed": seed, "phase": phase_name, "episode": ep,
+                    "total_reward": round(total_reward, 4), "pre_transfer": pre,
+                    "post_transfer": post, "transfer_gain": gain, "n_steps": k,
+                    "full_assist_rate": round(full / k, 4) if k > 0 else 0, 
+                    "mean_level": round(float(np.mean(level_history)), 4) if level_history else 0,
+                    "first_attempt_rate": round(first / k, 4) if k > 0 else 0, 
+                    "assist_spent": int(sum(level_history)),
+                    "takeover_rate": info.get("takeover_rate")
                 })
 
-                level_history.append(actual_level)
-                full += actual_level == 4
-                first += route == 0
-
-                total_reward += reward
-                k += 1
-                state = next_state
-
-            # Transfer evaluation from P2 environment.
-            pre = info.get("pre_transfer")
-            post = info.get("transfer_success")
-
-            # Preserve fractional transfer success rates.
-            gain = None
-
-            if pre is not None and post is not None and pre < 1:
-                gain = round(
-                    (float(post) - float(pre)) / (1 - float(pre)),
-                    4
-                )
-
-            eps.append({
-                **meta,
-                "seed": seed,
-                "episode": ep,
-                "total_reward": round(total_reward, 4),
-                "pre_transfer": pre,
-                "post_transfer": post,
-                "transfer_gain": gain,
-                "n_steps": k,
-                "full_assist_rate": round(full / k, 4),
-                "mean_level": round(
-                    float(np.mean(level_history)), 4
-                ),
-                "first_attempt_rate": round(first / k, 4),
-                "assist_spent": int(sum(level_history)),
-                "takeover_rate": info.get("takeover_rate")
-            })
+        # Run training loop then frozen-policy evaluation loop
+        run_phase("train", n_train_eps, is_training=True)
+        run_phase("eval", n_eval_eps, is_training=False)
 
     out = ROOT / "results" / cfg["exp_id"]
     out.mkdir(parents=True, exist_ok=True)
@@ -242,10 +185,7 @@ def main():
 
     shutil.copy(args.config, out / "config.yaml")
 
-    print(
-        f"Wrote {len(steps)} step rows, "
-        f"{len(eps)} episode rows -> {out}"
-    )
+    print(f"Wrote {len(steps)} step rows, {len(eps)} episode rows -> {out}")
 
 
 if __name__ == "__main__":

@@ -16,8 +16,7 @@ def get_features(state):
 
 
 class TabularQPolicy:
-    def __init__(self, num_actions=10, alpha=0.1, gamma=0.9,
-                 epsilon=0.1, seed=42):
+    def __init__(self, num_actions=10, alpha=0.1, gamma=0.9, epsilon=0.1, seed=42):
         self.num_actions = num_actions
         self.alpha = alpha
         self.gamma = gamma
@@ -25,21 +24,36 @@ class TabularQPolicy:
         self.rng = np.random.default_rng(seed)
         self.q_table = defaultdict(lambda: np.zeros(num_actions))
 
-    def get_action(self, state, is_training=True):
+    def get_action(self, state, valid_actions=None, is_training=True):
+        if valid_actions is None:
+            valid_actions = list(range(self.num_actions))
+        if not valid_actions:
+            raise ValueError("No valid actions available.")
+
         state_key = tuple(state)
 
+        # Masked exploration
         if is_training and self.rng.random() < self.epsilon:
-            return int(self.rng.integers(0, self.num_actions))
+            return int(self.rng.choice(valid_actions))
 
-        return random_argmax(self.q_table[state_key], self.rng)
+        # Masked greedy selection
+        q_values = np.full(self.num_actions, -np.inf)
+        for a in valid_actions:
+            q_values[a] = self.q_table[state_key][a]
 
-    def update(self, state, action, reward, next_state, done):
+        return random_argmax(q_values, self.rng)
+
+    def update(self, state, action, reward, next_state, done, next_valid_actions=None):
         state_key = tuple(state)
         next_state_key = tuple(next_state)
 
-        best_next_q = (
-            np.max(self.q_table[next_state_key]) if not done else 0.0
-        )
+        # Masked next-state max Q
+        if not done and next_valid_actions:
+            valid_next_qs = [self.q_table[next_state_key][a] for a in next_valid_actions]
+            best_next_q = np.max(valid_next_qs)
+        else:
+            best_next_q = 0.0
+
         target = reward + self.gamma * best_next_q
         error = target - self.q_table[state_key][action]
         self.q_table[state_key][action] += self.alpha * error
