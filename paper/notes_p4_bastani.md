@@ -1,0 +1,5 @@
+# P4 reading note: Bastani et al. (2025)
+
+**Reference:** Hamsa Bastani, Osbert Bastani, Alp Sungu, Haosen Ge, Özge Kabakcı, and Rei Mariman. “Generative AI without guardrails can harm learning: Evidence from high school mathematics.” *Proceedings of the National Academy of Sciences* 122(26), e2422633122 (2025). [https://doi.org/10.1073/pnas.2422633122](https://doi.org/10.1073/pnas.2422633122).
+
+Bastani et al. report a high-school field experiment in which GPT-4 improved assisted practice performance, while access to an unguarded GPT-4 interface reduced later unaided exam performance; teacher-designed tutor safeguards largely mitigated that reduction. HumanFirst-Route differs by evaluating a tabular routing and assistance-level policy, with operation-aware caps and a later unaided-transfer reward, across simulated learner families rather than testing fixed tutor interfaces with students. The paper motivates our computational question but does not validate our simulator, and our results cannot support claims about learning outcomes in real people.
