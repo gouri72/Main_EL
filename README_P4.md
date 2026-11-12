@@ -1,14 +1,25 @@
 # P4: assistance generation, validator, runner, figures (run from the repo root)
 
-    pip install -r requirements.txt
-    python tests/test_validator.py                         # validator sanity script (must print ALL PASS)
-    python assist/build_stub_hints.py                      # Day-1 stub: full ladder for all base tasks -> data/hints.jsonl
-    python assist/generate_hints.py --backend mock         # offline test of generate/validate/retry/fallback
-    python assist/generate_hints.py --backend qwen --limit 3   # Colab GPU, de-risk run (pip install -r requirements-colab.txt)
-    python run_experiment.py configs/example.yaml          # -> results/<exp_id>/{steps,episodes,config}.csv/yaml
-    python analysis/plots.py results/<exp_id>              # -> paper/figs/*.pdf
-    python assist/make_label_sheet.py --n 100              # after the real Qwen run: hand-labeling sheet
-    python assist/eval_validator.py                        # validator precision/recall + inter-annotator kappa
+Current-bank checks:
+
+```bash
+python tests/test_validator.py
+python assist/check_bank.py
+python assist/report.py
+python assist/eval_validator.py --sheet assist/labels/label_sheet.csv --primary p4 --second p3
+```
+
+Experiment and figure commands:
+
+```bash
+python run_experiment.py configs/example.yaml
+python analysis/plots.py results/<exp_id>
+```
+
+`assist/build_stub_hints.py` is only for the initial fallback stub and overwrites `data/hints.jsonl`; do not run it on
+the completed Qwen bank. `assist/generate_hints.py --backend qwen --limit 3` is only a small GPU smoke run and writes an
+incomplete bank; use the full generation workflow below for a final bank. `assist/make_label_sheet.py` recreates and
+overwrites the annotation CSV, so do not rerun it after anyone has entered labels unless you have saved those labels.
 
 In data/hints.jsonl `leakage_flag=True` means the hint leaks the solution/gold label at a level where that is not allowed
 (levels 1-3). Level 4 = full assistance, never leak-flagged. `compliance_flag=True` means OK. Hints exist only for base
@@ -17,9 +28,20 @@ Validator limitations: rule-based n-gram/regex checks miss paraphrased leaks.
 
 ## Current P4 state
 
-The checked-in `data/hints.jsonl` is a usable stub bank, not the final Qwen bank. In the inspected snapshot it had
-4,044 rows: 9 handwritten and 4,035 fallback, with no generation cache or validator label sheet. The validator sanity
-script passed, but validator accuracy has not been measured until hints are independently hand-labeled.
+The current checked-in bank has 4,060 rows covering all 300 base tasks, their labeled operations, and levels 1-4:
+4,030 validated Qwen3-0.6B hints, 9 handwritten hints, and 21 fallback hints. The generation cache contains 4,224
+entries; generation details are recorded in `assist/cache/generation_env.json`, and `assist/report.py` summarizes
+provenance and first-pass rejection rates. `python assist/check_bank.py` verifies coverage and flags.
+
+The validator sanity script passes. A 100-item hand-label sheet is prepared at `assist/labels/label_sheet.csv` with
+30 dev and 70 test items sampled from raw first-pass generations. Validator accuracy remains unmeasured until the
+independent labels are filled in; the test split must not be used to tune rules.
+
+The P4 reading note for Bastani et al. is in `paper/notes_p4_bastani.md`. Plotting scripts and PDFs are present, but
+the checked-in `results/smoke_001` is one policy in one simulator family, so those plots are pipeline examples only;
+they are not the final multi-baseline or held-out-simulator paper figures. `analysis/plots.py` needs the packages in
+`requirements.txt`; in the current local Python environment pandas and matplotlib are missing, so I have not
+regenerated or overwritten the existing PDFs.
 
 ## Colab generation with resumable Drive cache
 

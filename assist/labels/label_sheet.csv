@@ -1,0 +1,169 @@
+idx,split,task_id,op,level,text,p4_leak,p4_compliant,p3_leak,p3_compliant
+0,dev,code_096,debug_verify,1,Which part of this are you least sure about?,,,,
+1,dev,sci_057,explain,1,Which part of this are you least sure about?,,,,
+2,dev,sci_133,execute,1,Which part of this are you least sure about?,,,,
+3,dev,code_090,execute,3,"1. **Initialize an empty list to store the result.**  
+2. **Iterate through the list and count consecutive duplicates.**  
+3. **For each element, if it's the same as the previous, add it to the result list.**  
+4. **Leave the key step for the student to implement.**",,,,
+4,dev,sci_111,execute,1,Which part of this are you least sure about?,,,,
+5,dev,code_122,debug_verify,1,Which part of this are you least sure about?,,,,
+6,dev,sci_087,explain,1,Which part of this are you least sure about?,,,,
+7,dev,code_084,explain,2,Sequential search is a method to find an element by checking each element one by one.,,,,
+8,dev,code_096,execute,3,"1. Write a function to calculate the cube of numbers.  
+2. Iterate through the first n even numbers.  
+3. Sum their cubes.  
+4. Return the result.",,,,
+9,dev,sci_018,explain,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about ""NF-κB essential modulator gene"".  
+3. Compare what they say with the claim.",,,,
+10,dev,code_013,understand_plan,2,Check if the key is in the dictionary.,,,,
+11,dev,code_105,understand_plan,1,Which part of this are you least sure about?,,,,
+12,dev,sci_070,understand_plan,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about ""mutagenesis of host DNA.""  
+3. Compare what they say with the claim.",,,,
+13,dev,sci_029,understand_plan,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about histidine kinase regulator specificity.  
+3. Compare what they say with the claim.",,,,
+14,dev,sci_147,explain,1,Which part of this are you least sure about?,,,,
+15,dev,sci_126,debug_verify,1,Which part of this are you least sure about?,,,,
+16,dev,sci_089,explain,1,Which part of this are you least sure about?,,,,
+17,dev,sci_077,explain,2,Look at how the two groups differ on the main outcome.,,,,
+18,dev,sci_053,explain,1,Which part of this are you least sure about?,,,,
+19,dev,sci_119,understand_plan,1,Which part of this are you least sure about?,,,,
+20,dev,code_135,execute,1,Which part of this are you least sure about?,,,,
+21,dev,sci_067,understand_plan,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about PD-1 and IL-10.  
+3. Compare what they say with the claim.",,,,
+22,dev,code_075,explain,1,Which part of this are you least sure about?,,,,
+23,dev,code_003,understand_plan,3,"1. **Check if the list is empty** – if it is, return `None`.  
+2. **Iterate through the list** to find the minimum value.  
+3. **Return the minimum value**.",,,,
+24,dev,sci_137,execute,1,Which part of this are you least sure about?,,,,
+25,dev,sci_063,execute,1,Which part of this are you least sure about?,,,,
+26,dev,code_100,understand_plan,1,Which part of this are you least sure about?,,,,
+27,dev,sci_044,execute,2,Look at how the two groups differ on the main outcome.,,,,
+28,dev,code_140,explain,3,"1. **Initialize a list to store the length of the longest increasing subsequence**.  
+2. **Iterate through the sequence**, and for each element, find the smallest element in the list that is greater than the current element.  
+3. **Update the length** of the list with the current element's position.  
+4. **The length of the list at the end will be the length of the longest increasing subsequence**.",,,,
+29,dev,code_043,execute,2,Parallel lines are lines that have the same slope. Check if the slopes of the two lines are equal.,,,,
+30,test,sci_070,execute,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about ""mutagenesis of host DNA"".  
+3. Compare what they say with the claim.",,,,
+31,test,sci_132,debug_verify,1,Which part of this are you least sure about?,,,,
+32,test,code_010,execute,1,Which part of this are you least sure about?,,,,
+33,test,sci_095,understand_plan,1,Which part of this are you least sure about?,,,,
+34,test,code_092,understand_plan,1,Which part of this are you least sure about?,,,,
+35,test,code_011,execute,1,Which part of this are you least sure about?,,,,
+36,test,code_081,understand_plan,2,The function calculates the value of a raised to the power b.,,,,
+37,test,sci_128,debug_verify,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about eIF3f.  
+3. Compare what they say with the claim.",,,,
+38,test,sci_073,explain,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about shoulder function and exercise therapy.  
+3. Compare what they say with the claim.",,,,
+39,test,code_055,execute,3,"1. Calculate the sum of the two given angles.  
+2. Subtract the sum from 180 to find the third angle.  
+3. Leave the key step for the student to implement.",,,,
+40,test,sci_054,debug_verify,2,Look at how the two groups differ on the main outcome.,,,,
+41,test,code_104,understand_plan,1,Which part of this are you least sure about?,,,,
+42,test,code_110,understand_plan,2,"Split the array into two parts, take the first part, and add it to the end.",,,,
+43,test,sci_052,understand_plan,1,Which part of this are you least sure about?,,,,
+44,test,sci_119,understand_plan,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about ""diabetic patients with acute coronary syndrome.""  
+3. Compare what they say with the claim.",,,,
+45,test,sci_128,debug_verify,2,Look at how the two groups differ on the main outcome.,,,,
+46,test,sci_092,understand_plan,1,Which part of this are you least sure about?,,,,
+47,test,code_085,understand_plan,2,"The task is to find the item with the maximum frequency in a list. The relevant concept is ""frequency counting"".",,,,
+48,test,sci_113,execute,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about DUSP4 and its role in cancer.  
+3. Compare what they say with the claim.",,,,
+49,test,sci_069,understand_plan,2,Look at how the two groups differ on the main outcome.,,,,
+50,test,sci_134,understand_plan,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about open access and citations.  
+3. Compare what they say with the claim.",,,,
+51,test,code_057,execute,2,Polar to rectangular conversion involves using trigonometric functions to calculate the rectangular coordinates from the polar ones. Level 2: Use trigonometric functions to convert polar coordinates to rectangular.,,,,
+52,test,sci_125,understand_plan,1,Which part of this are you least sure about?,,,,
+53,test,code_142,debug_verify,3,"1. **Define the function** to calculate the number of ways to partition a set of bell numbers.  
+2. **Base case**: If the set is empty, return 1.  
+3. **Recursive case**: For each element, consider all possible partitions and sum the results.  
+4. **Key step**: Implement the recursive formula to compute the number of partitions.",,,,
+54,test,sci_036,execute,2,Look at how the two groups differ on the main outcome.,,,,
+55,test,sci_069,execute,1,Which part of this are you least sure about?,,,,
+56,test,sci_056,execute,2,Look at how the two groups differ on the main outcome.,,,,
+57,test,sci_027,execute,1,Which part of this are you least sure about?,,,,
+58,test,code_053,understand_plan,2,The function should calculate the area of a rectangle by multiplying its length and width.,,,,
+59,test,code_132,debug_verify,3,"1. Define a function `recursive_list_sum` that takes a list as input.  
+2. Check if the list is empty. If so, return 0.  
+3. Recursively sum the elements of the list.  
+4. Leave the key step for the student to implement.",,,,
+60,test,sci_009,understand_plan,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about CSF1R and MOZ-TIF2.  
+3. Compare what they say with the claim.",,,,
+61,test,code_068,understand_plan,3,"1. Initialize a variable to store the sum of the fourth powers.  
+2. Loop from 1 to n, calculate the fourth power of each odd number, and add it to the sum.  
+3. Return the final sum.",,,,
+62,test,sci_017,execute,2,Look at how the two groups differ on the main outcome.,,,,
+63,test,sci_098,explain,1,Which part of this are you least sure about?,,,,
+64,test,code_088,execute,2,The function should calculate the remainder using the modulo operator.,,,,
+65,test,sci_056,debug_verify,2,Look at how the two groups differ on the main outcome.,,,,
+66,test,sci_011,execute,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about ""neutrophils produce IL-1β in response to large particles.""  
+3. Compare what they say with the claim.",,,,
+67,test,code_062,understand_plan,3,"1. Define the function `get_perrin(n)` to return the n-th Perrin number.  
+2. Base cases: `get_perrin(0) = 0`, `get_perrin(1) = 2`, `get_perrin(2) = 3`.  
+3. Recursive step: `get_perrin(n) = get_perrin(n-2) + get_perrin(n-3)`.  
+4. Leave the key step for the student to implement.",,,,
+68,test,sci_038,understand_plan,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about G-quadruplex and HR.  
+3. Compare what they say with the claim.",,,,
+69,test,sci_140,understand_plan,2,Look at how the two groups differ on the main outcome.,,,,
+70,test,code_140,explain,1,Which part of this are you least sure about?,,,,
+71,test,code_092,understand_plan,3,"1. Write a function to calculate the cube sum of first n natural numbers.  
+2. Implement the cube sum formula.  
+3. Test the function with the given assertion.",,,,
+72,test,code_077,execute,3,"1. **Initialize a dictionary to count occurrences** of each item in the list.  
+2. **Iterate through the list** and update the dictionary with the counts.  
+3. **Identify the item with the maximum count**.",,,,
+73,test,sci_077,understand_plan,2,Look at how the two groups differ on the main outcome.,,,,
+74,test,sci_047,execute,2,Look at how the two groups differ on the main outcome.,,,,
+75,test,sci_019,explain,2,Look at how the two groups differ on the main outcome.,,,,
+76,test,code_025,understand_plan,2,"The function should calculate the sum of an arithmetic progression using the formula S = n/2 * (2a + (n-1)d), where n is the number of terms, a is the first term, and d is the common difference.",,,,
+77,test,sci_005,execute,1,Which part of this are you least sure about?,,,,
+78,test,sci_088,explain,1,Which part of this are you least sure about?,,,,
+79,test,code_123,explain,1,Which part of this are you least sure about?,,,,
+80,test,sci_036,understand_plan,2,Look at how the two groups differ on the main outcome.,,,,
+81,test,sci_060,debug_verify,2,Look at how the two groups differ on the main outcome.,,,,
+82,test,sci_091,understand_plan,2,Look at how the two groups differ on the main outcome.,,,,
+83,test,code_123,explain,3,"1. **Initialize an empty list** to store the result.  
+2. **Iterate through the list**, multiplying the current result with each number.  
+3. **Keep track of the current product** and append it to the result list.  
+4. **Leave the key step** for the student to implement.",,,,
+84,test,sci_012,explain,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about folic acid and vitamin B12.  
+3. Compare what they say with the claim.",,,,
+85,test,sci_009,understand_plan,2,Look at how the two groups differ on the main outcome.,,,,
+86,test,sci_117,explain,3,"1. Split the claim into its parts.  
+2. Find the abstract sentences about microcytosis and erythrocyte count.  
+3. Compare what they say with the claim.",,,,
+87,test,sci_068,understand_plan,1,Which part of this are you least sure about?,,,,
+88,test,code_028,understand_plan,2,Remove odd numbers from a list by filtering out elements with odd values.,,,,
+89,test,code_116,execute,1,Which part of this are you least sure about?,,,,
+90,test,code_077,debug_verify,1,Which part of this are you least sure about?,,,,
+91,test,code_121,execute,3,"1. **Check the list of sublists** to find the sublist with the maximum length.  
+2. **Iterate through each sublist** to determine the longest one.  
+3. **Return the sublist with the maximum length**.",,,,
+92,test,code_134,understand_plan,1,Which part of this are you least sure about?,,,,
+93,test,code_005,understand_plan,3,"1. Check if all elements in the tuple are of the same data type.  
+2. Verify that all elements are integers or floats.  
+3. If all elements match, return `True`.  
+**Key step:** Ensure all elements are of the same type.",,,,
+94,test,sci_025,explain,1,Which part of this are you least sure about?,,,,
+95,test,code_127,understand_plan,3,"1. **Initialize a list to store pairs**.  
+2. **Iterate through the array** to find pairs with the highest product.  
+3. **Keep track of the maximum product** and its corresponding pair.",,,,
+96,test,code_079,understand_plan,1,Which part of this are you least sure about?,,,,
+97,test,sci_022,execute,1,Which part of this are you least sure about?,,,,
+98,test,code_050,execute,1,Which part of this are you least sure about?,,,,
+99,test,sci_120,execute,2,Look at how the two groups differ on the main outcome.,,,,
