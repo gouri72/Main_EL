@@ -23,7 +23,7 @@ After two independent annotators have finished their sheets:
 python data/scripts/audit_agreement.py data/audit/annotations_P3.csv data/audit/annotations_second.csv
 ```
 
-The quality report is generated locally and is not committed in this change. Verify actual results before using statistics in a manuscript.
+The checked-in quality report was generated from the frozen dataset after the previous P3 integration. Regenerate and compare it when data files change; this branch does not regenerate datasets.
 
 ## Known scientific limitations
 
@@ -34,6 +34,12 @@ The quality report is generated locally and is not committed in this change. Ver
 - Simulator transfer outcomes are sampled by P2's model, not obtained by executing transfer problems or grading SciFact answers.
 - Neither structural checks nor synthetic-learner results establish real human learning improvements.
 
-## Paper tasks
+## Completion and remaining actions
 
-Update `paper/datasets.md` to the audited coding counts (80 debug/verify; 74 explain), remove its obsolete claim that coding operations are deterministic functions of difficulty, and describe the human agreement report as pending until annotation sheets are completed.
+The paper's counts and AST-method wording have been updated (coding: 80 debug/verify and 74 explain). The dataset sources and transfer limitations are documented in `paper/related_work_p3.md`, and the independent rating rubric is prepared in `data/audit/annotation_protocol.md`.
+
+Run `python data/scripts/freeze_manifest.py` once to create `data/stats/p3_freeze_manifest.json`, and then `python data/scripts/freeze_manifest.py --verify` to check for subsequent modifications. Commit the generated manifest only after the team confirms which task and hint versions are frozen.
+
+**Outstanding human-only step:** two independent annotators complete the same 40-task sheets, followed by `audit_agreement.py`; no agreement statistics should be claimed before then.
+
+**Other-team research issue:** P1/P2 should check abstract-disjoint train/evaluation conditions and whether the transfer simulation is meaningfully linked to actual transfer-task difficulty. These are not automatic P3 data fixes.
