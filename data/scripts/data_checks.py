@@ -57,7 +57,7 @@ if shared_tests:
 fn_dups = [n for n, c in Counter(fname(t) for t in cb.values()).items() if c > 1]
 print(f"INFO coding: base function names reused by more than one session task: {len(fn_dups)}")
 rule_ok = sum(len(t["operations"]) == 2 + (t["difficulty"] >= 2) + (t["difficulty"] >= 3) for t in cb.values())
-print(f"INFO coding: operation list fully determined by difficulty in {rule_ok}/{len(cb)} tasks")
+print(f"INFO coding: {rule_ok}/{len(cb)} tasks match the previous difficulty-only label-count pattern; current labels are AST-derived")
 
 # 3. science
 sb = {k: t for k, t in base.items() if t["domain"] == "science"}
