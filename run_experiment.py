@@ -49,43 +49,30 @@ def set_seed(seed):
 
 
 def build(cfg, seed, all_tasks):
-    """Build P2 environment and policy using the complete task dictionary."""
+    """Build the configured environment and policy (rl/configured_env.py, rl/registry.py)."""
 
-    from rl.env import HumanFirstEnv
-    from rl.policy import TabularQPolicy
+    from rl.configured_env import ConfiguredEnv
+    from rl.registry import make_policy, reward_for
 
     pool = session_pool(all_tasks)
-
     n_tasks = cfg["data"].get("session_tasks", 8)
 
     if len(pool) < n_tasks:
-        raise ValueError(
-            f"Need {n_tasks} session tasks, but only {len(pool)} available"
-        )
+        raise ValueError(f"Need {n_tasks} session tasks, but only {len(pool)} available")
 
-    env = HumanFirstEnv(
-        tasks=pool[:n_tasks],
+    env = ConfiguredEnv(
+        pool[:n_tasks],
+        reward=reward_for(cfg),
+        discretize=cfg.get("state", {}).get("discretize", True),
+        transfer_repeats=cfg.get("transfer_repeats", 20),
+        drop=cfg.get("state", {}).get("drop", []),
         profile=cfg["simulator"]["profile"],
         family=cfg["simulator"]["family"],
         seed=seed,
-        all_tasks=all_tasks
+        all_tasks=all_tasks,
     )
 
-    pc = cfg["policy"]
-
-    if pc["name"] == "tabular_q":
-        pol = TabularQPolicy(
-            alpha=pc.get("alpha", 0.1),
-            gamma=pc.get("gamma", 0.9),
-            epsilon=pc.get("epsilon", 0.1),
-            seed=seed
-        )
-    else:
-        raise NotImplementedError(
-            f"Policy '{pc['name']}' is not registered"
-        )
-
-    return env, pol, pool
+    return env, make_policy(cfg["policy"], seed), pool
 
 
 def write_csv(path, cfg, cols, rows):
