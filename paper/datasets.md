@@ -16,8 +16,8 @@ We use two task domains with deliberately different label semantics: Python prog
 | Difficulty 1 / 2 / 3 | 50 / 50 / 50 | 50 / 50 / 50 |
 | Mean prompt length (characters) | 162 | 2,033 |
 | Tasks with operation: understand/plan, execute | 150, 150 | 150, 150 |
-| Tasks with operation: debug/verify | 100 | 111 |
-| Tasks with operation: explain | 50 | 150 |
+| Tasks with operation: debug/verify | 80 | 111 |
+| Tasks with operation: explain | 74 | 150 |
 | Tests per task (mean) | 3.0 | - |
 | SUPPORT / CONTRADICT | - | 75 / 75 |
 | Evidence sentences per task (mean) | - | 1.8 |
@@ -25,7 +25,7 @@ We use two task domains with deliberately different label semantics: Python prog
 
 # Data limitations
 
-**Heuristic annotations.** Operation labels, difficulty bins and error types are heuristic, not human judgements. In coding, operation membership is a deterministic function of difficulty (debug/verify from difficulty 2, explain at difficulty 3), and difficulty bins are tertiles, so equal bin sizes are by construction. We report a 40-task audit comparing two independent annotators with the heuristic labels (see Label-noise audit). Error types are coarse tags derived from solution syntax or claim features (for example, `missed_negation` coincides with the CONTRADICT label) and are not used for any claim in this paper.
+**Heuristic annotations.** Operation labels, difficulty bins and error types are heuristic, not human judgements. In coding, operation membership is derived from AST features of the reference solution (including control flow and structural complexity), not solely from the difficulty bin. Difficulty bins are tertiles, so equal bin sizes are by construction. A fixed 40-task sample is prepared for independent human annotation and comparison with heuristic labels. Agreement statistics must not be reported until both completed annotation sheets are available. Error types are coarse tags derived from solution syntax or claim features (for example, `missed_negation` coincides with the CONTRADICT label) and are not used for any claim in this paper.
 
 **Weak transfer.** Coding transfer variants are near-transfer: same algorithm, new names and numbers. They test retention of the underlying skill, not generalization to a new problem. Science variants match on label and evidence structure, not topic. We therefore interpret transfer as repeated application of the same skill, not far transfer.
 
