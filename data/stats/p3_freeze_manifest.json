@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "purpose": "P3 frozen task/hint dataset",
+  "files": {
+    "tasks.jsonl": {
+      "sha256": "df967e1418631c4f5f8d2279a3b551fa23732058d37c3abd7b95d49bc04ff339",
+      "bytes": 1059706,
+      "records": 600
+    },
+    "tasks_coding.jsonl": {
+      "sha256": "72434e4793091ed0664406a363207f60fe2ed6f100d2d4d51c8b8d0266cb51e7",
+      "bytes": 207461,
+      "records": 300
+    },
+    "tasks_science.jsonl": {
+      "sha256": "a52b28779b354df69daa8044e1774962891966a2c0b4b9f4f119b06369ac41f8",
+      "bytes": 852245,
+      "records": 300
+    },
+    "solutions.jsonl": {
+      "sha256": "a22c5daea95185f0fa360bd510e270014c32863dde5571bbb76e717fc13eecff",
+      "bytes": 60080,
+      "records": 300
+    },
+    "hints.jsonl": {
+      "sha256": "7f395823c062ed0c66991bda9fa41f478c072a6e6cc668bca4fba34379f4847f",
+      "bytes": 1111386,
+      "records": 4060
+    },
+    "build_config.yaml": {
+      "sha256": "8175a6e1890f4a78ffc8a28653c97b5fc92867003530d0fc95a0997fdb27ac47",
+      "bytes": 413
+    }
+  }
+}
