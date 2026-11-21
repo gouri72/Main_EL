@@ -1,7 +1,8 @@
 # P3 dataset and transfer-pair benchmarking (verified structural results)
 
-**Status:** automated engineering checks complete; independent human
-annotation and inter-annotator agreement pending.
+**Status:** automated engineering checks complete. The planned independent human
+annotation and inter-annotator agreement remain unperformed; a separate
+exploratory LLM-assisted labeling audit is prepared but has no ratings yet.
 
 ## Dataset composition
 
@@ -70,11 +71,14 @@ or semantically scored by the simulator.
 
 ## Open research validation
 
-Two independent people must annotate the fixed 40-task sample without
-access to heuristic labels. The annotation CLI, frozen rubric, full-sheet
-validation and agreement calculator are implemented, but the human
-ratings and kappa results are not yet available. Until then, report
-label validity as *pending*, not as verified.
+The original 40-item independent-human protocol and annotation sheets are
+preserved, but the team has deferred that study. An exploratory
+`data/audit/annotations_llm_assisted.csv` is available for model-assisted
+operation/difficulty labels, with explicit model provenance and review status.
+The new `data/scripts/audit_llm_assisted.py` computes agreement against frozen
+heuristics only after all 40 ratings are supplied. At present no AI-assisted
+ratings have been entered, so no label agreement result exists. Model–heuristic
+agreement cannot establish ground-truth accuracy or human reliability.
 
 ## Reproduction
 
