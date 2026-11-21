@@ -1,0 +1,65 @@
+{
+  "experiment_id": "qwen3_06b_lora_v1",
+  "base_model": "Qwen/Qwen3-0.6B",
+  "base_model_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+  "seed": 42,
+  "train_rows": 2822,
+  "dev_rows": 599,
+  "train_metrics": {
+    "train_runtime": 4883.3086,
+    "train_samples_per_second": 1.734,
+    "train_steps_per_second": 0.109,
+    "total_flos": 9329912850677760.0,
+    "train_loss": 0.06625750905039621,
+    "epoch": 3.0
+  },
+  "final_eval_metrics": {
+    "eval_loss": 0.06920789927244186,
+    "eval_runtime": 69.1977,
+    "eval_samples_per_second": 8.656,
+    "eval_steps_per_second": 8.656,
+    "epoch": 3.0
+  },
+  "wall_seconds": 4953.605495452881,
+  "cuda_device": "Tesla T4",
+  "checkpoint": "External Google Drive storage; adapter weights not committed",
+  "training_config": {
+    "max_length": 2048,
+    "epochs": 3,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.03,
+    "per_device_train_batch_size": 1,
+    "per_device_eval_batch_size": 1,
+    "gradient_accumulation_steps": 16,
+    "gradient_checkpointing": true,
+    "fp16": true,
+    "bf16": false,
+    "logging_steps": 25,
+    "save_total_limit": 3,
+    "save_steps": 100,
+    "eval_steps": 100
+  },
+  "lora_config": {
+    "r": 8,
+    "alpha": 16,
+    "dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "git_sha": "46f3f854743e4969e309cfda23638cf23216e0fd",
+  "training_code_sha256": "1edf3d41c9da9627105fefc516938bd56f76b6e68182ebad234e9168249e6663",
+  "training_code_note": "Colab hotfixes mapped the chat-template Mapping input_ids and used fractional warmup_steps for Transformers 5.22.",
+  "torch_version": "2.14.1+cu130",
+  "transformers_version": "5.22.1",
+  "peft_version": "0.21.2",
+  "target_note": "Filtered targets are primarily base-model pseudo-labels with a small handwritten subset.",
+  "run_warning": "A CUDA allocator OOM warning occurred during training, but training continued through all 531 steps and completed final evaluation."
+}

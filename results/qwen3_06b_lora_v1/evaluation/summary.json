@@ -1,0 +1,67 @@
+{
+  "experiment_id": "qwen3_06b_lora_v1",
+  "n_paired_examples": 618,
+  "n_task_clusters": 41,
+  "models": {
+    "base": {
+      "n": 618,
+      "validator_pass_rate": 0.9919093851132686,
+      "validator_compliance_rate": 0.9935275080906149,
+      "leakage_rate": 0.0016181229773462784,
+      "mean_generation_seconds": 1.5267566734871008
+    },
+    "lora": {
+      "n": 618,
+      "validator_pass_rate": 0.9951456310679612,
+      "validator_compliance_rate": 0.9951456310679612,
+      "leakage_rate": 0.0,
+      "mean_generation_seconds": 2.624164489296113
+    }
+  },
+  "paired_validator_pass_rate_difference_lora_minus_base": 0.003236245954692557,
+  "task_cluster_bootstrap_95_ci": [
+    -0.007272727272727273,
+    0.012658227848101266
+  ],
+  "by_domain_and_level": {
+    "domain=coding": {
+      "n": 268,
+      "base_pass_rate": 0.9850746268656716,
+      "lora_pass_rate": 0.9888059701492538,
+      "difference": 0.003731343283582156
+    },
+    "domain=science": {
+      "n": 350,
+      "base_pass_rate": 0.9971428571428571,
+      "lora_pass_rate": 1.0,
+      "difference": 0.0028571428571428914
+    },
+    "level=1": {
+      "n": 155,
+      "base_pass_rate": 1.0,
+      "lora_pass_rate": 1.0,
+      "difference": 0.0
+    },
+    "level=2": {
+      "n": 155,
+      "base_pass_rate": 0.9741935483870968,
+      "lora_pass_rate": 0.9806451612903225,
+      "difference": 0.006451612903225712
+    },
+    "level=3": {
+      "n": 155,
+      "base_pass_rate": 1.0,
+      "lora_pass_rate": 1.0,
+      "difference": 0.0
+    },
+    "level=4": {
+      "n": 153,
+      "base_pass_rate": 0.9934640522875817,
+      "lora_pass_rate": 1.0,
+      "difference": 0.006535947712418277
+    }
+  },
+  "interpretation_limit": "Rule-based validator and latency outcomes on base-model pseudo-label data; not evidence of hint correctness, pedagogical benefit, or human learning gains.",
+  "human_ratings_status": "Pending; blind annotation sheet has not been completed.",
+  "source": "Copied from user-provided Colab output; raw paired outputs remain in Drive."
+}

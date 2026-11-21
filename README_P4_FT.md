@@ -8,7 +8,7 @@ This adds a separate, reproducible base-versus-LoRA experiment. It does not alte
 - The reproducible split snapshot is checked in at `assist/ft/manifests/qwen3_06b_lora_v1_split.csv` with source hashes/counts in the adjacent JSON. Regenerate the working copy under `results/` with the preparation script.
 - The filter retains only base-task Qwen or handwritten hints that pass the current rule validator; the 21 fallback records are excluded. Actual retained targets: 4,030 Qwen-generated pseudo-labels and 9 handwritten hints. The validator is not a correctness or teaching-quality gold standard.
 - Both conditions load the same pinned Hugging Face model revision (`c1899de289a04d12100db370d81485cdf75e47ca`) so future model-repository changes cannot silently alter the comparison.
-- No training run or adapter checkpoint exists yet. The current local runtime has no CUDA GPU, so training and paired generation must run in Colab. Do not describe any fine-tuned model or improvement as completed until `training_metadata.json`, `paired_outputs.jsonl`, and the loadable `adapter/` exist.
+- Training and the paired first-pass evaluation have now completed in Colab. Compact summaries are recorded in [`results/qwen3_06b_lora_v1/RESULTS.md`](results/qwen3_06b_lora_v1/RESULTS.md), `training/training_metadata.json`, and `evaluation/summary.json`. Adapter weights and raw paired outputs remain in Google Drive; no human ratings have been completed.
 
 ## Colab runbook (T4-friendly start)
 
