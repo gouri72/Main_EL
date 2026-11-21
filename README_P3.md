@@ -70,6 +70,38 @@ No code can legitimately fill human-authored judgments on the annotators' behalf
 Do not claim that agreement analysis has been completed before both sheets
 are independently populated.
 
+## Exploratory LLM-assisted audit (human audit deferred)
+
+The team has postponed the independent two-human label study. The alternative
+**exploratory** sheet is `data/audit/annotations_llm_assisted.csv`; it contains
+the same fixed 40 IDs, but is **not** a human reliability dataset. Its labels
+are currently blank.
+
+Give an LLM the complete `data/audit/audit_items.txt` and the rubric in
+`data/audit/annotation_protocol.md`, **not** `data/tasks.jsonl` (which
+contains the heuristic labels being checked). Ask for exactly 40 JSON objects
+with fields `task_id`, `understand_plan`, `execute`, `debug_verify`,
+`explain`, `difficulty`, and optional `notes`. Each operation must be
+0 or 1; difficulty must be 1, 2, or 3. Do not show the model the frozen
+heuristic labels before it responds. Store its output in `model_labels.json`.
+
+Then run:
+
+```powershell
+python data/scripts/audit_llm_assisted.py --status
+python data/scripts/audit_llm_assisted.py --import-json model_labels.json --model-id YOUR_MODEL_ID
+python data/scripts/audit_llm_assisted.py --report
+python -m pytest -q tests/test_p3_llm_assisted.py
+```
+
+The imported ratings are marked `model_only` unless genuinely reviewed by a
+person; `human_reviewed` still does not mean independent unaided human annotation.
+The tool rejects duplicate/missing IDs, missing model attribution, and invalid
+label values. The report compares AI-assisted labels with existing heuristic
+labels; it does not claim ground truth, two-human agreement, or validated
+difficulty calibration. Preserve the original independent-human sheets for
+future research.
+
 ## Independent annotation (not yet completed)
 
 See `data/audit/annotation_protocol.md` and
