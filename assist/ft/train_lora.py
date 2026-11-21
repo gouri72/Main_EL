@@ -9,6 +9,7 @@ import inspect
 import random
 import subprocess
 import time
+from collections.abc import Mapping
 from pathlib import Path
 
 import yaml
@@ -19,6 +20,26 @@ ROOT = Path(__file__).resolve().parents[2]
 def read_jsonl(path: Path) -> list[dict]:
     with path.open(encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]
+
+
+def normalize_token_ids(encoded, field: str) -> list[int]:
+    """Normalize tokenizer/chat-template outputs across Transformers releases."""
+    if isinstance(encoded, Mapping):
+        if "input_ids" not in encoded:
+            raise ValueError(f"{field} encoding has no input_ids field")
+        encoded = encoded["input_ids"]
+    if hasattr(encoded, "tolist"):
+        encoded = encoded.tolist()
+    if isinstance(encoded, str):
+        raise TypeError(f"{field} returned text where token IDs were expected")
+    if encoded and isinstance(encoded[0], (list, tuple)):
+        if len(encoded) != 1:
+            raise ValueError(f"{field} unexpectedly returned a batch of {len(encoded)}")
+        encoded = encoded[0]
+    try:
+        return [int(value) for value in encoded]
+    except (TypeError, ValueError) as exc:
+        raise TypeError(f"{field} contains nonnumeric token IDs: {encoded[:3]!r}") from exc
 
 
 def main() -> None:
@@ -91,13 +112,14 @@ def main() -> None:
                 # Some Transformers/Qwen3 releases render the final assistant header slightly
                 # differently when a completed assistant turn is present. Build the causal-LM
                 # sequence explicitly: chat-formatted context + plain response + Qwen end token.
-                if isinstance(prefix, dict):
-                    prefix = prefix["input_ids"]
-                prefix = list(prefix)
-                response = tok(row["response"], add_special_tokens=False)["input_ids"]
+                prefix = normalize_token_ids(prefix, "chat prompt")
+                response = normalize_token_ids(tok(row["response"], add_special_tokens=False), "assistant response")
                 end_token = tok.convert_tokens_to_ids("<|im_end|>")
                 if end_token is None or end_token == tok.unk_token_id:
                     end_token = tok.eos_token_id
+                if end_token is None:
+                    raise ValueError("Tokenizer has neither <|im_end|> nor eos_token_id")
+                end_token = int(end_token)
                 max_length = int(cfg["training"]["max_length"])
                 if not response or len(prefix) >= max_length:
                     continue
