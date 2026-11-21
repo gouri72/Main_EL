@@ -1,0 +1,31 @@
+exp_id: A_novice_v2__always_none
+seeds:
+- 0
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+n_episodes: 1000
+n_eval_episodes: 100
+transfer_repeats: 20
+data:
+  tasks: data/tasks.jsonl
+  hints: data/hints.jsonl
+  session_tasks: 8
+simulator:
+  family: A
+  profile: novice
+reward:
+  w_progress: 1.0
+  w_transfer: 2.0
+  w_full_assist_penalty: 0.5
+  w_takeover_penalty: 1.0
+  ablate: []
+policy:
+  name: always_none
+  alpha: 0.1
+  gamma: 0.95
+  epsilon: 0.1
