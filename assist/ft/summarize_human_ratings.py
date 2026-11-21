@@ -30,8 +30,21 @@ def main():
         if mapping is None: raise SystemExit(f"No blind key entry for rating_id={row['rating_id']}")
         scores = {}
         for dim in dimensions:
-            scores["A_" + dim] = int(row["A_" + dim + "_1to5"])
-            scores["B_" + dim] = int(row["B_" + dim + "_1to5"])
+            for side in ("A", "B"):
+                column = side + "_" + dim + "_1to5"
+                raw = (row.get(column) or "").strip()
+                if not raw:
+                    raise SystemExit(
+                        f"Human ratings are incomplete: rating_id={row.get('rating_id', '?')} "
+                        f"has a blank `{column}`. Fill the blind sheet's 1-5 ratings before summarizing."
+                    )
+                try:
+                    scores[side + "_" + dim] = int(raw)
+                except ValueError as exc:
+                    raise SystemExit(
+                        f"Invalid score `{raw}` in rating_id={row.get('rating_id', '?')}, "
+                        f"column `{column}`; enter an integer from 1 to 5."
+                    ) from exc
             if not (1 <= scores["A_" + dim] <= 5 and 1 <= scores["B_" + dim] <= 5):
                 raise SystemExit(f"Rating values must be 1..5 for {row['rating_id']}")
         pref = row["preference_A_B_tie"].strip().upper()
