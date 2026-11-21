@@ -1,0 +1,91 @@
+# P4: Qwen3-0.6B LoRA comparison
+
+This adds a separate, reproducible base-versus-LoRA experiment. It does not alter the original validated hint bank, Qwen cache, prompts, or project architecture. All generated experiment files live under `results/qwen3_06b_lora_v1/` and should not be confused with the frozen bank.
+
+## Current status
+
+- Dataset preparation and leakage checks have run locally. With seed 42, the manifest groups each base task with its transfer task and groups exact or very-near science abstracts (five-token-shingle Jaccard at least 0.95). It produced 208/46/46 base tasks in train/dev/test (416/92/92 including transfer variants) and 2,822/599/618 retained examples.
+- The reproducible split snapshot is checked in at `assist/ft/manifests/qwen3_06b_lora_v1_split.csv` with source hashes/counts in the adjacent JSON. Regenerate the working copy under `results/` with the preparation script.
+- The filter retains only base-task Qwen or handwritten hints that pass the current rule validator; the 21 fallback records are excluded. Actual retained targets: 4,030 Qwen-generated pseudo-labels and 9 handwritten hints. The validator is not a correctness or teaching-quality gold standard.
+- Both conditions load the same pinned Hugging Face model revision (`c1899de289a04d12100db370d81485cdf75e47ca`) so future model-repository changes cannot silently alter the comparison.
+- No training run or adapter checkpoint exists yet. The current local runtime has no CUDA GPU, so training and paired generation must run in Colab. Do not describe any fine-tuned model or improvement as completed until `training_metadata.json`, `paired_outputs.jsonl`, and the loadable `adapter/` exist.
+
+## Colab runbook (T4-friendly start)
+
+Use a new Colab notebook, select a GPU runtime, and keep the runtime alive until the checkpoint is copied to Drive. Run these cells. If you have the repository cloned in Drive already, set `REPO` to that directory instead of cloning another copy.
+
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+```
+
+```python
+%cd /content
+!git clone https://github.com/gouri72/Main_EL.git
+%cd /content/Main_EL
+!git switch main
+!git pull --ff-only origin main
+!git rev-parse HEAD
+!nvidia-smi
+!python -m pip install -r assist/ft/requirements-ft.txt
+```
+
+Run data preparation and dry runs. Preparation is CPU-only and should not be repeated with different settings after examining test performance. Copy the prepared split to Drive so it survives a Colab reset.
+
+```python
+!python assist/ft/prepare_dataset.py
+!mkdir -p /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1
+!cp -a results/qwen3_06b_lora_v1/prepared /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/
+!python assist/ft/train_lora.py --config configs/qwen3_06b_lora_v1.yaml --dry-run
+!python assist/ft/evaluate_lora.py --config configs/qwen3_06b_lora_v1.yaml --dry-run
+```
+
+Train directly to Drive so periodic checkpoints survive a Colab disconnect. The configured effective batch size is 16 (micro-batch 1 × accumulation 16), with 3 epochs, LR 1e-4, max sequence length 2048 and LoRA rank 8/alpha 16. Checkpoints are saved every 100 optimizer steps, with validation loss at the same interval. T4 memory is limited; if OOM occurs, first change max length to 1536, use a fresh versioned output directory and restart. If that still fails, a separate 4-bit run requires explicit configuration and must have a different experiment ID. To resume, pass the latest checkpoint directory under Drive with `--resume-from-checkpoint`.
+
+```python
+!python assist/ft/train_lora.py --config configs/qwen3_06b_lora_v1.yaml --output-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/training
+```
+
+If the Colab runtime resets during training, reconnect Drive, clone/pull the same `main` commit, prepare the data with the same seed, and resume from the latest Drive checkpoint (replace the path with the highest numbered checkpoint that exists). Do not start a fresh run in the same directory.
+
+```python
+!python assist/ft/train_lora.py --config configs/qwen3_06b_lora_v1.yaml --output-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/training --resume-from-checkpoint /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/training/checkpoints/checkpoint-100
+```
+
+Run the full paired test. Each test example is generated once by each model with the same prompt, token cap, decoding settings and example seed. Generation alternates model order; timing excludes model loading. Outputs are first-pass and are not regenerated or replaced by fallbacks. Every completed pair is appended to Drive; if Colab resets, rerun the same command and it will continue with unfinished examples after checking the test manifest.
+
+```python
+!python assist/ft/evaluate_lora.py --config configs/qwen3_06b_lora_v1.yaml --training-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/training --output-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation
+```
+
+If Colab time is short, first make a clearly marked pilot with `--max-examples 64` and a separate output directory; it is not the final result. Do not treat pilot observations as final-test evidence. If evaluation resumes after a reset, use the same full-test command and the same Drive output directory.
+
+Generate the two presentation charts after evaluation:
+
+```python
+!python -m pip install matplotlib
+!python assist/ft/plot_lora_eval.py --config configs/qwen3_06b_lora_v1.yaml --evaluation-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation
+```
+
+After real raters complete the blinded sheet, summarize the human scores without replacing missing ratings with defaults:
+
+```python
+!python assist/ft/summarize_human_ratings.py --sheet /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/blind_annotation_sheet.csv --key /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/annotation_key.csv --output /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/human_rating_summary.json
+```
+
+## Outputs and interpretation
+
+- `prepared/{train,dev,test}.jsonl`, `split_manifest.csv`, `summary.json`: versioned data and grouping provenance.
+- `training/checkpoints/`, `training/adapter/`, `training_metadata.json`: checkpoints, adapter and recorded run details.
+- `evaluation/paired_outputs.jsonl`, `summary.json`, `comparison_metrics.csv`, `validator_failures.csv`: first-pass raw/cleaned outputs, paired rule-validator metrics by domain/level, task-cluster bootstrap interval, latency, and example-level validator errors.
+- `evaluation/blind_annotation_sheet.csv` and `annotation_key.csv`: randomized A/B sheet and separate mapping. By default it samples 120 pairs, balanced across domain × assistance level and favoring distinct task groups. Ratings are blank until actual raters complete them. It covers relevance, correctness, level fit and preference. Do not claim human evaluation before it is completed. LLM-as-judge results, if added later, must be labeled as such and should not replace human ground truth.
+- `evaluation/paired_error_cases.csv`: all four automated pass/fail pair categories (`both_pass`, base-only fail, LoRA-only fail, both fail) with outputs and a blank reviewer explanation column; filter by category for concise examples in the report.
+- `evaluation/figures/`: overall model comparison and level-wise compliance/leakage charts.
+
+Automated validator acceptance is `compliance AND not leakage`; report compliance and leakage separately too. Leakage rate means the rule-based validator flagged output and is not a measured false-negative rate. Task-cluster bootstrap resamples group IDs so operation/level variants from one task group are not counted as independent clusters. The validator does not assess operation relevance, factual correctness, helpfulness, or learner outcomes. No statistical significance should be claimed from the bootstrap interval alone.
+
+For the blind sheet, use the same 1–5 anchors for both outputs: 1 = clearly poor, 3 = mixed/partly useful, 5 = clearly strong. Relevance asks whether the response helps the stated operation; correctness asks whether its claims/code/evidence are valid for the provided task; level fit asks whether it gives only the requested amount of help. Mark preference as A, B, or tie. Have two team members rate the same sheet independently if time permits, reconcile disagreements after calculating agreement, and keep the key hidden until ratings are locked. This is an internal annotation, not a human learning study.
+
+## Reproducibility
+
+The YAML config is the run specification. Keep its exact copy with each result. `summary.json` records data source hashes, split seed, target provenance, and the evaluation records the generation settings in config. The training metadata records actual GPU model and elapsed time. Record the Colab `git rev-parse HEAD`, package versions, runtime type, and any changed settings alongside the Drive copy. Do not edit prompts, validators, or hyperparameters based on the test set.

@@ -37,6 +37,11 @@ The validator sanity script passes. A 100-item hand-label sheet is prepared at `
 30 dev and 70 test items sampled from raw first-pass generations. Validator accuracy remains unmeasured until the
 independent labels are filled in; the test split must not be used to tune rules.
 
+The separate base-Qwen versus LoRA comparison workflow, its actual split counts, and Colab runbook are documented in
+[`README_P4_FT.md`](README_P4_FT.md). The split and quality-filtered examples are prepared, but no LoRA checkpoint or
+fine-tuned comparison results exist yet; training and generation require a Colab GPU. Do not interpret the prepared
+pseudo-labels or automated validator as human quality judgments.
+
 The P4 reading note for Bastani et al. is in `paper/notes_p4_bastani.md`. Plotting scripts and PDFs are present, but
 the checked-in `results/smoke_001` is one policy in one simulator family, so those plots are pipeline examples only;
 they are not the final multi-baseline or held-out-simulator paper figures. `analysis/plots.py` needs the packages in
