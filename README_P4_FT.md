@@ -55,6 +55,13 @@ If the Colab runtime resets during training, reconnect Drive, clone/pull the sam
 !python assist/ft/train_lora.py --config configs/qwen3_06b_lora_v1.yaml --output-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/training --resume-from-checkpoint /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/training/checkpoints/checkpoint-100
 ```
 
+If an earlier script version stops with `chat template prefix mismatch`, update the repository before retrying. The current trainer masks prompt tokens directly and supervises only response tokens plus Qwen's end-of-turn token. That failure occurs before optimizer training or checkpoint creation; rerun without `--resume-from-checkpoint`.
+
+```python
+%cd /content/Main_EL
+!git pull --ff-only origin main
+```
+
 Run the full paired test. Each test example is generated once by each model with the same prompt, token cap, decoding settings and example seed. Generation alternates model order; timing excludes model loading. Outputs are first-pass and are not regenerated or replaced by fallbacks. Every completed pair is appended to Drive; if Colab resets, rerun the same command and it will continue with unfinished examples after checking the test manifest.
 
 ```python

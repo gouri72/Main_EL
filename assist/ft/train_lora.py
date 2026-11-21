@@ -88,16 +88,24 @@ def main() -> None:
                             {"role": "user", "content": row["user"]}]
                 prefix = tok.apply_chat_template(messages, tokenize=True, add_generation_prompt=True,
                                                  enable_thinking=False)
-                full = tok.apply_chat_template(messages + [{"role": "assistant", "content": row["response"]}],
-                                               tokenize=True, add_generation_prompt=False,
-                                               enable_thinking=False)
-                # Confirm the generation prefix is an actual prefix of the supervised sequence.
-                if full[:len(prefix)] != prefix:
-                    raise ValueError("chat template prefix mismatch; refusing to train on misaligned labels")
-                ids = full[:int(cfg["training"]["max_length"])]
-                labels = [-100] * min(len(prefix), len(ids)) + ids[len(prefix):]
+                # Some Transformers/Qwen3 releases render the final assistant header slightly
+                # differently when a completed assistant turn is present. Build the causal-LM
+                # sequence explicitly: chat-formatted context + plain response + Qwen end token.
+                if isinstance(prefix, dict):
+                    prefix = prefix["input_ids"]
+                prefix = list(prefix)
+                response = tok(row["response"], add_special_tokens=False)["input_ids"]
+                end_token = tok.convert_tokens_to_ids("<|im_end|>")
+                if end_token is None or end_token == tok.unk_token_id:
+                    end_token = tok.eos_token_id
+                max_length = int(cfg["training"]["max_length"])
+                if not response or len(prefix) >= max_length:
+                    continue
+                full = prefix + list(response) + [end_token]
+                ids = full[:max_length]
+                labels = [-100] * len(prefix) + ids[len(prefix):]
                 labels = labels[:len(ids)]
-                if len(ids) > 1:
+                if any(label != -100 for label in labels):
                     self.items.append((ids, labels))
         def __len__(self): return len(self.items)
         def __getitem__(self, idx): return self.items[idx]
