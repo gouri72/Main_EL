@@ -75,10 +75,18 @@ The original 40-item independent-human protocol and annotation sheets are
 preserved, but the team has deferred that study. An exploratory
 `data/audit/annotations_llm_assisted.csv` is available for model-assisted
 operation/difficulty labels, with explicit model provenance and review status.
-The new `data/scripts/audit_llm_assisted.py` computes agreement against frozen
-heuristics only after all 40 ratings are supplied. At present no AI-assisted
-ratings have been entered, so no label agreement result exists. Model–heuristic
-agreement cannot establish ground-truth accuracy or human reliability.
+The 40-task model-only GPT-6 audit has now been completed locally and the
+report supplied on 21 November 2026. Agreement against frozen heuristics was:
+
+| Domain | Plan | Execute | Debug/verify | Explain | Difficulty exact |
+|---|---:|---:|---:|---:|---:|
+| coding (n=20) | 100% | 100% | 45% | 65% | 45% |
+| science (n=20) | 100% | 100% | 80% | 100% | 15% |
+
+See `data/audit/llm_assisted_report.md`. These are **model–heuristic
+agreement rates only**, not accuracy or independent human agreement.
+The completed local annotations CSV must still be committed for a fully
+reproducible repository-level audit; no human reference study was performed.
 
 ## Reproduction
 
