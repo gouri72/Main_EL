@@ -57,6 +57,8 @@ If the Colab runtime resets during training, reconnect Drive, clone/pull the sam
 
 If an earlier script version stops with `chat template prefix mismatch`, update the repository before retrying. The current trainer masks prompt tokens directly and supervises only response tokens plus Qwen's end-of-turn token. That failure occurs before optimizer training or checkpoint creation; rerun without `--resume-from-checkpoint`.
 
+The trainer also maps the configured 3% warmup to the appropriate `TrainingArguments` parameter: `warmup_ratio` on older releases or fractional `warmup_steps` on newer Transformers 5 releases.
+
 ```python
 %cd /content/Main_EL
 !git pull --ff-only origin main

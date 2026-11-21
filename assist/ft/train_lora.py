@@ -132,7 +132,7 @@ def main() -> None:
     training_kwargs = dict(
         output_dir=str(out / "checkpoints"), num_train_epochs=tc["epochs"],
         learning_rate=tc["learning_rate"], weight_decay=tc["weight_decay"],
-        warmup_ratio=tc["warmup_ratio"], per_device_train_batch_size=tc["per_device_train_batch_size"],
+        per_device_train_batch_size=tc["per_device_train_batch_size"],
         per_device_eval_batch_size=tc["per_device_eval_batch_size"],
         gradient_accumulation_steps=tc["gradient_accumulation_steps"],
         gradient_checkpointing=tc["gradient_checkpointing"], fp16=tc["fp16"], bf16=tc["bf16"],
@@ -145,6 +145,12 @@ def main() -> None:
     argument_names = inspect.signature(TrainingArguments.__init__).parameters
     if "eval_strategy" not in argument_names:
         training_kwargs["evaluation_strategy"] = training_kwargs.pop("eval_strategy")
+    # Newer Transformers releases may remove warmup_ratio; their warmup_steps accepts
+    # a fractional ratio (<1), while older versions require the warmup_ratio argument.
+    if "warmup_ratio" in argument_names:
+        training_kwargs["warmup_ratio"] = tc["warmup_ratio"]
+    else:
+        training_kwargs["warmup_steps"] = tc["warmup_ratio"]
     train_args = TrainingArguments(**training_kwargs)
     trainer = Trainer(model=model, args=train_args, train_dataset=train_ds, eval_dataset=dev_ds,
                       data_collator=Collator())
