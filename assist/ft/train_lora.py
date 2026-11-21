@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 import json
 import inspect
 import random
@@ -38,10 +39,21 @@ def main() -> None:
         return
 
     import torch
-    import transformers
-    import peft
     if not torch.cuda.is_available():
         raise SystemExit("CUDA GPU not detected. Run this on a Colab GPU; no training was started.")
+    try:
+        from packaging.version import Version
+        torchao_version = importlib.metadata.version("torchao")
+    except importlib.metadata.PackageNotFoundError:
+        torchao_version = None
+    if torchao_version and Version(torchao_version) <= Version("0.16.0"):
+        raise SystemExit(
+            f"Incompatible optional torchao {torchao_version} is preinstalled. "
+            "This unquantized LoRA run does not need torchao; run `python -m pip uninstall -y torchao`, "
+            "then restart this script."
+        )
+    import transformers
+    import peft
     from transformers import (AutoModelForCausalLM, AutoTokenizer, Trainer,
                               TrainingArguments, set_seed)
     from peft import LoraConfig, get_peft_model

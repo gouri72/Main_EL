@@ -28,7 +28,10 @@ drive.mount('/content/drive')
 !git rev-parse HEAD
 !nvidia-smi
 !python -m pip install -r assist/ft/requirements-ft.txt
+!python -m pip uninstall -y torchao
 ```
+
+Colab may have an older optional `torchao` package preinstalled. It is not needed for this fp16 LoRA run; the training script checks for incompatible versions before downloading the model weights.
 
 Run data preparation and dry runs. Preparation is CPU-only and should not be repeated with different settings after examining test performance. Copy the prepared split to Drive so it survives a Colab reset.
 
