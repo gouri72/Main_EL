@@ -1,41 +1,41 @@
 task_id,domain,understand_plan,execute,debug_verify,explain,difficulty,model_id,review_status,notes
-code_021,coding,,,,,,,,
-sci_141,science,,,,,,,,
-sci_046,science,,,,,,,,
-code_007,coding,,,,,,,,
-code_110,coding,,,,,,,,
-code_011,coding,,,,,,,,
-sci_041,science,,,,,,,,
-code_102,coding,,,,,,,,
-code_111,coding,,,,,,,,
-sci_005,science,,,,,,,,
-sci_049,science,,,,,,,,
-code_066,coding,,,,,,,,
-code_113,coding,,,,,,,,
-sci_121,science,,,,,,,,
-sci_069,science,,,,,,,,
-code_023,coding,,,,,,,,
-sci_088,science,,,,,,,,
-code_045,coding,,,,,,,,
-sci_026,science,,,,,,,,
-sci_047,science,,,,,,,,
-code_027,coding,,,,,,,,
-sci_032,science,,,,,,,,
-code_090,coding,,,,,,,,
-sci_023,science,,,,,,,,
-code_012,coding,,,,,,,,
-sci_119,science,,,,,,,,
-sci_035,science,,,,,,,,
-code_006,coding,,,,,,,,
-code_017,coding,,,,,,,,
-sci_029,science,,,,,,,,
-sci_095,science,,,,,,,,
-sci_056,science,,,,,,,,
-code_128,coding,,,,,,,,
-code_072,coding,,,,,,,,
-code_107,coding,,,,,,,,
-sci_123,science,,,,,,,,
-code_139,coding,,,,,,,,
-code_094,coding,,,,,,,,
-sci_142,science,,,,,,,,
-sci_126,science,,,,,,,,
+code_021,coding,1,1,1,0,2,GPT-6,model_only,Requires interpreting parabola coefficients and verifying numeric focus formula.
+sci_141,science,1,1,1,1,3,GPT-6,model_only,Specialized FOXO/ROS mechanisms; causal direction and inhibition require careful verification.
+sci_046,science,1,1,1,1,2,GPT-6,model_only,Interpret epidemiological association and scope of NSAID cancer-risk evidence.
+code_007,coding,1,1,1,0,1,GPT-6,model_only,Use nearest-multiple rounding and verify handling of nonmultiples.
+code_110,coding,1,1,1,0,1,GPT-6,model_only,Rotate array by slicing; verify boundary and split position.
+code_011,coding,1,1,0,0,1,GPT-6,model_only,Direct tuple-membership check for None.
+sci_041,science,1,1,1,1,3,GPT-6,model_only,"Distinguish binding from cleavage, and ADAR1 versus Dicer roles."
+code_102,coding,1,1,1,0,2,GPT-6,model_only,Recall or derive tetrahedral formula and verify numeric examples.
+code_111,coding,1,1,1,0,1,GPT-6,model_only,Compute products across tuple pairs and select maximum.
+sci_005,science,1,1,1,1,2,GPT-6,model_only,Evaluate persistence/removal claim using cited environmental sampling evidence.
+sci_049,science,1,1,1,1,2,GPT-6,model_only,"Numerical claim requires checking time period, sex subgroup and magnitude."
+code_066,coding,1,1,1,0,1,GPT-6,model_only,Implement conditional arithmetic and confirm loss direction.
+code_113,coding,1,1,1,0,2,GPT-6,model_only,Stable filtering of zeros with ordering and edge-case checks.
+sci_121,science,1,1,1,1,2,GPT-6,model_only,Solely environmental cause must be weighed against genetic adoption evidence.
+sci_069,science,1,1,1,1,2,GPT-6,model_only,Risk-adjustment and subgroup comparisons need interpretation.
+code_023,coding,1,1,0,0,1,GPT-6,model_only,Direct square perimeter formula.
+sci_088,science,1,1,1,1,3,GPT-6,model_only,Cell-cycle timing requires specialized kinetochore interpretation.
+code_045,coding,1,1,1,0,2,GPT-6,model_only,Group elements by index modulo n and verify remainder handling.
+sci_026,science,1,1,1,1,3,GPT-6,model_only,Multiple APOE4 neuronal effects and direction of degeneration require cross-checking.
+sci_047,science,1,1,1,1,3,GPT-6,model_only,Distinguish loss of FGF21 from protective activity and plaque outcomes.
+code_027,coding,1,1,1,0,3,GPT-6,model_only,Subset-sum combinatorial search / DP and boundary cases.
+sci_032,science,1,1,1,1,2,GPT-6,model_only,Interpret direction and statistical associations across pooled birth-size studies.
+code_090,coding,1,1,1,0,2,GPT-6,model_only,Consecutive-run counting with group boundaries and repeated values.
+sci_023,science,1,1,1,1,3,GPT-6,model_only,"Links APOE genotype, reproductive duration and estrogen exposure across findings."
+code_012,coding,1,1,1,0,2,GPT-6,model_only,Recall/derive centered-hexagonal formula and verify indexing.
+sci_119,science,1,1,1,1,3,GPT-6,model_only,Interpret risk direction and short-/long-term clinical endpoints.
+sci_035,science,1,1,1,1,2,GPT-6,model_only,Relate ALDH1 status to prognosis and distinguish association from causation.
+code_006,coding,1,1,1,0,2,GPT-6,model_only,Geometric progression formula and ratio-one special case.
+code_017,coding,1,1,1,0,2,GPT-6,model_only,Integer lattice points strictly inside square require coordinate boundary handling.
+sci_029,science,1,1,1,1,3,GPT-6,model_only,Relate phosphotransfer kinetics to specificity in multicomponent signaling.
+sci_095,science,1,1,1,1,3,GPT-6,model_only,Determine sign of stability association with spliceosomal components.
+sci_056,science,1,1,1,1,3,GPT-6,model_only,Specialized RANK-RANKL signaling and thymic epithelial cell differentiation.
+code_128,coding,1,1,1,0,1,GPT-6,model_only,Circle circumference formula and numeric precision.
+code_072,coding,1,1,1,0,2,GPT-6,model_only,Apply elementwise bitwise AND and tuple alignment.
+code_107,coding,1,1,1,0,2,GPT-6,model_only,"Finite sum of fifth powers of odd integers, iterative implementation."
+sci_123,science,1,1,1,1,2,GPT-6,model_only,Statistical comparison requires checking reference populations and direction.
+code_139,coding,1,1,1,0,2,GPT-6,model_only,Track previously seen tuple values and replace later occurrences.
+code_094,coding,1,1,1,0,2,GPT-6,model_only,"Group-by-key sum then maximize, including tie/duplicate handling."
+sci_142,science,1,1,1,1,2,GPT-6,model_only,Direction of treatment effect needs verification across CD4 strata.
+sci_126,science,1,1,1,1,3,GPT-6,model_only,Distinguish NTP binding from transcription inhibition mechanism.
