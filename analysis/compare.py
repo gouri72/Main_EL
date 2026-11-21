@@ -2,7 +2,7 @@
 """Compare experiments: mean +- 95% CI over seeds, and paired differences against a reference experiment.
 
   python analysis/compare.py --ref A_novice__always_full "results/A_novice__*" --k 20 --out results/summary_A_novice.md
-Unit of analysis = per-seed mean over the last k training episodes (seeds are independent). CI = t-interval over seeds.
+Unit of analysis = per-seed mean over the last k frozen-policy evaluation episodes (seeds are independent). CI = t-interval over seeds.
 Paired = same seed in both experiments (paired t-test). Immediate success comes from steps.csv.
 efficiency = mean transfer gain / mean assistance spent (per seed); '-' when no assistance was spent.
 """
@@ -19,8 +19,19 @@ METRICS = ["immediate_success", "post_transfer", "transfer_gain", "assist_spent"
 def per_seed(d, k):
     S = pd.read_csv(Path(d) / "steps.csv", comment="#")
     E = pd.read_csv(Path(d) / "episodes.csv", comment="#")
-    e = E[E.episode >= E.episode.max() - k + 1]
-    s = S[S.episode >= S.episode.max() - k + 1]
+    if k < 1:
+        raise ValueError("k must be positive")
+    if "phase" not in E.columns or "phase" not in S.columns:
+        raise ValueError(f"{d}: missing phase column; cannot distinguish frozen evaluation from training")
+    e = E[E.phase == "eval"].copy()
+    s = S[S.phase == "eval"].copy()
+    if e.empty or s.empty:
+        raise ValueError(f"{d}: no evaluation episodes/steps; cannot compare frozen policies")
+    e = e.sort_values(["seed", "episode"]).groupby("seed", group_keys=False).tail(k)
+    selected = set(zip(e.seed, e.episode))
+    s = s[[(seed, ep) in selected for seed, ep in zip(s.seed, s.episode)]]
+    if s.empty or set(e.seed) != set(s.seed):
+        raise ValueError(f"{d}: missing step rows for evaluation episodes or seeds")
     g = e.groupby("seed")
     out = pd.DataFrame({
         "post_transfer": g.post_transfer.mean(), "transfer_gain": g.transfer_gain.mean(),
@@ -56,7 +67,7 @@ def main():
     data = {Path(d).name: per_seed(d, a.k) for d in dirs}
     if a.ref not in data:
         raise SystemExit(f"reference {a.ref!r} not among {sorted(data)[:5]}...")
-    lines = [f"# Results (last {a.k} episodes per seed; mean ± 95% CI over {len(data[a.ref])} seeds)", "",
+    lines = [f"# Results (last {a.k} frozen-policy evaluation episodes per seed; mean ± 95% CI over {len(data[a.ref])} seeds)", "",
              "| experiment | " + " | ".join(METRICS) + " |", "|---|" + "---|" * len(METRICS)]
     for name, df in data.items():
         lines.append(f"| {name} | " + " | ".join(fmt(*mean_ci(df[m])) for m in METRICS) + " |")
