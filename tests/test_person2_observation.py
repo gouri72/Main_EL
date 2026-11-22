@@ -90,3 +90,10 @@ def test_estimator_uses_observed_history_only():
 if __name__ == "__main__":
     import pytest
     raise SystemExit(pytest.main([__file__, "-v"]))
+
+def test_configured_env_drops_all_features():
+    env = ConfiguredEnv(FAKE_TASKS, drop=list(range(8)), seed=42)
+    obs = env.reset()
+
+    assert len(obs) == 8
+    assert obs == [0] * 8
