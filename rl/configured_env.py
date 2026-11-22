@@ -14,6 +14,7 @@ Wraps P2's rl/env.py without editing it (subclass). What it adds:
                                    operation_caps (all caps = 4; changes the shared dict IN PLACE, one config per process)
 State layout: [domain, op, domain_bin, op_bin, difficulty, attempts_bin, help_bin, frustration_bin]
 """
+import math
 from rl.env import HumanFirstEnv
 from sim.base import OPERATION_LEVEL_CAPS
 
@@ -58,6 +59,21 @@ class ConfiguredEnv(HumanFirstEnv):
 
         r = {"w_progress": 1.0, "w_transfer": 2.0, "w_full_assist_penalty": 0.5, "w_takeover_penalty": 1.0, "ablate": []}
         r.update(reward or {})
+
+        allowed_reward_keys = {
+            "w_progress", "w_transfer",
+            "w_full_assist_penalty", "w_takeover_penalty", "ablate"
+        }
+        unknown_reward_keys = set(r) - allowed_reward_keys
+        if unknown_reward_keys:
+            raise ValueError(f"unknown reward key(s): {sorted(unknown_reward_keys)}")
+
+        for key in allowed_reward_keys - {"ablate"}:
+            value = r[key]
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise ValueError(f"{key} must be a finite non-negative number")
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"{key} must be a finite non-negative number")
         ablate = {ALIASES.get(a, a) for a in (r.get("ablate") or [])}
         unknown = ablate - TERMS - SWITCHES
         if unknown:

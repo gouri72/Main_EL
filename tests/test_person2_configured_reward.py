@@ -146,3 +146,30 @@ def test_drop_indices_accept_valid_values(valid_drop):
     assert len(obs) == 8
     for index in valid_drop:
         assert obs[index] == 0
+
+
+@pytest.mark.parametrize("weight_key", [
+    "w_progress", "w_transfer",
+    "w_full_assist_penalty", "w_takeover_penalty"
+])
+@pytest.mark.parametrize("invalid_value", [
+    -1, float("nan"), float("inf"), float("-inf"), True, "1", None
+])
+def test_reward_weights_reject_invalid_values(weight_key, invalid_value):
+    with pytest.raises(ValueError, match="finite non-negative"):
+        make_env({weight_key: invalid_value})
+
+
+@pytest.mark.parametrize("valid_value", [0, 0.5, 1, 2, 100])
+def test_reward_weights_accept_valid_values(valid_value):
+    make_env({
+        "w_progress": valid_value,
+        "w_transfer": valid_value,
+        "w_full_assist_penalty": valid_value,
+        "w_takeover_penalty": valid_value,
+    })
+
+
+def test_reward_rejects_unknown_keys():
+    with pytest.raises(ValueError, match="unknown reward key"):
+        make_env({"w_typo": 1.0})
