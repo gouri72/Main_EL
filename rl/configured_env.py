@@ -37,8 +37,11 @@ def bin_frustration(n):
 
 class ConfiguredEnv(HumanFirstEnv):
     def __init__(self, tasks, reward=None, discretize=True, transfer_repeats=20, drop=(), **kw):
+        transfer_repeats = int(transfer_repeats)
+        if transfer_repeats <= 0:
+            raise ValueError("transfer_repeats must be a positive integer")
         super().__init__(tasks, **kw)
-        self.transfer_repeats = int(transfer_repeats)
+        self.transfer_repeats = transfer_repeats
         self.drop = tuple(drop)
         r = {"w_progress": 1.0, "w_transfer": 2.0, "w_full_assist_penalty": 0.5, "w_takeover_penalty": 1.0, "ablate": []}
         r.update(reward or {})
