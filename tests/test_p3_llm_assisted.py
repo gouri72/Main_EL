@@ -1,5 +1,6 @@
 """Regression tests for the exploratory LLM-assisted audit."""
 import importlib.util
+import csv
 from pathlib import Path
 
 import pytest
@@ -20,9 +21,11 @@ def complete_rows(model="Qwen3-0.6B"):
 
 
 def test_blank_template_has_no_model_annotations():
-    rows = audit.load_sheet()
+    template = Path(__file__).resolve().parents[1] / "data" / "audit" / "annotations_template.csv"
+    with template.open(encoding="utf-8-sig", newline="") as f:
+        rows = list(csv.DictReader(f))
     assert len(rows) == 40
-    assert all(not r["model_id"] for r in rows)
+    assert all(not r[c] for r in rows for c in (*audit.OPS, "difficulty"))
 
 
 def test_complete_llm_labels_validate():
