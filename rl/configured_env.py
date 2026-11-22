@@ -57,6 +57,9 @@ class ConfiguredEnv(HumanFirstEnv):
         self.drop = tuple(drop)
 
         r = {"w_progress": 1.0, "w_transfer": 2.0, "w_full_assist_penalty": 0.5, "w_takeover_penalty": 1.0, "ablate": []}
+        if reward is not None and not isinstance(reward, dict):
+            raise ValueError('reward must be a dictionary')
+
         r.update(reward or {})
 
         allowed_reward_keys = {

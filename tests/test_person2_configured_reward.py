@@ -186,3 +186,11 @@ def test_transfer_repeats_reject_invalid_types(repeats):
 def test_ablate_rejects_invalid_types(invalid_ablate):
     with pytest.raises(ValueError, match="ablate must be a list or tuple of strings"):
         make_env({"ablate": invalid_ablate})
+
+@pytest.mark.parametrize("invalid_reward", ["invalid", 1, True, [], ()])
+def test_reward_rejects_non_dict_input(invalid_reward):
+    task = {"id": "invalid-reward", "domain": "coding", "difficulty": 1,
+            "operations": [{"op": "execute"}]}
+    with pytest.raises(ValueError, match="reward must be a dictionary"):
+        ConfiguredEnv(tasks=[task], reward=invalid_reward,
+                     profile="advanced", family="B", seed=42)
