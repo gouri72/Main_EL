@@ -54,6 +54,12 @@ class Learner:
         if set(self.operation_caps) != VALID_OPERATIONS:
             raise ValueError("operation_caps must define all valid operations")
 
+        for op, cap in self.operation_caps.items():
+            if not isinstance(cap, int) or isinstance(cap, bool):
+                raise ValueError("operation caps must be integers")
+            if not 0 <= cap <= 4:
+                raise ValueError("operation caps must be between 0 and 4")
+
         self.reset("intermediate", seed=42)
 
     def reset(self, profile, seed) -> None:

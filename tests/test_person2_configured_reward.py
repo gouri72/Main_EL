@@ -1,6 +1,7 @@
 import pytest
 from rl.configured_env import ConfiguredEnv, OP_PENALTY
 from rl.env import HumanFirstEnv
+from sim.base import Learner, OPERATION_LEVEL_CAPS
 
 
 def make_env(reward=None, transfer_repeats=3):
@@ -106,3 +107,22 @@ def test_transfer_repeats_must_be_positive(repeats):
     with pytest.raises(ValueError, match="transfer_repeats must be a positive integer"):
         ConfiguredEnv(tasks=[task], transfer_repeats=repeats,
                      profile="advanced", family="B", seed=42)
+
+
+
+@pytest.mark.parametrize("invalid_cap", [-1, 5, 2.5, True, "2"])
+def test_operation_caps_validation(invalid_cap):
+    caps = dict(OPERATION_LEVEL_CAPS)
+    caps["understand_plan"] = invalid_cap
+
+    with pytest.raises(ValueError):
+        Learner(operation_caps=caps)
+
+
+@pytest.mark.parametrize("valid_cap", [0, 4])
+def test_operation_caps_accept_boundaries(valid_cap):
+    caps = dict(OPERATION_LEVEL_CAPS)
+    caps["understand_plan"] = valid_cap
+
+    learner = Learner(operation_caps=caps)
+    assert learner.operation_caps["understand_plan"] == valid_cap
