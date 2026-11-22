@@ -42,6 +42,18 @@ class ConfiguredEnv(HumanFirstEnv):
             raise ValueError("transfer_repeats must be a positive integer")
 
         self.transfer_repeats = transfer_repeats
+        if not isinstance(drop, (list, tuple)):
+            raise ValueError("drop must be a list or tuple of feature indices")
+
+        if any(not isinstance(i, int) or isinstance(i, bool) for i in drop):
+            raise ValueError("drop indices must be integers")
+
+        if any(i < 0 or i >= 8 for i in drop):
+            raise ValueError("drop indices must be between 0 and 7")
+
+        if len(set(drop)) != len(drop):
+            raise ValueError("drop indices must be unique")
+
         self.drop = tuple(drop)
 
         r = {"w_progress": 1.0, "w_transfer": 2.0, "w_full_assist_penalty": 0.5, "w_takeover_penalty": 1.0, "ablate": []}

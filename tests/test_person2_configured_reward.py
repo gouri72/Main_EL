@@ -126,3 +126,23 @@ def test_operation_caps_accept_boundaries(valid_cap):
 
     learner = Learner(operation_caps=caps)
     assert learner.operation_caps["understand_plan"] == valid_cap
+
+@pytest.mark.parametrize("invalid_drop", [(8,), (-1,), ("1",), (1.5,), (True,), (1, 1)])
+def test_drop_indices_must_be_valid(invalid_drop):
+    task = {"id": "drop-test", "domain": "coding", "difficulty": 1,
+            "operations": [{"op": "execute"}]}
+    with pytest.raises(ValueError, match="drop"):
+        ConfiguredEnv(tasks=[task], drop=invalid_drop,
+                     profile="advanced", family="B", seed=42)
+
+
+@pytest.mark.parametrize("valid_drop", [(), (0,), (7,), (0, 7)])
+def test_drop_indices_accept_valid_values(valid_drop):
+    task = {"id": "drop-test", "domain": "coding", "difficulty": 1,
+            "operations": [{"op": "execute"}]}
+    env = ConfiguredEnv(tasks=[task], drop=valid_drop,
+                        profile="advanced", family="B", seed=42)
+    obs = env._get_obs()
+    assert len(obs) == 8
+    for index in valid_drop:
+        assert obs[index] == 0
