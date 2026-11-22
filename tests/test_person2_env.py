@@ -72,9 +72,14 @@ def test_human_first_failure_then_assistance(monkeypatch):
 
     monkeypatch.setattr(env.learner, "attempt", fake_attempt)
 
-    _, _, done, info = env.step(4)
+    _, reward, done, info = env.step(4)
 
     assert calls == [0, 2]  # understand_plan cap is 2
+    assert abs(reward - 0.6) < 1e-9
+    assert env.attempt_count == 1
+    assert env.learner_attempt_count == 2
+    assert env.help_seeking_count == 1
+    assert abs(env.time_total - 4.0) < 1e-9
     assert done
     assert info["route_name"] == "human_first"
     assert not info["independent_success"]
