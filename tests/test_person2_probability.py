@@ -92,3 +92,20 @@ def test_invalid_difficulty_rejected(difficulty):
 
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-v"]))
+
+def test_exact_lower_probability_boundary_fails():
+    learner = make_learner()
+    learner._mastery = -1.0
+    learner.rng.random = lambda: 0.03
+
+    result = learner.attempt(TASK, "execute", 0, None)
+    assert not result["success"]
+
+
+def test_exact_upper_probability_boundary_fails():
+    learner = make_learner()
+    learner._mastery = 2.0
+    learner.rng.random = lambda: 0.97
+
+    result = learner.attempt(TASK, "execute", 0, None)
+    assert not result["success"]
