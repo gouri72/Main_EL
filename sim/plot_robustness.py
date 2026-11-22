@@ -87,8 +87,18 @@ for ax, family in zip(axes, families):
     ax.set_ylim(0, 1)
 
 axes[0].set_ylabel("Mean simulated transfer success")
-axes[-1].legend(loc="best", fontsize=8)
-fig.tight_layout()
+
+handles, labels = axes[0].get_legend_handles_labels()
+fig.legend(
+    handles,
+    labels,
+    loc="upper center",
+    bbox_to_anchor=(0.5, 1.02),
+    ncol=4,
+    fontsize=9,
+)
+
+fig.tight_layout(rect=[0, 0, 1, 0.92])
 fig.savefig(OUT / "profile_transfer_comparison.png", dpi=300)
 plt.close(fig)
 
