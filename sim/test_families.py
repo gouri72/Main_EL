@@ -1,46 +1,74 @@
+﻿from sim.base import Learner
 
-from sim.base import Learner
 
-def measure_transfer(family, assisted):
+TRIALS = 500
+PROFILE = "advanced"
+TASK = {"difficulty": 1}
+ASSISTED_ATTEMPTS = 8
+ASSISTANCE_LEVEL = 4
+
+
+def measure_transfer(family, assisted, trials=TRIALS):
     successes = 0
-    trials = 200
 
     for seed in range(trials):
         learner = Learner(family=family)
-        learner.reset("advanced", seed=seed)
+        learner.reset(PROFILE, seed=seed)
 
         if assisted:
-            for _ in range(8):
+            for _ in range(ASSISTED_ATTEMPTS):
                 learner.attempt(
-                    task={"difficulty": 1},
+                    task=TASK,
                     op="execute",
-                    level=4,
+                    level=ASSISTANCE_LEVEL,
                     hint=None,
                 )
 
-        result = learner.transfer({"difficulty": 1})
+        result = learner.transfer(TASK)
         successes += int(result["success"])
 
     return successes / trials
 
 
 def main():
-    a_assisted = measure_transfer("A", assisted=True)
-    b_assisted = measure_transfer("B", assisted=True)
-    a_unassisted = measure_transfer("A", assisted=False)
+    results = {}
 
-    print(f"Family A, heavy assistance: {a_assisted:.3f}")
-    print(f"Family B, heavy assistance: {b_assisted:.3f}")
-    print(f"Family A, no assistance:    {a_unassisted:.3f}")
+    for family in ("A", "B"):
+        for assisted in (False, True):
+            rate = measure_transfer(family, assisted)
+            condition = "heavy_assistance" if assisted else "no_assistance"
+            results[(family, condition)] = rate
+
+            print(
+                f"Family {family} | {condition:16s} | "
+                f"transfer={rate:.3f}"
+            )
+
+    a_assisted = results[("A", "heavy_assistance")]
+    b_assisted = results[("B", "heavy_assistance")]
+    a_baseline = results[("A", "no_assistance")]
+    b_baseline = results[("B", "no_assistance")]
+
+    print("\nMatched comparisons:")
+    print(f"A heavy vs B heavy: {a_assisted:.3f} vs {b_assisted:.3f}")
+    print(f"A baseline vs B baseline: {a_baseline:.3f} vs {b_baseline:.3f}")
 
     assert a_assisted < b_assisted, (
-        "Expected heavy assistance to reduce transfer more in Family A"
-    )
-    assert abs(a_unassisted - b_assisted) < 0.15, (
-        "Baseline transfer rates differ more than expected"
+        "Expected Family A transfer to be lower than Family B "
+        "under heavy assistance"
     )
 
-    print("PASS: Family A and B transfer behavior differs as intended")
+    assert abs(a_baseline - b_baseline) < 0.10, (
+        "Family A and B baseline transfer should be similar "
+        "without assistance"
+    )
+
+    assert a_assisted < a_baseline, (
+        "Expected Family A heavy assistance to reduce transfer "
+        "relative to its own baseline"
+    )
+
+    print("\nPASS: matched Family A/B mechanism checks")
 
 
 if __name__ == "__main__":
