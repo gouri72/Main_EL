@@ -173,3 +173,11 @@ def test_reward_weights_accept_valid_values(valid_value):
 def test_reward_rejects_unknown_keys():
     with pytest.raises(ValueError, match="unknown reward key"):
         make_env({"w_typo": 1.0})
+
+@pytest.mark.parametrize("repeats", [1.5, 2.9, True, "5", None])
+def test_transfer_repeats_reject_invalid_types(repeats):
+    task = {"id": "invalid-repeats", "domain": "coding", "difficulty": 1,
+            "operations": [{"op": "execute"}]}
+    with pytest.raises(ValueError, match="transfer_repeats must be a positive integer"):
+        ConfiguredEnv(tasks=[task], transfer_repeats=repeats,
+                     profile="advanced", family="B", seed=42)

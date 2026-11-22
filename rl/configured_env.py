@@ -38,8 +38,7 @@ def bin_frustration(n):
 
 class ConfiguredEnv(HumanFirstEnv):
     def __init__(self, tasks, reward=None, discretize=True, transfer_repeats=20, drop=(), **kw):
-        transfer_repeats = int(transfer_repeats)
-        if transfer_repeats <= 0:
+        if not isinstance(transfer_repeats, int) or isinstance(transfer_repeats, bool) or transfer_repeats <= 0:
             raise ValueError("transfer_repeats must be a positive integer")
 
         self.transfer_repeats = transfer_repeats
