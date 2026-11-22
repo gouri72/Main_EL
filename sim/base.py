@@ -42,11 +42,18 @@ OPERATION_LEVEL_CAPS = {
 class Learner:
     """A configurable learner that exposes observable outcomes only."""
 
-    def __init__(self, family="A"):
+    def __init__(self, family="A", operation_caps=None):
         if family not in {"A", "B", "C"}:
             raise ValueError("family must be A, B, or C")
 
         self.family = family
+        self.operation_caps = dict(
+            OPERATION_LEVEL_CAPS if operation_caps is None else operation_caps
+        )
+
+        if set(self.operation_caps) != VALID_OPERATIONS:
+            raise ValueError("operation_caps must define all valid operations")
+
         self.reset("intermediate", seed=42)
 
     def reset(self, profile, seed) -> None:
@@ -77,10 +84,10 @@ class Learner:
             raise ValueError(f"Unknown operation: {op!r}")
 
         # Enforce the project's operation-specific assistance caps.
-        if level > OPERATION_LEVEL_CAPS[op]:
+        if level > self.operation_caps[op]:
             raise ValueError(
                 f"Level {level} exceeds the cap "
-                f"{OPERATION_LEVEL_CAPS[op]} for {op}"
+                f"{self.operation_caps[op]} for {op}"
             )
 
         self._attempts += 1

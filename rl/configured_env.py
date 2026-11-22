@@ -40,15 +40,23 @@ class ConfiguredEnv(HumanFirstEnv):
         transfer_repeats = int(transfer_repeats)
         if transfer_repeats <= 0:
             raise ValueError("transfer_repeats must be a positive integer")
-        super().__init__(tasks, **kw)
+
         self.transfer_repeats = transfer_repeats
         self.drop = tuple(drop)
+
         r = {"w_progress": 1.0, "w_transfer": 2.0, "w_full_assist_penalty": 0.5, "w_takeover_penalty": 1.0, "ablate": []}
         r.update(reward or {})
         ablate = {ALIASES.get(a, a) for a in (r.get("ablate") or [])}
         unknown = ablate - TERMS - SWITCHES
         if unknown:
             raise ValueError(f"unknown ablation(s) {sorted(unknown)}; allowed: {sorted(TERMS | SWITCHES)}")
+
+        operation_caps = dict(OPERATION_LEVEL_CAPS)
+        if "operation_caps" in ablate:
+            operation_caps = {op: 4 for op in operation_caps}
+
+        super().__init__(tasks, operation_caps=operation_caps, **kw)
+
         self.w = {
             "progress": 0.0 if "progress" in ablate else float(r["w_progress"]),
             "transfer": 0.0 if "transfer" in ablate else float(r["w_transfer"]),
@@ -58,9 +66,6 @@ class ConfiguredEnv(HumanFirstEnv):
         self.blind_state = "operation_state" in ablate
         self.uniform_penalty = "operation_penalty" in ablate
         self.discretize = discretize
-        if "operation_caps" in ablate:
-            for op in OPERATION_LEVEL_CAPS:
-                OPERATION_LEVEL_CAPS[op] = 4
 
     def _evaluate_transfer(self):
         """Unaided transfer success averaged over `transfer_repeats` simulated attempts per transfer task.

@@ -27,6 +27,7 @@ class HumanFirstEnv:
         family="A",
         seed=42,
         all_tasks=None,
+        operation_caps=None,
     ):
         if not tasks:
             raise ValueError("tasks must contain at least one task")
@@ -35,11 +36,14 @@ class HumanFirstEnv:
         self.profile = profile
         self.family = family
         self.seed = seed
+        self.operation_caps = dict(
+            OPERATION_LEVEL_CAPS if operation_caps is None else operation_caps
+        )
 
         self.all_tasks = all_tasks
         self.transfer_tasks = []
 
-        self.learner = Learner(family=family)
+        self.learner = Learner(family=family, operation_caps=self.operation_caps)
         self.estimator = KnowledgeEstimator()
 
         self.current_task_idx = 0
@@ -126,7 +130,7 @@ class HumanFirstEnv:
 
         task = self.tasks[self.current_task_idx]
         operation = self._get_current_operation(task)
-        level_cap = OPERATION_LEVEL_CAPS[operation]
+        level_cap = self.operation_caps[operation]
 
         valid_actions = []
         for action_id in range(10):
@@ -163,7 +167,7 @@ class HumanFirstEnv:
         domain = task["domain"]
         operation = self._get_current_operation(task)
 
-        level_cap = OPERATION_LEVEL_CAPS[operation]
+        level_cap = self.operation_caps[operation]
         capped_level = min(requested_level, level_cap)
 
         results = []
