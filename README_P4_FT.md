@@ -9,6 +9,7 @@ This adds a separate, reproducible base-versus-LoRA experiment. It does not alte
 - The filter retains only base-task Qwen or handwritten hints that pass the current rule validator; the 21 fallback records are excluded. Actual retained targets: 4,030 Qwen-generated pseudo-labels and 9 handwritten hints. The validator is not a correctness or teaching-quality gold standard.
 - Both conditions load the same pinned Hugging Face model revision (`c1899de289a04d12100db370d81485cdf75e47ca`) so future model-repository changes cannot silently alter the comparison.
 - Training and the paired first-pass evaluation have now completed in Colab. Compact summaries are recorded in [`results/qwen3_06b_lora_v1/RESULTS.md`](results/qwen3_06b_lora_v1/RESULTS.md), `training/training_metadata.json`, and `evaluation/summary.json`. Adapter weights and raw paired outputs remain in Google Drive; no human ratings have been completed.
+- Aggregate SVG figures are checked in under `results/qwen3_06b_lora_v1/figures/`. They can be regenerated from the committed summary with `python3 assist/ft/plot_recorded_summary.py`. The full-data chart script below remains available when the original `comparison_metrics.csv` is present.
 
 ## Colab runbook (T4-friendly start)
 
@@ -77,6 +78,12 @@ Generate the two presentation charts after evaluation:
 ```python
 !python -m pip install matplotlib
 !python assist/ft/plot_lora_eval.py --config configs/qwen3_06b_lora_v1.yaml --evaluation-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation
+```
+
+The aggregate figures already committed to the repository can be regenerated without installing matplotlib:
+
+```python
+!python assist/ft/plot_recorded_summary.py
 ```
 
 After real raters complete the blinded sheet, summarize the human scores without replacing missing ratings with defaults:
