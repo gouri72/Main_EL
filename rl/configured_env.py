@@ -73,7 +73,12 @@ class ConfiguredEnv(HumanFirstEnv):
                 raise ValueError(f"{key} must be a finite non-negative number")
             if not math.isfinite(value) or value < 0:
                 raise ValueError(f"{key} must be a finite non-negative number")
-        ablate = {ALIASES.get(a, a) for a in (r.get("ablate") or [])}
+        raw_ablate = r.get("ablate")
+        if raw_ablate is None:
+            raw_ablate = []
+        if not isinstance(raw_ablate, (list, tuple)) or any(not isinstance(a, str) for a in raw_ablate):
+            raise ValueError("ablate must be a list or tuple of strings")
+        ablate = {ALIASES.get(a, a) for a in raw_ablate}
         unknown = ablate - TERMS - SWITCHES
         if unknown:
             raise ValueError(f"unknown ablation(s) {sorted(unknown)}; allowed: {sorted(TERMS | SWITCHES)}")

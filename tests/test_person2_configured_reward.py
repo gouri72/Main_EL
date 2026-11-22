@@ -181,3 +181,8 @@ def test_transfer_repeats_reject_invalid_types(repeats):
     with pytest.raises(ValueError, match="transfer_repeats must be a positive integer"):
         ConfiguredEnv(tasks=[task], transfer_repeats=repeats,
                      profile="advanced", family="B", seed=42)
+
+@pytest.mark.parametrize("invalid_ablate", ["transfer", 1, True, {"transfer": True}, [1], [True]])
+def test_ablate_rejects_invalid_types(invalid_ablate):
+    with pytest.raises(ValueError, match="ablate must be a list or tuple of strings"):
+        make_env({"ablate": invalid_ablate})
