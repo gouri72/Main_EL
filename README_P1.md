@@ -67,3 +67,30 @@ real students.
 - [ ] Archive or regenerate full raw experiment CSVs for independent reproduction
 - [ ] Run and preserve full integrated CI checks after all team merges
 - [ ] Integrate P1, P2, P3 and P4 results into a unified manuscript
+
+## Archiving the original raw experiment evidence (local Windows workstation)
+
+The 12 v2 runs were executed locally but their original CSVs are not on
+GitHub. Run this **without rerunning training** from the repository root:
+
+```powershell
+python tools/archive_p1_results.py --out artifacts/p1_v2_evidence.zip
+```
+
+The tool includes all seven benchmark and five ablation runs. It checks each
+tracked YAML against the result folder's saved config, verifies the recorded
+config hash in both CSV headers, rejects missing/duplicate training and
+frozen-policy evaluation records, then packages the original CSVs, both
+config copies, and a per-file SHA-256 manifest.
+
+For the recorded v2 configuration, the expected totals are **8,800 episode
+rows and 70,400 step rows per run** (eight seeds; 1,000 train + 100 eval
+episodes per seed; eight tasks per episode). The tool reads existing source
+files and refuses to overwrite an existing ZIP. If something is missing,
+it stops instead of reconstructing supposed raw data from the summaries.
+
+The `artifacts/` folder is gitignored; **share the ZIP with the research
+team in their designated storage** and record its printed SHA-256 alongside
+the final submission evidence. Do not commit large raw CSVs to `main`
+without agreement. The presence of this tool is not evidence that the
+archive has been made until it is actually run on the original workstation.
