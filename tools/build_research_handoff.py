@@ -7,7 +7,7 @@ P1 evidence is checked against its embedded per-file SHA-256 manifest.
 import argparse
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,9 +58,18 @@ def package(root, output, files=FILES, p1_archive=None):
         raise ValueError("Duplicate source paths")
     inputs = []
     for rel in files:
-        part = Path(rel)
-        if part.is_absolute() or ".." in part.parts:
+        # Host Path.is_absolute() is insufficient: on Windows '/abs' has
+        # no drive and can be reported as non-absolute, while on Linux
+        # 'C:\\secret' is just a relative POSIX filename.
+        # Archive names must use POSIX-style relative paths on every OS.
+        posix = PurePosixPath(rel)
+        windows = PureWindowsPath(rel)
+        if (not isinstance(rel, str) or not rel or
+                posix.is_absolute() or windows.anchor or
+                "\\\\" in rel or ".." in posix.parts or
+                "." in posix.parts or rel.startswith(("/", "\\\\"))):
             raise ValueError(f"Unsafe relative path: {rel}")
+        part = Path(rel)
         source = root / part
         if not source.is_file() or source.is_symlink() or not source.resolve().is_relative_to(root):
             raise FileNotFoundError(f"Missing/unsafe release source: {source}")
