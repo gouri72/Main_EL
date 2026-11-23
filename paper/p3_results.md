@@ -2,7 +2,7 @@
 
 **Status:** automated engineering checks complete. The planned independent human
 annotation and inter-annotator agreement remain unperformed; a separate
-exploratory LLM-assisted labeling audit is prepared but has no ratings yet.
+exploratory LLM-assisted labeling audit is complete and explicitly model-only.
 
 ## Dataset composition
 
@@ -85,8 +85,8 @@ report supplied on 21 November 2026. Agreement against frozen heuristics was:
 
 See `data/audit/llm_assisted_report.md`. These are **model–heuristic
 agreement rates only**, not accuracy or independent human agreement.
-The completed local annotations CSV must still be committed for a fully
-reproducible repository-level audit; no human reference study was performed.
+The completed `data/audit/annotations_llm_assisted.csv` is committed alongside
+its model-only report. No human reference study was performed.
 
 ## Reproduction
 

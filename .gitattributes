@@ -1,0 +1,5 @@
+# P3's committed SHA-256 freeze manifest was generated from CRLF working-tree
+# bytes. Preserve those exact bytes on Windows and Linux checkouts without
+# rewriting the frozen task data, hint bank, or manifest.
+data/hints.jsonl text eol=crlf
+data/build_config.yaml text eol=crlf
