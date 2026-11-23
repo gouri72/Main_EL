@@ -66,7 +66,7 @@ def package(root, output, files=FILES, p1_archive=None):
         windows = PureWindowsPath(rel)
         if (not isinstance(rel, str) or not rel or
                 posix.is_absolute() or windows.anchor or
-                "\\\\" in rel or ".." in posix.parts or
+                chr(92) in rel or ".." in posix.parts or
                 "." in posix.parts or rel.startswith(("/", "\\\\"))):
             raise ValueError(f"Unsafe relative path: {rel}")
         part = Path(rel)
