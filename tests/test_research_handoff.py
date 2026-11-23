@@ -26,7 +26,10 @@ def test_missing_input_rejected_before_writing(tmp_path):
         package(tmp_path, destination, files=("unknown.txt",))
     assert not destination.exists()
 
-@pytest.mark.parametrize("relative", ("../secret", "/abs"))
+@pytest.mark.parametrize("relative", (
+    "../secret", "/abs", r"\\abs", r"C:\\secret", r"C:relative",
+    r"folder\\..\\secret",
+))
 def test_path_escape_rejected(tmp_path, relative):
     with pytest.raises(ValueError, match="Unsafe"):
         package(tmp_path, tmp_path / "out.zip", files=(relative,))
