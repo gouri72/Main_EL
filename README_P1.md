@@ -64,9 +64,9 @@ real students.
 - [x] Evaluate five ablations
 - [x] Analyze assistance routes and training-seed variability locally
 - [x] Add frozen-evaluation integrity guards
-- [ ] Archive or regenerate full raw experiment CSVs for independent reproduction
-- [ ] Run and preserve full integrated CI checks after all team merges
-- [ ] Integrate P1, P2, P3 and P4 results into a unified manuscript
+- [x] Locally archive the original 12 raw P1 experiments and verify SHA-256
+- [x] Run and preserve integrated CI checks in GitHub Actions
+- [x] Integrate P1–P4 results in `paper/manuscript.md`
 
 ## Archiving the original raw experiment evidence (local Windows workstation)
 
