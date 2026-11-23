@@ -30,7 +30,7 @@ This ledger distinguishes **committed raw evidence**, **committed summaries**, a
 - [x] P4 automated LoRA experiment documented without asserting semantic improvement
 - [x] Unified paper-ready draft composed, with provenance and limitations
 - [ ] Team confirms authorship, bibliography, target venue and institutional submission requirements
-- [ ] Archive original P1 raw CSV outputs with checksums
+- [ ] Run `python tools/archive_p1_results.py --out artifacts/p1_v2_evidence.zip` on the original workstation, retain the ZIP and its SHA-256; exporter and validation tests are committed, but the original raw evidence is not uploaded
 - [ ] Verify access and hashes for P4 original Colab paired outputs and model adapter
 - [ ] Obtain actual P3 independent human labels and P4 blinded hint quality judgments, **or explicitly report these as not conducted**
 - [ ] Repeat P2 independently trained held-out-family folds if strong generalization claims are desired

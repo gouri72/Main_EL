@@ -10,3 +10,4 @@ results/**/*.npy
 paper/figs/*.png
 results/smoke_*/
 results/qwen3_06b_lora_v1/prepared/
+artifacts/
