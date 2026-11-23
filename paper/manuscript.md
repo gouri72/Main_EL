@@ -48,7 +48,7 @@ The policy comparison includes Tabular Q-learning, Linear Q-learning, LinUCB (co
 
 ### 4.1 P1 policy benchmark
 
-| Policy | Immediate success | Simulated unaided post-transfer | Transfer gain (pp) | Mean assistance spent/session |
+| Policy | Immediate success | Simulated unaided post-transfer | Normalized transfer gain (%) | Mean assistance spent/session |
 |---|---:|---:|---:|---:|
 | Always Full | 50.9% | 10.7% | -19.5 | 22.538 |
 | Always None | 15.8% | 27.4% | +3.1 | 0.000 |
@@ -58,11 +58,11 @@ The policy comparison includes Tabular Q-learning, Linear Q-learning, LinUCB (co
 | Linear Q | 40.6% | 28.0% | +3.9 | 10.364 |
 | LinUCB | 47.8% | 20.7% | -5.9 | 12.586 |
 
-Fixed Human First yields the highest immediate success (58.8%) yet only 15.4% simulated post-transfer. Linear Q leads the seven policies in post-transfer (28.0%) but is more seed-sensitive, while Rule Adaptive attains much higher immediate success than Linear Q (51.1% versus 40.6%). Always None has competitive transfer but very low immediate completion. There is no uniformly superior policy. The transfer-gain column is the runner's **normalized pre-to-post measure**, not simply the difference between the displayed immediate-success and post-transfer percentages. Exact intervals and seed-paired exploratory tests are in the [committed benchmark summary](../results/summary_A_novice_v2.md). Raw P1 per-step/per-episode outputs have not been uploaded to GitHub.
+Fixed Human First yields the highest immediate success (58.8%) yet only 15.4% simulated post-transfer. Linear Q leads the seven policies in post-transfer (28.0%) but is more seed-sensitive, while Rule Adaptive attains much higher immediate success than Linear Q (51.1% versus 40.6%). Always None has competitive transfer but very low immediate completion. There is no uniformly superior policy. Transfer gain is **100 × (post_transfer − pre_transfer) / (1 − pre_transfer)**, computed per eligible episode and averaged. It is a normalized percentage measure, **not a percentage-point difference**; it should not be confused with a gap between immediate-success and post-transfer percentages. Exact intervals and seed-paired exploratory tests are in the [committed benchmark summary](../results/summary_A_novice_v2.md). Raw P1 per-step/per-episode outputs have not been uploaded to GitHub.
 
 ### 4.2 P1 operation and reward ablations
 
-| Policy variant | Immediate success | Post-transfer | Transfer gain (pp) |
+| Policy variant | Immediate success | Post-transfer | Normalized transfer gain (%) |
 |---|---:|---:|---:|
 | Full Tabular Q | 35.7% | 25.5% | +0.5 |
 | Operation identity omitted from state | 32.3% | 28.6% | +4.7 |
