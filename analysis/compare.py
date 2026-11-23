@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compare experiments: mean +- 95% CI over seeds, and paired differences against a reference experiment.
 
-  python analysis/compare.py --ref A_novice__always_full "results/A_novice__*" --k 20 --out results/summary_A_novice.md
+  python analysis/compare.py --ref A_novice_v2__tabular_q "results/A_novice_v2__*" --k 100 --out results/summary_A_novice_v2.md
 Unit of analysis = per-seed mean over the last k frozen-policy evaluation episodes (seeds are independent). CI = t-interval over seeds.
 Paired = same seed in both experiments (paired t-test). Immediate success comes from steps.csv.
 efficiency = mean transfer gain / mean assistance spent (per seed); '-' when no assistance was spent.
@@ -27,6 +27,16 @@ def per_seed(d, k):
     s = S[S.phase == "eval"].copy()
     if e.empty or s.empty:
         raise ValueError(f"{d}: no evaluation episodes/steps; cannot compare frozen policies")
+    # Fail closed on incomplete or duplicated evaluation runs. In particular,
+    # a two-episode smoke test must never be reported as a 100-episode result.
+    if e.duplicated(["seed", "episode"]).any():
+        raise ValueError(f"{d}: duplicate frozen evaluation episode identifiers")
+    counts = e.groupby("seed").size()
+    if (counts < k).any():
+        short = counts[counts < k].to_dict()
+        raise ValueError(f"{d}: fewer than {k} evaluation episodes for seeds {short}")
+    if s.duplicated(["seed", "episode", "task_idx"]).any() if "task_idx" in s.columns else False:
+        raise ValueError(f"{d}: duplicate evaluation step identifiers")
     e = e.sort_values(["seed", "episode"]).groupby("seed", group_keys=False).tail(k)
     selected = set(zip(e.seed, e.episode))
     s = s[[(seed, ep) in selected for seed, ep in zip(s.seed, s.episode)]]
@@ -74,6 +84,12 @@ def main():
     lines += ["", f"# Paired differences vs {a.ref} (experiment minus reference; paired by seed; p = paired t-test)", "",
               "| experiment | Δ immediate_success | Δ transfer_gain | p | Δ post_transfer | Δ assist_spent |", "|---|---|---|---|---|---|"]
     ref = data[a.ref]
+    for name, df in data.items():
+        if set(df.index) != set(ref.index):
+            raise ValueError(
+                f"{name}: evaluation seed set {sorted(df.index)} differs "
+                f"from reference {a.ref}: {sorted(ref.index)}"
+            )
     for name, df in data.items():
         if name == a.ref:
             continue
