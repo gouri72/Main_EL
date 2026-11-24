@@ -16,6 +16,7 @@ column. Fixed and rule-based policies do not have an update() method.
 import argparse
 import csv
 import hashlib
+import inspect
 import json
 import random
 import shutil
@@ -112,11 +113,19 @@ def update_policy(policy, state, action, reward, next_state, done, valid_next):
     updater = getattr(policy, "update", None)
     if not callable(updater):
         return
+    # Decide the supported call signature before invoking update(). Catching a
+    # TypeError around the invocation itself hides genuine bugs inside policies.
+    signature = inspect.signature(updater)
+    args = (state, action, reward, next_state, done)
     try:
-        updater(state, action, reward, next_state, done, valid_next)
+        signature.bind(*args, valid_next)
     except TypeError:
-        # Backward compatibility with the older five-argument update API.
-        updater(state, action, reward, next_state, done)
+        # The original five-argument API is still supported when its actual
+        # signature matches. Unexpected signatures fail without calling update.
+        signature.bind(*args)
+        updater(*args)
+    else:
+        updater(*args, valid_next)
 
 
 def main():

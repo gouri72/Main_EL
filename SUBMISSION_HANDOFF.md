@@ -32,3 +32,17 @@ are never overwritten. The local `artifacts/` directory is gitignored.
 
 Do not interpret the completed code and paper draft as evidence of real
 student learning improvements.
+
+## Final P1/P4 engineering safeguards (24 November 2026)
+
+- P1's `run_experiment.update_policy` dispatches to the compatible five-
+  or six-argument signature **before** invocation. A policy's internal
+  `TypeError` is no longer interpreted as an outdated API and retried.
+  Existing benchmark CSVs were not regenerated or altered.
+- P4's CPU-only `recompute_lora_summary.py` requires a **separate**
+  `--output-dir`; it cannot silently overwrite the committed recorded run.
+  Before producing a new summary, it checks paired example IDs and ordering,
+  task/group/domain/operation/level fields, exact task input, prompt hashes,
+  and presence of both model evaluation records against the prepared test set.
+- These guards do **not** constitute a fresh GPU adapter-generation test or
+  independent human judgment. No human quality evaluation is claimed.
