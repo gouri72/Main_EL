@@ -62,8 +62,8 @@ def verify():
         pass_rate = p4["models"][model]["validator_pass_rate"] * 100
         assert f"{pass_rate:.2f}%" in paper
     assert p4["n_paired_examples"] == 618
-    assert p4["human_ratings_status"] == "Pending; blind annotation sheet has not been completed."
-    assert "have **not been completed**" in paper
+    assert p4["human_ratings_status"] == "Not conducted; no human ratings are claimed or reported."
+    assert "were **not conducted**" in paper
 
 
 if __name__ == "__main__":

@@ -62,6 +62,6 @@
     }
   },
   "interpretation_limit": "Rule-based validator and latency outcomes on base-model pseudo-label data; not evidence of hint correctness, pedagogical benefit, or human learning gains.",
-  "human_ratings_status": "Pending; blind annotation sheet has not been completed.",
-  "source": "Copied from user-provided Colab output; raw paired outputs remain in Drive."
+  "human_ratings_status": "Not conducted; no human ratings are claimed or reported.",
+  "source": "Recomputed from the 618 paired outputs committed at evaluation/paired_outputs.jsonl; adapter weights remain in external Google Drive storage."
 }

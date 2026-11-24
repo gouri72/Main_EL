@@ -11,6 +11,20 @@ Source: the actual 618-row `evaluation/paired_error_cases.csv` and paired output
 | LoRA fails, base passes | 3 |
 | Both fail | 0 |
 
+These are paired **automated rule-validator** categories. The underlying failure labels on the eight non-accepted outputs were:
+
+| Model | Automated failure label | Count |
+|---|---|---:|
+| Base | `leakage:solution_ngram` | 1 |
+| Base | `too_short` | 1 |
+| Base | `prompt_echo` | 1 |
+| Base | `code_present` | 1 |
+| Base | `no_answer` | 1 |
+| LoRA | `too_short` | 2 |
+| LoRA | `code_present` | 1 |
+
+The labels are validator reason codes, not a taxonomy of confirmed semantic defects. For example, `no_answer` does not distinguish an absent answer from an incorrect answer.
+
 ## Representative cases from actual outputs
 
 ### Both pass
@@ -33,7 +47,7 @@ Source: the actual 618-row `evaluation/paired_error_cases.csv` and paired output
 
 There were **no** pairs in this category. Do not invent a both-fail example from these 618 outputs. Other both-pass pairs could still contain semantic errors the rules did not detect.
 
-## What rules miss or mislabel
+## Qualitative semantic concerns from output inspection
 
 - `example_id=63d40f95688bb9afe455` (both pass; coding / debug-verify / level 3): LoRA advises verifying all values are integers or floats. The task only asks whether all tuple elements share a type; they could all share another type. This is likely incorrect guidance despite validator acceptance. Base's steps are also largely tautological. This is an assistant text review, not a human rating.
 - `example_id=0810b079cd0968dfb967` (both pass; understand-plan / level 2): both responses merely repeat “swap the two numbers,” with no actionable plan. The rule validator accepts both because its scope is format/compliance and leakage checks, not usefulness.
@@ -41,4 +55,8 @@ There were **no** pairs in this category. Do not invent a both-fail example from
 - `example_id=91584b2ff7f4f4fe9cdd` (base fails, LoRA passes): base is ordinary prose describing magnitude and angle, but was flagged `code_present`; this looks like a possible false positive. Inspect the validator rule before treating it as a real compliance error.
 - `example_id=a5e99af90a42170a4307` (base fails, LoRA passes; science / execute / level 4): base labels the claim SUPPORTS even though the abstract says CX3CR1 signaling promotes Th2 survival and blocking it reduces disease; LoRA returns CONTRADICT. The base answer is factually wrong and LoRA's label is consistent with the abstract. The rule categorized the base issue as `no_answer`, which obscures the actual wrong-label failure.
 
-These observations come from direct reading of model outputs by the assistant and should be treated as **qualitative, unblinded error inspection**, not as independent human review or the pending blinded ratings. The two-rater quality evaluation remains unfilled. A human reviewer should verify these interpretations before the paper calls them semantic error findings.
+These are **qualitative, unblinded observations from direct output inspection**. No independent human evaluation or ratings were conducted. They are examples to illustrate possible validator blind spots, not independently verified findings or estimates of error prevalence.
+
+## Validator limitations
+
+The rule validator checks a limited set of format, level-compliance and leakage patterns. It can miss factual errors, operation mismatch, non-actionable hints, and assistance that gives away too much without matching its leakage patterns. It can also falsely flag valid prose, and its reason labels may obscure the actual semantic issue. Consequently, pass rates do not establish correctness, relevance, usefulness, or learning benefit. The automated labels above and the qualitative observations must remain separate in interpretation.
