@@ -42,7 +42,7 @@ The policy comparison includes Tabular Q-learning, Linear Q-learning, LinUCB (co
 
 **P2:** each cross-family fold trains a Tabular Q model for 120 episodes per training family on two families and freezes it for 50 episodes on the third family. Each held-out family has **one trained model**; its interval reflects evaluation episodes rather than independently repeated training. A separate robustness study samples four learner profiles, three families and different fixed assistance levels.
 
-**P4:** pinned Qwen3-0.6B was fine-tuned for three LoRA epochs (rank 8, alpha 16) on 2,822 examples from 208 training tasks, with 599 development examples from 46 tasks. Paired first-pass inference compares base and LoRA on 618 held-out examples clustered into 41 task groups, using matched prompting/decoding. Fine-tuning targets are mainly the base model's filtered generated hints, so this is primarily self-distillation, not expert-corrected supervision. The adapter and raw paired outputs remain in team Drive; committed metric summaries were transcribed from team-provided Colab output.
+**P4:** Qwen/Qwen3-0.6B (revision `c1899de289a04d12100db370d81485cdf75e47ca`) was fine-tuned for three LoRA epochs (rank 8, alpha 16) on 2,822 examples from 208 training tasks, with 599 development examples from 46 tasks. Paired first-pass inference compares base and LoRA on 618 held-out examples clustered into 41 task groups, using matched prompts, decoding settings and per-example seeds. Fine-tuning targets are mainly the base model's filtered generated hints, so this is primarily self-distillation, not expert-corrected supervision. The adapter and raw paired outputs remain in team Drive; committed metric summaries were transcribed from team-provided Colab output and have not yet been independently regenerated from the raw pairs.
 
 ## 4. Results
 
@@ -92,7 +92,16 @@ These are single-training-run fold results and should not be pooled with P1's ei
 | Rule-validator leakage flags | 0.16% | 0.00% |
 | Mean generation latency | 1.53 s | 2.62 s |
 
-The acceptance difference is **+0.32 percentage points** with a task-cluster bootstrap 95% interval of **-0.73 to +1.27 pp**, spanning zero. Thus no acceptance improvement is established. The adapter was approximately 72% slower on average. Near-ceiling rule acceptance is not a measure of factual correctness, pedagogical helpfulness or learner performance. Human blinded relevance/correctness/level-fit ratings have **not been completed**. See [recorded P4 results](../results/qwen3_06b_lora_v1/RESULTS.md).
+| Acceptance by stratum | n | Base Qwen | LoRA Qwen |
+|---|---:|---:|---:|
+| Coding | 268 | 98.51% | 98.88% |
+| Science | 350 | 99.71% | 100.00% |
+| Level 1 | 155 | 100.00% | 100.00% |
+| Level 2 | 155 | 97.42% | 98.06% |
+| Level 3 | 155 | 100.00% | 100.00% |
+| Level 4 | 153 | 99.35% | 100.00% |
+
+The acceptance difference is **+0.32 percentage points** with a task-cluster bootstrap 95% interval of **−0.73 to +1.27 pp**, spanning zero. Thus no acceptance improvement is established. The adapter was approximately 72% slower on average. Near-ceiling rule acceptance is not a measure of factual correctness, pedagogical helpfulness or learner performance. Two-rater blinded judgments of relevance, factual correctness, level fit, usefulness and preference have **not been completed**; consequently there is no human quality result or inter-rater agreement to report. The semantic error review is also pending because example-level raw generations are external to this checkout. See [recorded P4 results](../results/qwen3_06b_lora_v1/RESULTS.md).
 
 ## 5. Discussion
 

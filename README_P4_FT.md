@@ -10,6 +10,9 @@ This adds a separate, reproducible base-versus-LoRA experiment. It does not alte
 - Both conditions load the same pinned Hugging Face model revision (`c1899de289a04d12100db370d81485cdf75e47ca`) so future model-repository changes cannot silently alter the comparison.
 - Training and the paired first-pass evaluation have now completed in Colab. Compact summaries are recorded in [`results/qwen3_06b_lora_v1/RESULTS.md`](results/qwen3_06b_lora_v1/RESULTS.md), `training/training_metadata.json`, and `evaluation/summary.json`. Adapter weights and raw paired outputs remain in Google Drive; no human ratings have been completed.
 - Aggregate SVG figures are checked in under `results/qwen3_06b_lora_v1/figures/`. They can be regenerated from the committed summary with `python3 assist/ft/plot_recorded_summary.py`. The full-data chart script below remains available when the original `comparison_metrics.csv` is present.
+- The workspace checkout does not contain the Drive adapter, `run_manifest.json`, or raw `paired_outputs.jsonl`. Run `verify_lora_artifacts.py` against the team Drive copy before stating that adapter loading and raw-output access were independently verified. Run `recompute_lora_summary.py` against the same folder to regenerate the summary and all metric/error CSVs without loading a model.
+- The existing 120-pair blind sheet has only one set of scores and three dimensions. `prepare_two_rater_sheets.py` creates separate sheets for two independent raters and adds usefulness; the sheets must be completed by actual people before `summarize_human_ratings.py` can report scores and agreement.
+- `prepare_error_review_sheets.py` uses the actual paired error CSV plus the prepared test prompts to sample cases from each validator pass/fail category, hide the model identities, and collect semantic error tags and explanations from reviewers.
 
 ## Colab runbook (T4-friendly start)
 
@@ -86,10 +89,29 @@ The aggregate figures already committed to the repository can be regenerated wit
 !python assist/ft/plot_recorded_summary.py
 ```
 
-After real raters complete the blinded sheet, summarize the human scores without replacing missing ratings with defaults:
+For the requested two-rater protocol, prepare independent forms from the already generated blind sample. Share one CSV with each rater; do not share the key. Raters independently score relevance, factual correctness, level fit, usefulness (each 1–5), and A/B/tie preference. Keep the A/B assignment unchanged across both forms so agreement is calculated on matched outputs. Lock both forms before revealing the key.
 
 ```python
-!python assist/ft/summarize_human_ratings.py --sheet /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/blind_annotation_sheet.csv --key /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/annotation_key.csv --output /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/human_rating_summary.json
+!python assist/ft/prepare_two_rater_sheets.py --sheet /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/blind_annotation_sheet.csv --output-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/ratings_to_share
+```
+
+After both independent sheets are completed, summarize scores and agreement:
+
+```python
+!python assist/ft/summarize_human_ratings.py --rater1 /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/ratings_to_share/blind_rater_1.csv --rater2 /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/ratings_to_share/blind_rater_2.csv --key /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/annotation_key.csv --output /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/human_rating_summary.json
+```
+
+Prepare blinded semantic error-review examples after the full evaluation CSV is available. Reviewers should tag answer leakage, incorrect guidance, operation mismatch, assistance-level mismatch, no identified error, or other, and explain their judgments. The automatic pass/fail category remains in the private key.
+
+```python
+!python assist/ft/prepare_error_review_sheets.py --cases /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/paired_error_cases.csv --test-file results/qwen3_06b_lora_v1/prepared/test.jsonl --output-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/error_review --per-category 5
+```
+
+Verify the Drive artifacts, check adapter loading with a four-token smoke generation, and regenerate aggregate results from raw outputs without model inference:
+
+```python
+!python assist/ft/verify_lora_artifacts.py --config configs/qwen3_06b_lora_v1.yaml --training-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/training --evaluation-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation --load-adapter
+!python assist/ft/recompute_lora_summary.py --config configs/qwen3_06b_lora_v1.yaml --evaluation-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation --output-dir /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/recomputed --compare-summary /content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/evaluation/summary.json
 ```
 
 ## Outputs and interpretation
@@ -97,13 +119,13 @@ After real raters complete the blinded sheet, summarize the human scores without
 - `prepared/{train,dev,test}.jsonl`, `split_manifest.csv`, `summary.json`: versioned data and grouping provenance.
 - `training/checkpoints/`, `training/adapter/`, `training_metadata.json`: checkpoints, adapter and recorded run details.
 - `evaluation/paired_outputs.jsonl`, `summary.json`, `comparison_metrics.csv`, `validator_failures.csv`: first-pass raw/cleaned outputs, paired rule-validator metrics by domain/level, task-cluster bootstrap interval, latency, and example-level validator errors.
-- `evaluation/blind_annotation_sheet.csv` and `annotation_key.csv`: randomized A/B sheet and separate mapping. By default it samples 120 pairs, balanced across domain × assistance level and favoring distinct task groups. Ratings are blank until actual raters complete them. It covers relevance, correctness, level fit and preference. Do not claim human evaluation before it is completed. LLM-as-judge results, if added later, must be labeled as such and should not replace human ground truth.
-- `evaluation/paired_error_cases.csv`: all four automated pass/fail pair categories (`both_pass`, base-only fail, LoRA-only fail, both fail) with outputs and a blank reviewer explanation column; filter by category for concise examples in the report.
+- `evaluation/blind_annotation_sheet.csv` and `annotation_key.csv`: randomized A/B source sample and separate mapping. By default it samples 120 pairs, balanced across domain × assistance level and favoring distinct task groups. `prepare_two_rater_sheets.py` creates separate rater copies with relevance, correctness, level fit, usefulness, and preference fields. Do not claim human evaluation until real raters complete the forms. LLM-as-judge results, if added later, must be labeled as such and should not replace human ground truth.
+- `evaluation/paired_error_cases.csv`: all four automated pass/fail pair categories (`both_pass`, base-only fail, LoRA-only fail, both fail) with outputs and a blank reviewer explanation column. `prepare_error_review_sheets.py` creates blinded, sampled forms for actual semantic review.
 - `evaluation/figures/`: overall model comparison and level-wise compliance/leakage charts.
 
 Automated validator acceptance is `compliance AND not leakage`; report compliance and leakage separately too. Leakage rate means the rule-based validator flagged output and is not a measured false-negative rate. Task-cluster bootstrap resamples group IDs so operation/level variants from one task group are not counted as independent clusters. The validator does not assess operation relevance, factual correctness, helpfulness, or learner outcomes. No statistical significance should be claimed from the bootstrap interval alone.
 
-For the blind sheet, use the same 1–5 anchors for both outputs: 1 = clearly poor, 3 = mixed/partly useful, 5 = clearly strong. Relevance asks whether the response helps the stated operation; correctness asks whether its claims/code/evidence are valid for the provided task; level fit asks whether it gives only the requested amount of help. Mark preference as A, B, or tie. Have two team members rate the same sheet independently if time permits, reconcile disagreements after calculating agreement, and keep the key hidden until ratings are locked. This is an internal annotation, not a human learning study.
+For the blind sheets, use the same 1–5 anchors for both outputs: 1 = clearly poor, 3 = mixed/partly useful, 5 = clearly strong. Relevance asks whether the response helps the stated operation; correctness asks whether its claims/code/evidence are valid for the provided task; level fit asks whether it gives only the requested amount of help; usefulness asks for an overall judgment of whether the hint would help with the task. Mark preference as A, B, or tie. The summary reports quadratic weighted kappa for ordinal scores and unweighted kappa for preference. Keep the model key hidden until both sheets are locked. This internal annotation is not a human learning study.
 
 ## Reproducibility
 
