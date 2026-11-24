@@ -37,10 +37,13 @@ The validator sanity script passes. A 100-item hand-label sheet is prepared at `
 30 dev and 70 test items sampled from raw first-pass generations. Validator accuracy remains unmeasured until the
 independent labels are filled in; the test split must not be used to tune rules.
 
-The separate base-Qwen versus LoRA comparison workflow, its actual split counts, and Colab runbook are documented in
-[`README_P4_FT.md`](README_P4_FT.md). The split and quality-filtered examples are prepared, but no LoRA checkpoint or
-fine-tuned comparison results exist yet; training and generation require a Colab GPU. Do not interpret the prepared
-pseudo-labels or automated validator as human quality judgments.
+The separate base-Qwen versus LoRA comparison, training metadata, paired outputs, verified run manifest, regenerated
+summary, figures, and error analysis are documented in [`README_P4_FT.md`](README_P4_FT.md) and
+[`results/qwen3_06b_lora_v1/RESULTS.md`](results/qwen3_06b_lora_v1/RESULTS.md). The adapter and checkpoints remain in
+team Drive; the original Colab evaluation successfully loaded the adapter, and a fresh GPU smoke check is optional.
+The 120-pair blinded sheet is still blank. Complete the independent two-rater quality forms and the 100-item validator
+label audit before claiming human validation or validator accuracy. Automated rule acceptance is not a human quality
+judgment, and the self-distillation run does not establish factual or pedagogical improvement.
 
 The P4 reading note for Bastani et al. is in `paper/notes_p4_bastani.md`. Plotting scripts and PDFs are present, but
 the checked-in `results/smoke_001` is one policy in one simulator family, so those plots are pipeline examples only;
