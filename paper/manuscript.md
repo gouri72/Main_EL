@@ -42,7 +42,7 @@ The policy comparison includes Tabular Q-learning, Linear Q-learning, LinUCB (co
 
 **P2:** each cross-family fold trains a Tabular Q model for 120 episodes per training family on two families and freezes it for 50 episodes on the third family. Each held-out family has **one trained model**; its interval reflects evaluation episodes rather than independently repeated training. A separate robustness study samples four learner profiles, three families and different fixed assistance levels.
 
-**P4:** Qwen/Qwen3-0.6B (revision `c1899de289a04d12100db370d81485cdf75e47ca`) was fine-tuned for three LoRA epochs (rank 8, alpha 16) on 2,822 examples from 208 training tasks, with 599 development examples from 46 tasks. Paired first-pass inference compares base and LoRA on 618 held-out examples clustered into 41 task groups, using matched prompts, decoding settings and per-example seeds. Fine-tuning targets are mainly the base model's filtered generated hints, so this is primarily self-distillation, not expert-corrected supervision. The adapter and raw paired outputs remain in team Drive; committed metric summaries were transcribed from team-provided Colab output and have not yet been independently regenerated from the raw pairs.
+**P4:** Qwen/Qwen3-0.6B (revision `c1899de289a04d12100db370d81485cdf75e47ca`) was fine-tuned for three LoRA epochs (rank 8, alpha 16) on 2,822 examples from 208 training tasks, with 599 development examples from 46 tasks. Paired first-pass inference compares base and LoRA on 618 held-out examples clustered into 41 task groups, using matched prompts, decoding settings and per-example seeds. Fine-tuning targets are mainly the base model's filtered generated hints, so this is primarily self-distillation, not expert-corrected supervision. Raw paired outputs and a run manifest are committed; the adapter and checkpoints remain in shared Drive. All 618 raw pairs reproduce the recorded numerical summary under the pinned config.
 
 ## 4. Results
 
@@ -101,7 +101,9 @@ These are single-training-run fold results and should not be pooled with P1's ei
 | Level 3 | 155 | 100.00% | 100.00% |
 | Level 4 | 153 | 99.35% | 100.00% |
 
-The acceptance difference is **+0.32 percentage points** with a task-cluster bootstrap 95% interval of **−0.73 to +1.27 pp**, spanning zero. Thus no acceptance improvement is established. The adapter was approximately 72% slower on average. Near-ceiling rule acceptance is not a measure of factual correctness, pedagogical helpfulness or learner performance. Two-rater blinded judgments of relevance, factual correctness, level fit, usefulness and preference have **not been completed**; consequently there is no human quality result or inter-rater agreement to report. The semantic error review is also pending because example-level raw generations are external to this checkout. See [recorded P4 results](../results/qwen3_06b_lora_v1/RESULTS.md).
+The acceptance difference is **+0.32 percentage points** with a task-cluster bootstrap 95% interval of **−0.73 to +1.27 pp**, spanning zero. Thus no acceptance improvement is established. The adapter was approximately 72% slower on average. Near-ceiling rule acceptance is not a measure of factual correctness, pedagogical helpfulness or learner performance. Two-rater blinded judgments of relevance, factual correctness, level fit, usefulness and preference have **not been completed**; consequently there is no human quality result or inter-rater agreement to report.
+
+Across the 618 pairs, the rule validator classified 610 as both passing, five as base failing/LoRA passing, three as LoRA failing/base passing, and none as both failing. A level-2 coding example shows LoRA revealing the expected result `[1]`, flagged as `code_present`; a science level-4 example shows base returning SUPPORTS while LoRA returns CONTRADICT, with the base output flagged `no_answer`. Conversely, a level-3 coding output that recommends checking only for integers or floats passed the rules despite the task asking whether all tuple elements share a type. These are examples from direct, unblinded assistant inspection and illustrate validator behavior; they are not human-coded error labels. The detailed case notes are in [P4 error analysis](../results/qwen3_06b_lora_v1/ERROR_ANALYSIS.md).
 
 ## 5. Discussion
 
@@ -117,7 +119,7 @@ P4 provides a separate automated hint-generation result. It is not connected to 
 - Heuristic operation and difficulty labels lack independent human validation; the 40-task GPT-6 audit is model–heuristic comparison, not human agreement.
 - Multiple exploratory P1 contrasts are unadjusted and involve eight training seeds; P2 reports only one trained model per held-out fold.
 - P4 self-distills mostly model-generated hints, and automatic acceptance checks cannot establish factual correctness. No blinded human-quality study has been completed.
-- P1 raw evaluation CSVs are local; P4 raw pairs and adapter weights are external to GitHub, so original summary replication remains partly dependent on team-owned records.
+- P1 raw evaluation CSVs and P4 adapter/checkpoint weights remain outside GitHub. P4 paired outputs and summary statistics are committed, but blinded human quality ratings remain uncompleted.
 - Any future real-learner study requires appropriate participant safeguards and institutional approvals as applicable; none is asserted here.
 
 ## 7. Conclusion

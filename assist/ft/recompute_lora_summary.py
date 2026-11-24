@@ -22,7 +22,7 @@ def main():
     parser.add_argument("--config", default="configs/qwen3_06b_lora_v1.yaml")
     parser.add_argument("--evaluation-dir", required=True, help="folder containing run_manifest.json and paired_outputs.jsonl")
     parser.add_argument("--output-dir", default=None, help="defaults to evaluation-dir; can preserve originals in a separate folder")
-    parser.add_argument("--compare-summary", default=None, help="optional recorded summary.json to compare with regenerated values")
+    parser.add_argument("--compare-summary", default=None, help="optional recorded summary.json to compare with regenerated metrics")
     args = parser.parse_args()
     config_path = Path(args.config)
     if not config_path.is_absolute():
@@ -65,8 +65,12 @@ def main():
     if args.compare_summary:
         old = json.loads(Path(args.compare_summary).read_text(encoding="utf-8"))
         new = json.loads((dest / "summary.json").read_text(encoding="utf-8"))
-        comparable_old = {key: old.get(key) for key in new}
-        if comparable_old != new:
+        # The committed summary includes provenance/interpretation text that may
+        # be edited without changing any statistic. Compare every computed field
+        # except that free-text note; human-rating/source notes are also excluded.
+        comparable_old = {key: old.get(key) for key in new if key != "interpretation_limit"}
+        comparable_new = {key: new[key] for key in new if key != "interpretation_limit"}
+        if comparable_old != comparable_new:
             raise SystemExit("Regenerated summary differs from the saved summary; inspect config, split and raw outputs.")
     print(json.dumps({"summary_regenerated": str(dest / "summary.json"), "paired_examples": len(rows),
                       "base_model_revision": cfg["base_model_revision"], "config_sha256": expected_config,

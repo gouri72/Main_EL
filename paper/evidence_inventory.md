@@ -8,7 +8,7 @@ This ledger distinguishes **committed raw evidence**, **committed summaries**, a
 | P2 simulation | `sim/cross_family.py`, `sim/robustness.py`, `results/person2_cross_family.csv`, `results/person2_robustness.csv` and their summaries | Independent repetitions of trained policies across folds; baseline comparisons |
 | P3 corpus | Task/solution/hint files and frozen SHA-256 manifest | Independent annotation by two human raters; semantics of transfer pairs |
 | P3 exploratory audit | `data/audit/annotations_llm_assisted.csv` and `data/audit/llm_assisted_report.md` | No real-human label agreement; model-only ratings must be labeled as such |
-| P4 LoRA | Pinned configurations, split manifest, training metadata, transcribed `evaluation/summary.json`, charts | Full paired first-pass outputs and adapter in team Drive; blinded human quality ratings |
+| P4 LoRA | Pinned configurations, reproducible split manifest, training metadata/log, run manifest, all 618 paired outputs, regenerated metrics/error CSVs and figures | Adapter/checkpoints in team Drive; blinded human quality ratings and independent semantic review pending |
 
 ## Claim-to-source map
 
@@ -17,8 +17,8 @@ This ledger distinguishes **committed raw evidence**, **committed summaries**, a
 - P1 operation-blind-state 28.6%, cap-removed 23.7%: `results/summary_A_novice_v2_ablations.md`.
 - P2 held-out A/B/C transfer means 24.225/29.55/31.20%: `results/person2_cross_family_summary.csv`.
 - P3 40-item model–heuristic audit: `data/audit/llm_assisted_report.md`.
-- P4 618 paired first-pass model outputs, 99.19/99.51% rule acceptance: `results/qwen3_06b_lora_v1/evaluation/summary.json`.
-- P4 model weights/raw outputs: external, not independently verified by the committed repository.
+- P4 618 paired first-pass model outputs, 99.19/99.51% rule acceptance: `results/qwen3_06b_lora_v1/evaluation/paired_outputs.jsonl` and `summary.json`; summary recomputation matches the recorded metrics.
+- P4 adapter: external Drive checkpoint; supplied archive's adapter file hashes match the evaluation run manifest. A fresh CUDA smoke generation remains unrun in this workspace.
 
 ## Final release checklist
 
@@ -32,7 +32,8 @@ This ledger distinguishes **committed raw evidence**, **committed summaries**, a
 - [ ] Team confirms authorship, bibliography, target venue and institutional submission requirements
 - [x] Original 12-run P1 ZIP archived locally; checksum verified: `e69d1d520f294d06a395cab8a277480848f22f7dcef87bfbe0c218a37c19a236`
 - [ ] Independently verify a backup of that ZIP in team-managed storage
-- [ ] Verify access and hashes for P4 original Colab paired outputs and model adapter
+- [x] Verify P4 paired outputs against test IDs/prompts, reproduce metrics, and match adapter file hashes to the run manifest
+- [ ] Verify fresh adapter loading with a CUDA smoke generation in Colab
 - [ ] Obtain actual P3 independent human labels and P4 blinded hint quality judgments, **or explicitly report these as not conducted**
 - [ ] Repeat P2 independently trained held-out-family folds if strong generalization claims are desired
 - [ ] Confirm figures and final manuscript formatting for submission

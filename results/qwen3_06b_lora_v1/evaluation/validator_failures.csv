@@ -1,0 +1,9 @@
+example_id,task_id,group_id,domain,op,level,model,failure_categories,output
+1e5cfe7d9e5829b3bfec,code_041,74bfd3ff8776,coding,explain,2,base,leakage:solution_ngram,"The sum of even numbers from l to r can be found using the formula n*(n+1)/2, where n is the largest even number in the range."
+5c785c68ba210046a618,code_069,ef25aa121a2a,coding,execute,2,lora,code_present,"The function should return the sublist with the minimum length, which in this case is [1]."
+8f83a85ba59813d146ca,code_072,630bcddc0e9b,coding,execute,2,base,too_short,Elementwise operation on tuples.
+696592722561d7c6f04a,code_078,48be42ebf5aa,coding,execute,2,lora,too_short,Swap the two numbers.
+0810b079cd0968dfb967,code_078,48be42ebf5aa,coding,understand_plan,2,lora,too_short,Swap the two numbers.
+427934499801daae296d,code_101,b175fb7b4632,coding,explain,2,base,prompt_echo,The function uses the Chinese zodiac cycle to determine the sign based on the year. Level 2 (conceptual hint): Use the zodiac cycle to find the sign for the given year.
+91584b2ff7f4f4fe9cdd,code_136,144cc8a64a0e,coding,execute,2,base,code_present,The function should take a complex number as input and return its polar coordinates (magnitude and angle in radians). The concept involves understanding the relationship between polar and rectangular coordinates.
+a5e99af90a42170a4307,sci_004,18305b313b0b,science,execute,4,base,no_answer,Correct label: SUPPORTS. Evidence: Here we found that untreated CX3CR1-deficient mice or wild-type (WT) mice treated with CX3CR1-blocking reagents show reduced lung disease upon allergen sensitization and challenge.

@@ -1,0 +1,26 @@
+{
+  "experiment_id": "qwen3_06b_lora_v1",
+  "base_model": "Qwen/Qwen3-0.6B",
+  "base_model_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+  "adapter_dir": "/content/drive/MyDrive/HumanFirst-Route/qwen3_06b_lora_v1/training/adapter",
+  "generation": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "do_sample": true,
+    "paired_example_seed": 20261121
+  },
+  "test_ids_sha256": "a2edd59d16711f9327571b35bcf03bad41ee0331d0f15a4923ef6642c03fd439",
+  "test_prompts_sha256": "1e84f66b10a4d374d8e8a3b729e5119f0335dee2a5308a89dca31b03470da85d",
+  "config_sha256": "e0c7f1f0d759695184b0907a6ac81fddfd65c645afde2efd7c381933f067deba",
+  "adapter_files_sha256": {
+    "README.md": "4fb01070dbf1c311649b741432747c286d5438547f54ccdea88930e6d7b47faa",
+    "adapter_config.json": "0fd7e2e459832f1d2372a3fa7d5b6876bdbe94cf7890dc8b05697bc9882391cd",
+    "adapter_model.safetensors": "0fec479a115870ba4756c8b451d52d0b8d9699b3917faca6d8068aedc4aa5d06",
+    "chat_template.jinja": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "tokenizer.json": "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506",
+    "tokenizer_config.json": "04b1682c59acbd057f4c9072297faa73d56fc9de053094c659cdb4c464f58f86",
+    "training_args.bin": "3850ad2d0876bc055651f4d2ea979692261ed0ec325ec32f3efa81a3cc9661bf"
+  },
+  "test_count": 618
+}
