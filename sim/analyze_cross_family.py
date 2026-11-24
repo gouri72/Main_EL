@@ -1,11 +1,11 @@
 ﻿import pandas as pd
 import numpy as np
-from pathlib import Path
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 INPUT = Path("results/person2_cross_family.csv")
-OUT = Path("results/person2_cross_family_summary.csv")
-FIG = Path("results/person2_figures/cross_family_transfer.png")
+OUT = Path("results/person2_analysis")
+OUT.mkdir(parents=True, exist_ok=True)
 
 df = pd.read_csv(INPUT)
 
@@ -21,67 +21,130 @@ metrics = [
     "copying_rate",
 ]
 
-summary = []
+# First aggregate episodes within each training seed
+seed_data = (
+    df.groupby(
+        ["heldout_family", "method", "training_seed"],
+        as_index=False,
+    )[metrics]
+    .mean()
+)
 
-for family, group in df.groupby("heldout_family"):
+seed_data.to_csv(
+    OUT / "seed_level_results.csv",
+    index=False,
+)
+
+# Aggregate seed-level results and calculate 95% CI
+summary_rows = []
+
+for (family, method), group in seed_data.groupby(
+    ["heldout_family", "method"]
+):
+
     row = {
         "heldout_family": family,
-        "training_families": group["training_families"].iloc[0],
-        "episodes": len(group),
+        "method": method,
+        "n_seeds": len(group),
     }
 
     for metric in metrics:
-        values = group[metric].dropna()
-        n = len(values)
-        mean = values.mean()
-        sd = values.std(ddof=1)
-        ci = 1.96 * sd / np.sqrt(n) if n > 1 else 0
+        values = group[metric].dropna().to_numpy()
+
+        mean = np.mean(values)
+
+        if len(values) > 1:
+            se = np.std(values, ddof=1) / np.sqrt(len(values))
+            ci = 2.364624251 * se
+        else:
+            ci = 0.0
 
         row[f"{metric}_mean"] = mean
-        row[f"{metric}_sd"] = sd
         row[f"{metric}_ci95"] = ci
 
-    summary.append(row)
+    summary_rows.append(row)
 
-result = pd.DataFrame(summary).sort_values("heldout_family")
-result.to_csv(OUT, index=False)
+summary = pd.DataFrame(summary_rows)
 
-print("\nCross-family statistical summary")
-for _, row in result.iterrows():
-    print(
-        f"\nFamily {row['heldout_family']} "
-        f"(train {row['training_families']}):"
+summary.to_csv(
+    OUT / "cross_family_summary.csv",
+    index=False,
+)
+
+print("\nSEED-LEVEL SUMMARY")
+print(
+    summary[
+        [
+            "heldout_family",
+            "method",
+            "transfer_mean",
+            "transfer_ci95",
+            "practice_success_mean",
+            "practice_success_ci95",
+            "reward_mean",
+            "reward_ci95",
+        ]
+    ].round(3).to_string(index=False)
+)
+
+# Plot transfer comparison
+methods = [
+    "RL",
+    "Rule_Adaptive",
+    "Always_None",
+    "Fixed_Human_First",
+]
+
+families = ["A", "B", "C"]
+
+for metric in ["transfer", "practice_success", "reward"]:
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+
+    for method in methods:
+
+        values = []
+        errors = []
+
+        for family in families:
+
+            row = summary[
+                (summary["heldout_family"] == family)
+                & (summary["method"] == method)
+            ]
+
+            values.append(
+                row[f"{metric}_mean"].iloc[0]
+            )
+
+            errors.append(
+                row[f"{metric}_ci95"].iloc[0]
+            )
+
+        ax.errorbar(
+            families,
+            values,
+            yerr=errors,
+            marker="o",
+            capsize=4,
+            label=method,
+        )
+
+    ax.set_xlabel("Held-out Family")
+    ax.set_ylabel(metric.replace("_", " ").title())
+    ax.set_title(
+        f"Cross-Family {metric.replace('_', ' ').title()}"
     )
-    print(
-        f"  Transfer: {row['transfer_mean']:.3f} "
-        f"+/- {row['transfer_ci95']:.3f} (95% CI)"
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+
+    fig.savefig(
+        OUT / f"{metric}_comparison.png",
+        dpi=300,
     )
-    print(
-        f"  Practice: {row['practice_success_mean']:.3f} "
-        f"+/- {row['practice_success_ci95']:.3f}"
-    )
-    print(
-        f"  Reward: {row['reward_mean']:.3f} "
-        f"+/- {row['reward_ci95']:.3f}"
-    )
-    print(f"  Mean assistance: {row['mean_level_mean']:.3f}")
-    print(f"  Human-first rate: {row['human_first_rate_mean']:.3f}")
 
-FIG.parent.mkdir(parents=True, exist_ok=True)
+    plt.close(fig)
 
-families = result["heldout_family"].tolist()
-means = result["transfer_mean"].to_numpy()
-cis = result["transfer_ci95"].to_numpy()
-
-plt.figure(figsize=(7, 5))
-plt.bar(families, means, yerr=cis, capsize=5)
-plt.ylabel("Unaided transfer success")
-plt.xlabel("Held-out simulator family")
-plt.title("Frozen-policy cross-family generalization")
-plt.ylim(0, 1)
-plt.tight_layout()
-plt.savefig(FIG, dpi=300)
-plt.close()
-
-print(f"\nSaved summary: {OUT}")
-print(f"Saved figure: {FIG}")
+print(f"\nAnalysis saved to: {OUT}")

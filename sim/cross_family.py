@@ -10,12 +10,66 @@ from rl.policy import TabularQPolicy
 
 FAMILIES = ("A", "B", "C")
 PROFILE = "novice"
+
+TRAIN_SEEDS = range(8)
 N_TRAIN_EPISODES_PER_FAMILY = 120
 N_EVAL_EPISODES = 50
 SESSION_TASKS = 8
 TRANSFER_REPEATS = 10
 
 OUTPUT = Path("results/person2_cross_family.csv")
+
+
+class BaselinePolicy:
+    def __init__(self, strategy):
+        self.strategy = strategy
+
+    def get_action(self, state, valid_actions=None, is_training=False):
+        valid_actions = valid_actions or list(range(10))
+
+        human_actions = [a for a in valid_actions if a < 5]
+
+        if not human_actions:
+            return valid_actions[0]
+
+        if self.strategy == "always_none":
+            desired_level = 0
+
+        elif self.strategy == "fixed_human_first":
+            desired_level = 2
+
+        elif self.strategy == "rule_adaptive":
+            difficulty = state[4]
+            attempts = state[5]
+            help_level = state[6]
+            frustration = state[7]
+
+            if frustration >= 2 or attempts >= 2:
+                desired_level = 4
+            elif difficulty >= 2:
+                desired_level = 3
+            elif help_level >= 2:
+                desired_level = 1
+            else:
+                desired_level = 0
+
+        else:
+            raise ValueError(f"Unknown strategy: {self.strategy}")
+
+        return min(
+            human_actions,
+            key=lambda a: abs((a % 5) - desired_level),
+        )
+
+    def update(self, *args, **kwargs):
+        pass
+
+
+BASELINES = {
+    "Rule_Adaptive": "rule_adaptive",
+    "Always_None": "always_none",
+    "Fixed_Human_First": "fixed_human_first",
+}
 
 
 def make_env(family, seed, all_tasks, pool):
@@ -51,14 +105,17 @@ def run_episode(env, policy, pool, all_tasks, episode_seed, training):
 
     state = env.reset()
     done = False
+
     total_reward = 0.0
     successes = 0
     total_time = 0.0
     levels = []
+
     human_first = 0
     frustration = 0
     abandoned = 0
     copied = 0
+
     info = {}
 
     while not done:
@@ -89,11 +146,24 @@ def run_episode(env, policy, pool, all_tasks, episode_seed, training):
         successes += int(info["immediate_success"])
         total_reward += float(reward)
         total_time += float(info.get("time", 0))
+
         levels.append(int(info.get("actual_level", 0)))
-        human_first += int(info.get("route", action // 5) == 0)
-        frustration += int(info.get("frustrated", False))
-        abandoned += int(info.get("abandoned", False))
-        copied += int(info.get("copied", False))
+
+        human_first += int(
+            info.get("route", action // 5) == 0
+        )
+
+        frustration += int(
+            info.get("frustrated", False)
+        )
+
+        abandoned += int(
+            info.get("abandoned", False)
+        )
+
+        copied += int(
+            info.get("copied", False)
+        )
 
         state = next_state
 
@@ -128,89 +198,141 @@ def main():
             f"train {training_families}"
         )
 
-        policy = TabularQPolicy(
-            alpha=0.1,
-            gamma=0.95,
-            epsilon=0.1,
-            seed=100 + ord(heldout),
-        )
+        for train_seed in TRAIN_SEEDS:
 
-        # Train on both available families using one shared policy.
-        for family in training_families:
-            env = make_env(family, 100, all_tasks, pool)
+            print(f"\n  Training seed: {train_seed}")
 
-            for episode in range(N_TRAIN_EPISODES_PER_FAMILY):
-                episode_seed = (
-                    10000
-                    + ord(heldout) * 1000
-                    + ord(family) * 100
-                    + episode
-                )
+            policy = TabularQPolicy(
+                alpha=0.1,
+                gamma=0.95,
+                epsilon=0.1,
+                seed=100 + train_seed,
+            )
 
-                run_episode(
-                    env,
-                    policy,
-                    pool,
+            for family in training_families:
+
+                env = make_env(
+                    family,
+                    100 + train_seed,
                     all_tasks,
-                    episode_seed,
-                    training=True,
+                    pool,
                 )
+
+                for episode in range(
+                    N_TRAIN_EPISODES_PER_FAMILY
+                ):
+
+                    episode_seed = (
+                        10000
+                        + train_seed * 100000
+                        + ord(heldout) * 1000
+                        + ord(family) * 100
+                        + episode
+                    )
+
+                    run_episode(
+                        env,
+                        policy,
+                        pool,
+                        all_tasks,
+                        episode_seed,
+                        training=True,
+                    )
+
+                print(
+                    f"    Family {family}: "
+                    f"{N_TRAIN_EPISODES_PER_FAMILY} episodes"
+                )
+
+            env = make_env(
+                heldout,
+                200 + train_seed,
+                all_tasks,
+                pool,
+            )
+
+            methods = {
+                "RL": policy,
+                **{
+                    name: BaselinePolicy(strategy)
+                    for name, strategy in BASELINES.items()
+                },
+            }
+
+            for method_name, method_policy in methods.items():
+
+                for episode in range(N_EVAL_EPISODES):
+
+                    episode_seed = (
+                        500000
+                        + train_seed * 100000
+                        + ord(heldout) * 1000
+                        + episode
+                    )
+
+                    metrics = run_episode(
+                        env,
+                        method_policy,
+                        pool,
+                        all_tasks,
+                        episode_seed,
+                        training=False,
+                    )
+
+                    rows.append({
+                        "heldout_family": heldout,
+                        "training_families": "+".join(
+                            training_families
+                        ),
+                        "training_seed": train_seed,
+                        "method": method_name,
+                        "profile": PROFILE,
+                        "episode": episode,
+                        **metrics,
+                    })
+
+            seed_rows = [
+                r for r in rows
+                if r["heldout_family"] == heldout
+                and r["training_seed"] == train_seed
+            ]
+
+            rl_rows = [
+                r for r in seed_rows
+                if r["method"] == "RL"
+            ]
 
             print(
-                f"  Training completed on Family {family}: "
-                f"{N_TRAIN_EPISODES_PER_FAMILY} episodes"
+                f"    Seed {train_seed} frozen RL evaluation | "
+                f"transfer="
+                f"{np.mean([r['transfer'] for r in rl_rows]):.3f} | "
+                f"practice="
+                f"{np.mean([r['practice_success'] for r in rl_rows]):.3f}"
             )
 
-        # Freeze policy: no updates on the held-out family.
-        env = make_env(heldout, 200, all_tasks, pool)
+    OUTPUT.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
-        for episode in range(N_EVAL_EPISODES):
-            episode_seed = (
-                500000
-                + ord(heldout) * 1000
-                + episode
-            )
+    with OUTPUT.open(
+        "w",
+        newline="",
+        encoding="utf-8",
+    ) as f:
 
-            metrics = run_episode(
-                env,
-                policy,
-                pool,
-                all_tasks,
-                episode_seed,
-                training=False,
-            )
-
-            rows.append({
-                "heldout_family": heldout,
-                "training_families": "+".join(training_families),
-                "profile": PROFILE,
-                "episode": episode,
-                **metrics,
-            })
-
-        test_rows = [
-            r for r in rows
-            if r["heldout_family"] == heldout
-        ]
-
-        print(
-            f"  Frozen evaluation on Family {heldout}: "
-            f"transfer={np.mean([r['transfer'] for r in test_rows]):.3f} | "
-            f"practice={np.mean([r['practice_success'] for r in test_rows]):.3f} | "
-            f"reward={np.mean([r['reward'] for r in test_rows]):.3f}"
-        )
-
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-
-    with OUTPUT.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
             fieldnames=rows[0].keys(),
         )
+
         writer.writeheader()
         writer.writerows(rows)
 
-    print(f"\nCompleted {len(rows)} frozen evaluation episodes.")
+    print(
+        f"\nCompleted {len(rows)} evaluation episodes."
+    )
+
     print(f"Saved: {OUTPUT}")
 
 
